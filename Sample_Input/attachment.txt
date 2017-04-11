@@ -1,0 +1,6 @@
+This is a sample attachment.  We're using a file with the ".txt" extension,
+because when the PDF API "embeds" it as an attachment into a PDF, the file type
+may be interpreted by the viewing software as an instruction how to open the
+attachment.  We have found all tested viewers capable of displaying  txt files.
+
+

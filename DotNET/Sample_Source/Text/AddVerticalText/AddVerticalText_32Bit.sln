@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddVerticalText", "AddVerticalText.csproj", "{C87E9F27-BA3A-4174-8861-D2B47EA1C33A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C87E9F27-BA3A-4174-8861-D2B47EA1C33A}.Debug|x86.ActiveCfg = Debug|x86
+		{C87E9F27-BA3A-4174-8861-D2B47EA1C33A}.Debug|x86.Build.0 = Debug|x86
+		{C87E9F27-BA3A-4174-8861-D2B47EA1C33A}.Release|x86.ActiveCfg = Release|x86
+		{C87E9F27-BA3A-4174-8861-D2B47EA1C33A}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
