@@ -16,653 +16,486 @@
 // For more detail see the description of the CreateSeparations sample program on our Developer’s site, 
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#createseparations
 
-#include <iostream>
-#include <sstream>
+// This sample will read each page from a document, and create a set of bitmap images for each page. 
+// the first image will show the entire page, in CMYK. It will then create separations for the page
+// into Cyan, Magenta, Yellow, Black, and spot colors. NOTE: separation will be created for each spot 
+// color DEFINED in a page, Whether or not that color is USED in the page. All of these images will 
+// be inserted, one page per image, into the output document created. The process and spot color 
+// plated will be rendered visually in DeviceGray.
 #include <string>
 
 #include "PERCalls.h"
 #include "PEWCalls.h"
 #include "PSFCalls.h"
 #include "PagePDECntCalls.h"
-
+#include "DLExtrasCalls.h"
+#include "PDPageDrawM.h"
 #include "InitializeLibrary.h"
 #include "APDFLDoc.h"
+#include "CosCalls.h"
 
-#include "CreateSeparations.h"
 
-// Resolution of image desired for plates.  Process plates will be 4 times this resolution.
+// Resolution of image desired for plates. 
 #define RESOLUTION (300.0)
 
+// Font used to label plates
 #define FONT_NAME "MyriadPro-Regular"
 #define FONT_TYPE "TrueType"
 
+// default sample input and output
+// (Can be overridden on command line as "CreateSeparations inputfilename outputfilename").
 #define INPUT_LOC "../../../../Resources/Sample_Input/"
 #define DEF_INPUT "RenderPage.pdf"
-#define DEF_ROOT "Out_.pdf"
+#define DEF_OUTPUT "Out.pdf"
 
+// This is a structure used to carry information between functions, so as to lower the requirements 
+// for obtaining this info in each function. It carries information about the page currently being 
+// rendered, as well as information used in rendering
+typedef struct pageInfo
+{
+    PDPage                      page;
+    ASUns8                      numberOfColorants;
+
+    // Width and Depth in pixels
+    ASInt32                     rows;
+    ASInt32                     cols;
+    ASInt32                     rowWidth;
+
+    // Referenced from drawParams;
+    ASRealRect                  drawWindow;
+    ASRealMatrix                drawMatrix;
+
+    // Structure used to control the drawing of the page
+    PDPageDrawMParamsRec        drawParams;
+
+    // Information needed to add text to page
+    PDEFont                 textFont;
+    PDEGraphicState         textGState;
+    PDETextState            textTState;
+    ASDoubleMatrix          textMatrix;
+} PageInfo;
+
+
+void FillPageInfo (PageInfo *pageInfo, PDPage page);
+void WriteCMYKImage (PageInfo *pageInfo, PDDoc outputDoc);
+void WriteDeviceNImage (PageInfo *pageInfo, PDDoc outputDoc);
+void WriteSeparationImage (PageInfo *pageInfo, PDDoc outputDoc, int separationNumber);
+void AddImageToDoc (PageInfo *pageInfo, PDDoc outputDoc, PDEColorSpace color, char *buffer, size_t bufferSize, ASInt16 channels, char *Name, 
+                    ASBool invertColor = false);
+//
+// The main process will intialize the library, open the input document, create the output document,
+// and initialize the communication structure. Then, for each page, it will render the page to CMYK, and insert
+// this image into the output document, then render to DeviceN, and separate out the colorants, writing them 
+// one-by-one to the output. It will then release global resources, save the output, and terminate the library.
 int main ( int argc, char *argv[] )
 {
-    std::string  csInputFileName, csOutputRootName;
-    VerifyValidate ( csInputFileName, csOutputRootName, argc > 1 ? argv[1] : INPUT_LOC DEF_INPUT,
-                     argc > 2 ? argv[2] : DEF_ROOT );
-    std::cout << "Creating separations for " << csInputFileName.c_str() << 
-                 " in files starting with " << csOutputRootName.c_str() << std::endl;
+    APDFLib libInit;          // Initialize the Adobe PDF Library. (Going out of scope will terminate.)
+    ASErrorCode errCode = 0;
 
-    APDFLib libInit;       // Initialize the library
-    if ( libInit.isValid() == false )
+    if (libInit.isValid () == false)
     {
-        ASErrorCode errCode = libInit.getInitError();
-        APDFLib::displayError ( errCode );
+        errCode = libInit.getInitError ();
+        std::cout << "Initialization failed with code " << errCode << std::endl;
         return errCode;
     }
 
-    PDDoc       Doc;
-    APDFLDoc* papdflDoc ( NULL );
+    DURING
+        std::string csInputFileName (argc > 1 ? argv[1] : INPUT_LOC DEF_INPUT);
+        std::string csOutputFileName (argc > 2 ? argv[2] : DEF_OUTPUT);
 
-    // Open the input as a PDF file
-DURING
-    papdflDoc = new APDFLDoc ( csInputFileName.c_str(), true );
-    Doc = papdflDoc->getPDDoc();
-HANDLER
-    APDFLib::displayError ( ERRORCODE );
-    return ERRORCODE;   
-END_HANDLER
+        std::cout << "Creating separations for " << csInputFileName.c_str() << 
+            " in files starting with " << csOutputFileName.c_str () << std::endl;
 
-DURING
-    
-    // We create here the structures needed to add text to output pages
-    PDEFontAttrs FontAttrs;
-    memset(&FontAttrs, 0, sizeof(FontAttrs));
-    FontAttrs.name = ASAtomFromString( FONT_NAME );
-    FontAttrs.type = ASAtomFromString( FONT_TYPE );
-    PDSysFont SysFont = PDFindSysFont(&FontAttrs, sizeof(PDEFontAttrs), 0);
-    if (!SysFont ) 
-    {
-        std::cout << "Cannot obtain System Font " << FONT_NAME << " " << FONT_TYPE << std::endl;
-        return 1;
-    }
-    PDSysFontGetAttrs (SysFont, &FontAttrs, sizeof(PDEFontAttrs));
-    PDEFont Font = PDEFontCreateFromSysFont(SysFont, kPDEFontDoNotEmbed);
+        // Open the input as a PDF file
+        APDFLDoc papdflDoc ( csInputFileName.c_str(), true );
+        PDDoc doc = papdflDoc.getPDDoc();
 
-    PDEGraphicState   GState;
-    PDEDefaultGState (&GState, sizeof (GState));
+        // Create an output Document
+        PDDoc outputDoc = PDDocCreate ();
 
-    ASDoubleMatrix TextMatrix;
-    TextMatrix.a = TextMatrix.d = 62.0;
-    TextMatrix.b = TextMatrix.c = 0.0;
-    TextMatrix.h = 1 * 72.0;
+        // Create a page Info Structure, and populate it with page
+        // independent information
+        PageInfo pageInfo;
+        memset ((char *)&pageInfo, 0, sizeof (PageInfo));
 
-    SeparationsContainer vSeparations;
-
-    // For each page of the document
-    ASInt32 numPages = PDDocGetNumPages ( Doc );
-    for ( ASInt32 PageNumber = 0; PageNumber < numPages; ++PageNumber )
-    {
-        // Obtain the page
-        PDPage Page = PDDocAcquirePage (Doc, PageNumber);
-        // Create a list of spot colors
-        CreateColorList ( Page, &vSeparations );
-
-        /* Create a CMYK Bitmap of the page */
-        ASInt32 Width, Depth;
-        ASUns8* Image = CreateCMYKBitmap (Page, RESOLUTION, &Width, &Depth);
-        ASInt32 Size ( Width * Depth * 4 );
-        ASUns8* ImageCopy = new ASUns8[Size];  // Make a copy to put into page 1
-        memmove ( ImageCopy, Image, Size );
-
-        // Separate the image in to it's components
-        CreateSeparation ( Image, Width, Depth, &vSeparations );
-
-        // From this point on the program simply displays the separations built previously.
-        // In other words, the code that follows is intended to verify that the three calls above,
-        // CreateColorList, CreateCMYKBitmap and Create separations, completed successfully.
-
-        // Create a document to hold the separation display.
-        PDDoc OutDoc = PDDocCreate ();
-
-        // Make the page one inch larger than the image (1/2 inch border on all sides)
-        // to provide room to identify the separations.
-        ASFixedRect PageSize;
-        PageSize.left = PageSize.bottom = 0;
-        PageSize.right = ASInt32ToFixed (Width) + ASInt32ToFixed ( 72 );
-        PageSize.top = ASInt32ToFixed (Depth) + ASInt32ToFixed ( 72 );
-        PDPage OutPage = PDDocCreatePage ( OutDoc, PDBeforeFirstPage, PageSize );
-
-        // Get the container for the page
-        PDEContent Content = PDPageAcquirePDEContent (OutPage, 0);
-
-        // Make the whole image into a PDE image, and place it into the
-        // first page. Use a copy of the original, because the process of
-        // separating the original destroyed the content of the original
-        PDEImageAttrs ImageAttrs;
-        memset(&ImageAttrs, 0, sizeof(ImageAttrs));
-        ImageAttrs.flags = kPDEImageExternal;
-        ImageAttrs.height = Depth;
-        ImageAttrs.width = Width;
-        ImageAttrs.bitsPerComponent = 8;
-
-        PDEFilterArray FilterArray;
-        memset(&FilterArray, 0, sizeof(FilterArray));
-        FilterArray.numFilters = 1;
-        FilterArray.spec[0].name = ASAtomFromString("FlateDecode");
-
-        ASFixedMatrix ImageMatrix;
-        ImageMatrix.a = ImageAttrs.width * fixedOne;
-        ImageMatrix.d = ImageAttrs.height * fixedOne;
-        ImageMatrix.b = ImageMatrix.c = 0;
-        ImageMatrix.h = fixedOne * 36;
-        ImageMatrix.v = fixedOne * 36;
-
-        PDEColorSpace ColorSpace;
-        ColorSpace = PDEColorSpaceCreateFromName(ASAtomFromString ("DeviceCMYK"));
-        PDEImage WholeImage;
-        WholeImage = PDEImageCreate (&ImageAttrs, sizeof(ImageAttrs), &ImageMatrix, 0,
-                     ColorSpace, NULL, &FilterArray, 0, (ASUns8 *)ImageCopy, Width * Depth * 4);
-        delete[] ImageCopy;
-
-        // Put this into the output document as page 1
-        PDEContentAddElem (Content, kPDEBeforeFirst, (PDEElement) WholeImage);
-
-        // Label it
-        PDEText Text = PDETextCreate ();
-        TextMatrix.v = Depth;
-        PDETextAddEx (Text, kPDETextRun, 0, (ASUns8*)"Original Image", 14, Font, 
-            &GState, sizeof (GState), NULL, 0, &TextMatrix, NULL);
-        PDEContentAddElem (Content, kPDEAfterLast, (PDEElement) Text);
-        PDERelease ((PDEObject) Text);
-    
-        // Set the content into the page
-        PDPageSetPDEContent (OutPage, 0);
-
-        // Release resources
-        PDPageReleasePDEContent (OutPage, 0);
-        PDPageRelease (OutPage);
-        PDERelease ((PDEObject) WholeImage);
-        PDERelease ((PDEObject) ColorSpace);
-
-        // Create a page which has every component on it. This should
-        // appear identical to the original page.
-        OutPage = PDDocCreatePage (OutDoc, 0, PageSize);
-        Content = PDPageAcquirePDEContent (OutPage, 0);
-        ASUns32 CurrentColor;
-        for (CurrentColor = 0; CurrentColor < vSeparations.size(); ++CurrentColor)
+        // We create here the structures needed to add text to output pages
+        PDEFontAttrs FontAttrs;
+        memset (&FontAttrs, 0, sizeof (FontAttrs));
+        FontAttrs.name = ASAtomFromString (FONT_NAME);
+        FontAttrs.type = ASAtomFromString (FONT_TYPE);
+        PDSysFont SysFont = PDFindSysFont (&FontAttrs, sizeof (PDEFontAttrs), 0);
+        if (!SysFont)
         {
-            SEPARATION *Sep = vSeparations[CurrentColor];
+            std::cout << "Cannot obtain System Font " << FONT_NAME << " " << FONT_TYPE << std::endl;
+            return 1;
+        }
+        PDSysFontGetAttrs (SysFont, &FontAttrs, sizeof (PDEFontAttrs));
+        pageInfo.textFont = PDEFontCreateFromSysFont (SysFont, kPDEFontDoNotEmbed);
 
-            // Label it
-            if (CurrentColor == 0)
-            {
-                Text = PDETextCreate ();
-                PDETextAddEx (Text, kPDETextRun, 0, (ASUns8*)"Combined Image", 14, Font, 
-                    &GState, sizeof (GState), NULL, 0, &TextMatrix, NULL);
+        PDEDefaultGState (&pageInfo.textGState, sizeof (PDEGraphicState));
+        memset ((char *)&pageInfo.textTState, 0, sizeof (PDETextState));
 
-                PDEContentAddElem (Content, kPDEBeforeFirst, (PDEElement) Text);
-                PDERelease ((PDEObject) Text);
-            }
 
-        /* If we did not use this color, skip it */
-        if (!Sep->m_present)
-            continue;
+        pageInfo.textMatrix.a = pageInfo.textMatrix.d = 62.0;
+        pageInfo.textMatrix.b = pageInfo.textMatrix.c = 0.0;
+        pageInfo.textMatrix.h = 72.0;
 
-        // Create a PDE image of this color, masked such that all
-        // content which is not this color is transparent
-        CreateMaskedImage (Sep);
 
-        // Put all of these, overlaying each other, into the document as page 2
-        PDEContentAddElem (Content, kPDEAfterLast, (PDEElement) Sep->m_masked_image);
+        // Create separations for each page
+        // To the output file, draw a CMYK rendering of the entire file, and 
+        // a DeviceN Composite rendering, then a separation plate for each colorant.
+        for (int page = 0; page < PDDocGetNumPages (doc); page++)
+        {
+            // Acquire the page to render
+            PDPage pdPage = PDDocAcquirePage (doc, page);
+
+            // Fill in the information needed to render the page
+            FillPageInfo (&pageInfo, pdPage);
+
+            // Create, and write to the output document, the CMYK rendering of this page
+            WriteCMYKImage (&pageInfo, outputDoc);
+
+            //Create the DeviceN rendering of this page
+            WriteDeviceNImage (&pageInfo, outputDoc);
+
+            //Divide the DeviceN image into separations, and write each to the output document
+            for (int color = 0; color < pageInfo.numberOfColorants; color++)
+                WriteSeparationImage (&pageInfo, outputDoc, color);
+
+            // Release the page.
+            PDPageRelease (pdPage);
         }
 
-        PDPageSetPDEContent (OutPage, 0);
-        PDPageReleasePDEContent (OutPage, 0);
-        PDPageRelease (OutPage);
+        // Release the information used for all pages
+        PDERelease ((PDEObject)pageInfo.textFont);
+        PDERelease ((PDEObject)pageInfo.textGState.fillColorSpec.space);
+        PDERelease ((PDEObject)pageInfo.textGState.strokeColorSpec.space);
 
-        // Create a page for each separate color
-        for (CurrentColor = 0; CurrentColor < vSeparations.size(); CurrentColor++)
-        {
-            SEPARATION *Sep = vSeparations[CurrentColor];
-    
-            if (!Sep->m_present)
-                continue;
-            
-            std::string ColorName ( ASAtomGetString ( Sep->m_name ) );
-            if ( Sep->m_process_color )
-            {
-                ColorName.insert ( 0, "Process " );
-            }
-            OutPage = PDDocCreatePage (OutDoc, PDDocGetNumPages (OutDoc)-1, PageSize);
-            Content = PDPageAcquirePDEContent (OutPage, 0);
-    
-            Text = PDETextCreate ();
-            PDETextAddEx (Text, kPDETextRun, 0, (ASUns8 *)ColorName.c_str(), ColorName.length(), Font, 
-                        &GState, sizeof (GState), NULL, 0, &TextMatrix, NULL);
-            PDEContentAddElem (Content, kPDEBeforeFirst, (PDEElement) Text);
-            PDERelease ((PDEObject) Text);
-    
-            PDEContentAddElem (Content, kPDEAfterLast, (PDEElement) Sep->m_masked_image);
-            PDPageSetPDEContent (OutPage, 0);
-            PDPageReleasePDEContent (OutPage, 0);
-            PDPageRelease (OutPage);
-        }
+        // Release the buffer for the last bitmap drawn
+        if (pageInfo.drawParams.buffer != NULL)
+            ASfree (pageInfo.drawParams.buffer);
+
+        // Release the ink list for the last DeviceN rendering
+        if (pageInfo.drawParams.deviceNColorInks)
+            ASfree (pageInfo.drawParams.deviceNColorInks);
 
         // Save the output document
-        std::ostringstream ossFileName;
-        ossFileName << csOutputRootName.c_str() << PageNumber + 1 << ".pdf";
-        ASPathName Path = APDFLDoc::makePath ( ossFileName.str().c_str() );
-        PDDocSave (OutDoc, PDSaveFull | PDSaveCollectGarbage, Path, NULL, NULL, NULL);
-        ASFileSysReleasePath (NULL, Path);
-        PDDocRelease (OutDoc);
-        PDDocClose (OutDoc);
+        ASPathName outputPathName = APDFLDoc::makePath (csOutputFileName.c_str ());
+        PDDocSave (outputDoc, PDSaveFull | PDSaveCollectGarbage, outputPathName, 0, 0, 0);
+        ASFileSysReleasePath (NULL, outputPathName);
+        PDDocClose (outputDoc);
 
-        // Free resources for this page
-        DestroyColorList ( vSeparations );
-        delete[] Image;
-        PDPageRelease (Page);
-    }
+    HANDLER
+        APDFLib::displayError ( ERRORCODE );
+        return ERRORCODE;   
+    END_HANDLER
 
-    // Free resources
-    PDERelease ((PDEObject) GState.fillColorSpec.space);
-    PDERelease ((PDEObject) GState.strokeColorSpec.space);
-    PDERelease ((PDEObject) Font);
 
-HANDLER
-    APDFLib::displayError ( ERRORCODE );
-    delete papdflDoc;
-    return ERRORCODE;   
-END_HANDLER
-
-    delete papdflDoc;
     return (0);
 }
 
-// This routine separates a CMYK image into 4 plates, one for each of those four colors.
-// Each image will be an 8 bit single color image, representing the proportion of that color
-// used in each pixel. The image will be at 4 times the resolution of the original image, and will
-// use only one fourth of the pixels. The effect should be identical to a 25% screen image at 45 degrees.
-//
-// A separate mask image will be supplied. It will also be at 4 times the resolution of the 
-// original image, but will be 1 bit per pixel. It will have turned on only those pixels which are 
-// actually present in the color separation, and hence may be used to create a soft masked image, 
-// suitable for display in PDF. This mask has no use in plate making.
-void ProcessSeparation ( ASUns8 *OriginalImage, ASInt32 InWidth, ASInt32 InDepth, SeparationsContainer* sc )
+// This will fill in the information needed to render the given page, in the 
+//  given resolution. The page will always be displayed upright.
+void FillPageInfo (PageInfo *pageInfo, PDPage page)
 {
-    ASInt32     Width = InWidth * 2;
-    ASInt32     Depth = InDepth * 2;
-    ASInt32     RowWidth = ((Width + 7) / 8);
+    // Save the page in the collected information
+    pageInfo->page = page;
 
-    // This routine will produce 4 masks. Each mask will be 4 
-    // times the size of the spot color masks, twice as wide and 
-    // twice as deep. This is so that there can be 4 pixels in each
-    // of the process plates for each pixel in the original plate. 
-    // The effect below is to create a plate for each of the 4 
-    // process colors which is equivalent to a 25% 45 degree screened
-    // print of the original
+    // Obtain the page size, and the matrix needed to draw 
+    // the page from top to bottom
+    ASFixedMatrix pageMatrix;
+    ASFixedRect   pageRect;
+    PDPageGetFlippedMatrix (page, &pageMatrix);
+    PDPageGetCropBox (page, &pageRect);
 
-    // Set up the descriptions of Cyan, Magenta, Yellow, and Black
-    SEPARATION *C = new SEPARATION ( Width, Depth, RowWidth, "Cyan" );
-    C->m_cyan = true;
-    sc->push_back ( C );
+    // Convert the size and matrix from 
+    // ASFixed values to double values
+    double left, right, top, bottom;
+    left = ASFixedToFloat (pageRect.left);
+    right = ASFixedToFloat (pageRect.right);
+    top = ASFixedToFloat (pageRect.top);
+    bottom = ASFixedToFloat (pageRect.bottom);
 
-    SEPARATION *M = new SEPARATION ( Width, Depth, RowWidth, "Magenta" );
-    M->m_magenta = true;
-    sc->push_back ( M );
-
-    SEPARATION *Y = new SEPARATION ( Width, Depth, RowWidth, "Yellow" );
-    Y->m_yellow = true;
-    sc->push_back ( Y );
-
-    SEPARATION *K = new SEPARATION ( Width, Depth, RowWidth, "Black" );
-    K->m_black = true;
-    sc->push_back ( K );
-
-    /* The following diagram is intended to "rotate" the
-     * four pixels in the pattern
-
-    -------------------------------------------------
-    |CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|
-    |YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|
-    |CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|
-    |YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|
-    |CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|
-    |YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|
-    |CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|CM|KY|
-    |YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|YK|MC|
-    -------------------------------------------------
-
+    /* Draw Window is the SIZE of the resultant image. we want it
+    ** always to be based at (0,0), and extend right by width, and up by height
     */
+    pageInfo->drawWindow.left = 0;
+    pageInfo->drawWindow.bottom = 0;
+    pageInfo->drawWindow.top = (ASReal)floor ((ASReal)((top - bottom) * RESOLUTION / 72.0) + 0.5);
+    pageInfo->drawWindow.right = (ASReal)floor ((ASReal)((right - left) * RESOLUTION / 72.0) + 0.5);
 
-    for ( ASInt32 Line = 0; Line < InDepth; Line++ )
+    // If the page has a 90 or 270 degree rotation, 
+    // we need to swap the width and depth
+    ASUns16 rotation = PDPageGetRotate (page);
+    if ((rotation == 90) || (rotation == 270))
     {
-        for ( ASInt32 Row = 0; Row < InWidth; Row++ )
-        {
-            ASUns8    *Color = &OriginalImage[((Line * InWidth) + Row) * 4];
-            ASUns32   ColorOut = ((Line * Width * 2) + (Row * 2));
-            ASUns32   MaskOut = (Line * RowWidth * 2) + ((Row * 2)  / 8);
-
-            // Mark the separation present if it has a non-zero value
-            if (Color[0])
-                C->m_present = true;
-            if (Color[1])
-                M->m_present = true;
-            if (Color[2])
-                Y->m_present = true;
-            if (Color[3])
-                K->m_present = true;
-
-            switch (((Row % 2) + (Line % 2)) % 2)
-            {
-            case 0:
-            {
-                C->m_buffer[ColorOut] = Color[0];
-                M->m_buffer[ColorOut+1] = Color[1];
-                Y->m_buffer[ColorOut+Width] = Color[2];
-                K->m_buffer[ColorOut+Width+1] = Color[3];
-                if (Color[0] != 0)
-                    C->m_mask[MaskOut] |= 1 << (7 - (((Row) % 4) * 2));
-                if (Color[1] != 0)
-                    M->m_mask[MaskOut] |= 1 << (7 - ((((Row) % 4) * 2) + 1));
-                if (Color[2] != 0)
-                    Y->m_mask[MaskOut+RowWidth] |= 1 << (7 - (((Row)% 4) * 2));
-                if (Color[3] != 0)
-                    K->m_mask[MaskOut+RowWidth] |= 1 << (7 - ((((Row) % 4) * 2) + 1));
-                break;
-            }
-            case 1:
-            {
-                K->m_buffer[ColorOut] = Color[3];
-                Y->m_buffer[ColorOut+1] = Color[2];
-                M->m_buffer[ColorOut+Width] = Color[1];
-                C->m_buffer[ColorOut+Width+1] = Color[0];
-                if (Color[3] != 0)
-                    K->m_mask[MaskOut] |= 1 << (7 - (((Row) % 4) * 2));
-                if (Color[2] != 0)
-                    Y->m_mask[MaskOut] |= 1 << (7 - ((((Row) % 4) * 2) + 1));
-                if (Color[1] != 0)
-                    M->m_mask[MaskOut+RowWidth] |= 1 << (7 - (((Row)% 4) * 2));
-                if (Color[0] != 0)
-                    C->m_mask[MaskOut+RowWidth] |= 1 << (7 - ((((Row) % 4) * 2) + 1));
-                break;
-            }
-            }
-        }
+        ASReal save = pageInfo->drawWindow.top;
+        pageInfo->drawWindow.top = pageInfo->drawWindow.right;
+        pageInfo->drawWindow.right = save;
     }
 
-    C->ReleaseBuffersIfAbsent();
-    M->ReleaseBuffersIfAbsent();
-    Y->ReleaseBuffersIfAbsent();
-    K->ReleaseBuffersIfAbsent();
+    // Note above, where we forced top and right to an integer pixel!
+    pageInfo->rows = (ASInt32)pageInfo->drawWindow.top;
+    pageInfo->cols = (ASInt32)pageInfo->drawWindow.right;
+
+    /* drawMatrix is the piece of the page that we want to draw.
+    ** h is set to the left edge of what we want to see (Move right by h, hence
+    ** subtract left edge from h). v is set to the bottom of the area we want
+    ** to see. Hence move up (-) by amount of bottom
+    **
+    ** A, B, C, And D are all increased by the scale factor. They can be any values,
+    ** as set by the page to reflect the pages rotation. The result will always be an "upright"
+    ** image. We draw here from bottom to top, and note in creating the image to be put into
+    ** the page that we are drawing from bottom to top
+    */
+    pageInfo->drawMatrix.a = (ASReal)(RESOLUTION / 72.0 * ASFixedToFloat (pageMatrix.a));
+    pageInfo->drawMatrix.b = (ASReal)(RESOLUTION / 72.0 * ASFixedToFloat (pageMatrix.b));
+    pageInfo->drawMatrix.c = (ASReal)(RESOLUTION / 72.0 * ASFixedToFloat (pageMatrix.c));
+    pageInfo->drawMatrix.d = (ASReal)(RESOLUTION / 72.0 * ASFixedToFloat (pageMatrix.d));
+    pageInfo->drawMatrix.tx = (ASReal)(RESOLUTION / 72.0 * ASFixedToFloat (pageMatrix.h));
+    pageInfo->drawMatrix.ty = (ASReal)(RESOLUTION / 72.0 * ASFixedToFloat (pageMatrix.v));
+
+
+    pageInfo->drawParams.size = sizeof (PDPageDrawMParamsRec);
+    pageInfo->drawParams.asRealMatrix = &pageInfo->drawMatrix;
+    pageInfo->drawParams.asRealDestRect = &pageInfo->drawWindow;
+    pageInfo->drawParams.bpc = 8;
+
+    // If we want to control other effects during rendering, it can be done here. In general though
+    //   only lazyErase is used.
+    pageInfo->drawParams.flags = kPDPageDoLazyErase;
+
+    // When doing separations, we NEVER want Anti-Aliasing!
+    pageInfo->drawParams.smoothFlags = 0;
+
+    // Reposition the text to near the top of the page
+    pageInfo->textMatrix.v = pageInfo->drawWindow.top - 72.0;
 
     return;
 }
 
-// This routine will create separation plates for spot colors. Each plate will be a 1 bit per pixel
-// bitmap in the original image resolution. A true bit indicates that the spot color is present,
-// a false bit indicates it is not present.
-//
-// As each color is imaged on a separate plate, it is removed from the original CMYK image. If there
-// are no colors left in the CMYK image when the spot color is removed, the program will not create
-// process color plates. If there are colors remaining, the program will create process color plates.
-void CreateSeparation ( ASUns8 *OriginalImage, ASInt32 Width, ASInt32 Depth, SeparationsContainer* sc )
-{
-    ASUns32 *InputImage = (ASUns32*) OriginalImage;
+// Draw the page to CMYK, and insert into the destination document.
+void WriteCMYKImage (PageInfo *pageInfo, PDDoc outputDoc)
+{ 
+    // First, draw the image to a buffer using PDDrawContentsToMemoryWithParams
+    // All of the params relevant to positioning and scaling the page are already set. 
+    // Here, we need to set color space to CMYK
+    pageInfo->drawParams.csAtom = ASAtomFromString ("DeviceCMYK");
+    
+    // If a buffer already exists, free it, and null the pointer
+    if (pageInfo->drawParams.buffer != NULL)
+        ASfree (pageInfo->drawParams.buffer);
+    pageInfo->drawParams.buffer = NULL;
 
-    for ( ASUns32 CurrentColor = 0; CurrentColor < sc->size(); CurrentColor++ )
-    {
-        SEPARATION *Sep = (*sc)[CurrentColor];
+    // Call PDPageDrawContentsToMemoryWithParams with a null pointer to the buffer, 
+    // in order to find the required buffer size
+    pageInfo->drawParams.bufferSize = PDPageDrawContentsToMemoryWithParams (pageInfo->page, &pageInfo->drawParams);
 
-        // Allocate a two tone bitmap to contain this color 
-        // Even number of bytes per row
-        ASUns32* Color = &Sep->m_cmyk;
-        ASInt32 RowWidth = (Width + 7) / 8;
-        Sep->ReallocBuffer ( Width, Depth, RowWidth );
+    // Allocate a buffer of that size
+    pageInfo->drawParams.buffer = (char *)ASmalloc (pageInfo->drawParams.bufferSize);
 
-        ASInt32 Row, Line;
-        // Scan the image looking for Color. When we find one, turn on the corresponding bit in the 
-        // separation bitmap.
-        for (Line = 0; Line < Depth; Line++)
-        {
-            for (Row = 0; Row < Width; Row++)
-            {
-            ASUns32 *Pixel = &InputImage[(Line * Width) + Row];
-            if (Color[0] == Pixel[0])
-                {
-                    Sep->m_buffer[(Line * RowWidth) + (Row / 8)] |= (1 << (7 - (Row % 8)));
-                    Sep->m_present = true;
-                    Pixel[0] = 0;
-                }
-            }
-        }
-        if (!Sep->m_present)
-        {
-            Sep->ReleaseBuffer();
-        }
-    }
+    // Actually draw the page into the buffer.
+    pageInfo->drawParams.bufferSize = PDPageDrawContentsToMemoryWithParams (pageInfo->page, &pageInfo->drawParams);
 
-    // Test if any color remains that was not separated
-    ASBool UnSeparatedColor = false;
-    for ( ASInt32 Line = 0; ( Line < Depth ) && !UnSeparatedColor ; Line++ )
-    {
-        for ( ASInt32 Row = 0; Row < Width; Row++ )
-        {
-            ASUns32 *Pixel = &InputImage[(Line * Width) + Row];
-            if (Pixel[0] != 0)
-            {
-                UnSeparatedColor = true;
-                break;
-            }
-        }
-    }
+    // APDFL will pad each row to an even 32 bit boundary. For this reason, row width may not be equal to 
+    // pixels wide * channels. However, for CMYK, each pixel is 32 bits, so they are always the same
+    pageInfo->rowWidth = pageInfo->cols * 4;
 
-    if (UnSeparatedColor)
-    {
-        ProcessSeparation (OriginalImage, Width, Depth, sc );
-    }
-    return;
-}
+    // This color space is easy, it is just CMYK
+    PDEColorSpace cmyk = PDEColorSpaceCreateFromName (ASAtomFromString ("DeviceCMYK"));
 
-// This routine will create a separation object for one given ink. 
-// It will ignore process colors.
-ASBool EnumerateInks (PDPageInk ink, void *clientData)
-{
-    /* Do not create separations for process colors */
-    if (ink->isProcessColor)
-    {
-        return (true);
-    }
+    // Add the image to the output document
+    AddImageToDoc (pageInfo, outputDoc, cmyk, pageInfo->drawParams.buffer, pageInfo->drawParams.bufferSize, 4, "CMYK");
 
-    SeparationsContainer* sc = (SeparationsContainer*)clientData; 
-
-    SEPARATION *s = new SEPARATION;
-
-    s->m_name = ink->colorantName;
-    s->AddCMYK ( ink->cyan, ink->magenta, ink->yellow, ink->black );
-
-    sc->push_back ( s );
-
-    return (true);
-}
-
-// This routine will create a list of separations for the spot colors defined on
-// a given page. Note that it lists the colors defined. They may or may not be used
-// on any given page.
-void CreateColorList (PDPage Page, SeparationsContainer* sc )
-{
-    PDPageEnumInks (Page, EnumerateInks, (void *)sc, true);
-}
-
-// This routine will create a CMYK bitmap for the specified page.
-// Note that resolution given is defined at the start of this program.
-ASUns8 *CreateCMYKBitmap (PDPage Page, double Resolution, ASInt32 *Width, ASInt32 *Depth)
-{
-    ASInt32        ImageSize;
-    ASUns8        *Image;
-    ASFixedMatrix  Matrix, ScaleMatrix;
-    ASFixedRect    PageSize;
-    ASAtom         ColorSpace = ASAtomFromString ("DeviceCMYK");
-
-    PDPageGetFlippedMatrix(Page, &Matrix);
-    PDPageGetMediaBox (Page, &PageSize);
-    Matrix.v += PageSize.bottom;
-    Matrix.h += PageSize.left;
-
-    ScaleMatrix.a = ScaleMatrix.d = FloatToASFixed (Resolution / 72.0);
-    ScaleMatrix.b = ScaleMatrix.c = ScaleMatrix.h = ScaleMatrix.v = 0;
-    ASFixedMatrixConcat (&Matrix, &ScaleMatrix, &Matrix);
-    ASFixedMatrixTransformRect (&PageSize, &Matrix, &PageSize);
-
-    ImageSize = PDPageDrawContentsToMemory (Page, kPDPageDoLazyErase, &Matrix, NULL, 
-                        0, ColorSpace, 8, &PageSize, NULL, 0, NULL, NULL);
-
-    Image = new ASUns8[ImageSize];
-    ImageSize = PDPageDrawContentsToMemory (Page, kPDPageDoLazyErase, &Matrix, NULL, 
-                        0, ColorSpace, 8, &PageSize, (char *) Image, ImageSize, NULL, NULL);
-    *Width = ASFixedRoundToInt32 (PageSize.right - PageSize.left);
-    *Depth = ASFixedRoundToInt32 (PageSize.top - PageSize.bottom);
-
-    return (Image);
-
-}
-
-// This routine is present simply to verify results. A consumer of bitmaps would not
-// need it. It creates a soft masked PDF Image for each plate.
-void CreateMaskedImage (SEPARATION *Sep)
-{
-    PDEImageAttrs         ImageAttrs;
-    PDEFilterArray        FilterArray;
-    PDEImage              SepImage, MaskImage;
-    PDEIndexedColorData   IColorDef;
-    PDEColorSpaceStruct   ColorDef;
-    PDEColorSpace         ColorSpace, GreySpace;
-    ASFixedMatrix         ImageMatrix;
-    ASUns8                ProcessColor[256 * 4];
-
-    memset(&FilterArray, 0, sizeof(FilterArray));
-    FilterArray.numFilters = 1;
-    FilterArray.spec[0].name = ASAtomFromString("FlateDecode");
-
-    if (!Sep->m_process_color)
-    {
-        ImageMatrix.a = Sep->m_width * fixedOne;
-        ImageMatrix.d = Sep->m_depth * fixedOne;
-        ImageMatrix.b = ImageMatrix.c = 0;
-        ImageMatrix.h = fixedOne * 36;
-        ImageMatrix.v = fixedOne * 36;
-
-        memset(&ImageAttrs, 0, sizeof(ImageAttrs));
-        ImageAttrs.flags = kPDEImageExternal;
-        ImageAttrs.height = Sep->m_depth;
-        ImageAttrs.width = Sep->m_width;
-        ImageAttrs.bitsPerComponent = 1;
-
-        memset ((char *)&IColorDef, 0, sizeof (PDEIndexedColorData));
-        IColorDef.size =sizeof (PDEIndexedColorData);
-        IColorDef.baseCs = PDEColorSpaceCreateFromName(ASAtomFromString ("DeviceCMYK"));
-        IColorDef.hival = 1;
-
-        memset (&ProcessColor[0], 0, 245 * 4);
-        ProcessColor[0] = ProcessColor[1] = ProcessColor[2] = ProcessColor[3] = 0;
-        ProcessColor[4] = Sep->m_cmyk >> 0;
-        ProcessColor[5] = Sep->m_cmyk >> 8;
-        ProcessColor[6] = Sep->m_cmyk >> 16;
-        ProcessColor[7] = Sep->m_cmyk >> 24;
-        IColorDef.lookup = (char *) ProcessColor;
-        IColorDef.lookupLen = 8;
-
-        ColorDef.indexed = &IColorDef;
-        ColorSpace = PDEColorSpaceCreate(ASAtomFromString ("Indexed"), &ColorDef);
-    }
-    else
-    {
-        ASUns32 Count;
-
-        ImageMatrix.a = Sep->m_width * fixedOne / 2;
-        ImageMatrix.d = Sep->m_depth * fixedOne / 2;
-        ImageMatrix.b = ImageMatrix.c = 0;
-        ImageMatrix.h = 36 * fixedOne;
-        ImageMatrix.v = 36 * fixedOne;
-
-        memset(&ImageAttrs, 0, sizeof(ImageAttrs));
-        ImageAttrs.flags = kPDEImageExternal;
-        ImageAttrs.height = Sep->m_depth;
-        ImageAttrs.width = Sep->m_width;
-        ImageAttrs.bitsPerComponent = 8;
-
-        memset ((char *)&IColorDef, 0, sizeof (PDEIndexedColorData));
-        IColorDef.size =sizeof (PDEIndexedColorData);
-        IColorDef.baseCs = PDEColorSpaceCreateFromName(ASAtomFromString ("DeviceCMYK"));
-        IColorDef.hival = 255;
-        IColorDef.lookup = (char *) ProcessColor;
-        IColorDef.lookupLen = 256 * 4;
-
-        memset (&ProcessColor[0], 0, 245 * 4);
-        for (Count = 0; Count < 256; Count++)
-        {
-            ASUns8    *C = &ProcessColor[Count * 4];
-            
-            if (Sep->m_cyan)
-                C[0] = Count;
-            else
-                C[0] = 0;
-
-            if (Sep->m_magenta)
-                C[1] = Count;
-            else
-                C[1] = 0;
-
-            if (Sep->m_yellow)
-                C[2] = Count;
-            else
-                C[2] = 0;
-
-            if (Sep->m_black)
-                C[3] = Count;
-            else
-                C[3] = 0;
-        }
-        ColorDef.indexed = &IColorDef;
-        ColorSpace = PDEColorSpaceCreate(ASAtomFromString ("Indexed"), &ColorDef);
-    }
-    SepImage = PDEImageCreate (&ImageAttrs, sizeof(ImageAttrs), &ImageMatrix, 0,
-                ColorSpace, NULL, &FilterArray, 0, Sep->m_buffer, 
-                Sep->m_size);
-
-    GreySpace = PDEColorSpaceCreateFromName(ASAtomFromString ("DeviceGray"));
-    ImageAttrs.bitsPerComponent = 1;
-    if (Sep->m_process_color)
-        MaskImage = PDEImageCreate (&ImageAttrs, sizeof(ImageAttrs), &ImageMatrix, 0,
-                    GreySpace, NULL, &FilterArray, 0, Sep->m_mask, Sep->m_mask_size);
-    else
-        MaskImage = PDEImageCreate (&ImageAttrs, sizeof(ImageAttrs), &ImageMatrix, 0,
-                    GreySpace, NULL, &FilterArray, 0, Sep->m_buffer, Sep->m_size);
-    PDEImageSetSMask(SepImage, MaskImage);
-    Sep->m_masked_image = SepImage;
-
-    PDERelease ((PDEObject) MaskImage);
-    PDERelease ((PDEObject) IColorDef.baseCs);
-    PDERelease ((PDEObject) ColorSpace);
-    PDERelease ((PDEObject) GreySpace);
+    // Release the color space
+    PDERelease ((PDEObject)cmyk);
 
     return;
 }
 
-void VerifyValidate ( std::string& ifname, std::string& ofroot, const char* input, const char* output )
+// Create the separations as a DeviceN bitmap
+void WriteDeviceNImage (PageInfo *pageInfo, PDDoc outputDoc)
 {
+    // First, draw the image to a buffer using PDDrawContentsToMemoryWithParams
+    // All of the params relevant to positioning and scaling the page are already set. 
+    // Here, we need to set color space to CMYK
+    pageInfo->drawParams.csAtom = ASAtomFromString ("DeviceN");
 
-    ifname = input;
-    ofroot = output;
-    // If output file name already ends in ".pdf" remove the extension.
-    std::size_t slen = ofroot.length();
-    if ( ( slen > 4 ) && ( 0 == ofroot.compare ( slen - 4, 4, ".pdf" ) ) )
-    {
-        ofroot.erase ( slen - 4 );
-    }
+    // If a buffer already exists, free it, and null the pointer
+    if (pageInfo->drawParams.buffer != NULL)
+        ASfree (pageInfo->drawParams.buffer);
+    pageInfo->drawParams.buffer = NULL;
+
+    // reset numberofColorants to force generation of color list
+    pageInfo->numberOfColorants = 0;
+
+    // Set up for color list
+    // The easiest way to do this is to NOT provide a colorant list, 
+    // but instead, allow PDPageDrawContentsToMemory to construct the
+    // colorant list. Provide a block of memory large enough to hold
+    // 32 colorants (No more than 31 will ever be used).
+    //
+    // CAUTION: APDFL will not support more than 27 spot colors in any DeviceN rendering!
+    // If your page contains more spot colorants than this, you will need to create and populate
+    // the DeviceNColorInks array within your application, and render multiple times, to obtain
+    // separations for all colorants. 
+    // The first 4 inks should always the Cyan, Magenta, Yelow, and Black, in that order.
+    pageInfo->drawParams.deviceNColorSize = 32;
+    pageInfo->drawParams.deviceNColorCount = &pageInfo->numberOfColorants;
+    if (!pageInfo->drawParams.deviceNColorInks)
+        pageInfo->drawParams.deviceNColorInks = (PDPageInk)ASmalloc (pageInfo->drawParams.deviceNColorSize * sizeof (PDPageInkRec));
+
+    // Call PDPageDrawContentsToMemoryWithParams with zeros for the ink information. 
+    // This will cause ink information for all inks to be added
+    PDPageDrawContentsToMemoryWithParams (pageInfo->page, &pageInfo->drawParams);
+
+    // Call PDPageDrawContentsToMemoryWithParams with a null pointer to the buffer, 
+    // in order to find the required buffer size
+    pageInfo->drawParams.bufferSize = PDPageDrawContentsToMemoryWithParams (pageInfo->page, &pageInfo->drawParams);
+
+    // Allocate a buffer of that size
+    pageInfo->drawParams.buffer = (char *)ASmalloc (pageInfo->drawParams.bufferSize);
+
+    // Actually draw the page into the buffer.
+    pageInfo->drawParams.bufferSize = PDPageDrawContentsToMemoryWithParams (pageInfo->page, &pageInfo->drawParams);
+
+    // APDFL will pad each row to an even 32 bit boundary. For this reason, row width may not be equal to 
+    // pixels wide * channels. Calculate the actual width of a row here
+    pageInfo->rowWidth = (((pageInfo->cols * pageInfo->numberOfColorants * 8) + 31) / 32) * 4;
+
+    // NOTE: We do not here render the DeviceN bitmap to an image. The construction of the DeviceN color space needed to do so 
+    // is quite complex, and for prepartion of printing plates, this is not needed!. If you do wish to directly render this 
+    // bitmap, in "true colors", see the example "OutputPreview" which contains a sample for creating such color spaces.
+
+    return;
 }
 
-void DestroyColorList ( SeparationsContainer& sc )
+// Separate out one colorant from a DeviceN bitmap into a single plate.
+void WriteSeparationImage (PageInfo *pageInfo, PDDoc outputDoc, int separationNumber)
 {
-    SeparationsContainer::iterator it, itE = sc.end();
-    for ( it = sc.begin(); it != itE; ++it )
-    {
-        delete *it;
-    }
-    sc.clear();
+    /* Allocate a buffer to hold the separation image only */
+    char *buffer = (char *)ASmalloc (pageInfo->cols * pageInfo->rows);
+
+    // Separate out just one colorant
+    for (int row = 0; row < pageInfo->rows; row++)
+        for (int col = 0; col < pageInfo->cols; col++)
+            buffer[(row * pageInfo->cols) + col] = pageInfo->drawParams.buffer[(row * pageInfo->rowWidth) + (col * pageInfo->numberOfColorants) + separationNumber];
+
+    // Display the colorant name in the page 
+    char *colorantName = (char *)ASAtomGetString (pageInfo->drawParams.deviceNColorInks[separationNumber].colorantName);
+
+    // Normally, we would create plates for printing by using DeviceGray to render the plate. 
+    PDEColorSpace gray = PDEColorSpaceCreateFromName (ASAtomFromString ("DeviceGray"));
+    AddImageToDoc (pageInfo, outputDoc, gray, buffer, (pageInfo->cols * pageInfo->rows), 1, colorantName, true);
+    PDERelease ((PDEObject)gray);
+    ASfree (buffer);
+
 }
+
+// Add a bitmap to the output document, as a single page, the size of the image, in that document.
+void AddImageToDoc (PageInfo *pageInfo, PDDoc outputDoc, PDEColorSpace space, char *buffer, size_t bufferSize, ASInt16 channels, char *Name, ASBool invertColor)
+{
+    // If the image row size is greater than the packed row size, 
+    // pack the image here. 
+    // Since it will always be smaller than the original image, we can pack it in place 
+    size_t packedRow = pageInfo->cols * channels;
+
+    if ((channels > 1) && (packedRow != pageInfo->rowWidth))
+    {
+        for (int row = 1; row < pageInfo->rows; row++)
+            memmove ((char *)&buffer[row * packedRow], (char *)&buffer[row * pageInfo->rowWidth], packedRow);
+
+        //Update image and row width to reflect packing
+        bufferSize = packedRow * pageInfo->cols;
+        if (buffer == pageInfo->drawParams.buffer)
+            pageInfo->drawParams.bufferSize = bufferSize;
+        pageInfo->rowWidth = packedRow;
+    }
+
+    // Convert the bitmap to a PDEImage
+    PDEImageAttrs attrs;
+    memset (&attrs, 0, sizeof (attrs));
+    attrs.flags = kPDEImageExternal;        // Make an XObject image
+    attrs.height = pageInfo->rows;          // Image depth in pixels
+    attrs.width = pageInfo->cols;           // Image width in pixels
+    attrs.bitsPerComponent = 8;             // Bits per channel
+
+    // Normally, separation colors are additive, so "0" is white, and "1" is 
+    //   100% saturation of the colorant. However, when we display a separation
+    //   using DeviceGray, we need to invert this, since DeviceGray is subtractive
+    //   We do this here, by manipulating the color decode array
+    if (invertColor)
+    {
+        attrs.decode[0] = fixedOne;
+        attrs.decode[1] = 0;
+        attrs.flags |= kPDEImageHaveDecode;
+    }
+
+
+    // If the image is for use internal to this process, we may want to avoid compressing it
+    // If it is for use in a document, then we probably should compress.
+    // If we do not compress, we can omit this block, and use "NULL" for the
+    // pointer to a filter, below
+    PDEFilterArray filterArray;
+    memset (&filterArray, 0, sizeof (filterArray));
+    filterArray.numFilters = 1;
+    filterArray.spec[0].name = ASAtomFromString ("FlateDecode");
+
+    // This matrix is internal to the image. Not neccesarily 
+    // to its placement. As written here, it places the images
+    // lower left corner at (0, 0), draws the image erect, and
+    // scales it at 1 pixel per point.
+    ASFixedMatrix imageMatrix;
+    imageMatrix.a = ASInt16ToFixed (attrs.width);
+    imageMatrix.d = ASInt16ToFixed (attrs.height);
+    imageMatrix.b = imageMatrix.c = 0;
+    imageMatrix.h = 0;
+    imageMatrix.v = 0;
+
+    // Create the image
+    PDEImage image = PDEImageCreate (&attrs, sizeof (attrs),
+        &imageMatrix, 0, space, NULL, &filterArray, 0,
+        (ASUns8 *)buffer, bufferSize);
+
+    // Create a page to hold the image
+    // The page will be precisely the size of the image.
+    ASFixedRect pageWindow;
+    pageWindow.left = FloatToASFixed (pageInfo->drawWindow.left);
+    pageWindow.right = FloatToASFixed (pageInfo->drawWindow.right);
+    pageWindow.top = FloatToASFixed (pageInfo->drawWindow.top);
+    pageWindow.bottom = FloatToASFixed (pageInfo->drawWindow.bottom);
+    PDPage outputPage = PDDocCreatePage (outputDoc, PDDocGetNumPages (outputDoc) - 1, pageWindow);
+
+    // Get the pages content
+    PDEContent content = PDPageAcquirePDEContent (outputPage, 0);
+
+    // Add the image to it
+    PDEContentAddElem (content, 0, (PDEElement)image);
+
+    // Release the image 
+    PDERelease ((PDEObject)image);
+
+    /* Create the line of text to ID the page */
+    PDEText text = PDETextCreate ();
+    PDETextAddEx (text, kPDETextRun, 0, (ASUns8 *)Name, strlen (Name), pageInfo->textFont,
+        &pageInfo->textGState, sizeof (PDEGraphicState),
+        &pageInfo->textTState, sizeof (PDETextState), &pageInfo->textMatrix, NULL);
+
+    //Add it to the page, over the image
+    PDEContentAddElem (content, 1, (PDEElement)text);
+
+    // Release the text
+    PDERelease ((PDEObject)text);
+
+    // Set the content in the page
+    PDPageSetPDEContent (outputPage, 0);
+
+    // Release the page content
+    PDPageReleasePDEContent (outputPage, 0);
+
+    // release the page
+    PDPageRelease (outputPage);
+
+    return;
+}
+

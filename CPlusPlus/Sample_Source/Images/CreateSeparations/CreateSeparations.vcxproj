@@ -105,7 +105,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)\CreateSeparations.exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\Binaries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)CreateSeparations.pdb</ProgramDatabaseFile>
@@ -132,7 +132,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)\CreateSeparations.exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\Binaries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)CreateSeparations.pdb</ProgramDatabaseFile>
@@ -155,7 +155,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)\CreateSeparations.exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\Binaries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -181,7 +181,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)\CreateSeparations.exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\Binaries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
