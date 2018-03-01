@@ -4,7 +4,7 @@
 //
 // This sample allows a user to send a PDF document to a printer, using a Windows print interface. 
 //
-// For more detail see the description of the PDFPrintGUI sample program on our Developer’s site, 
+// For more detail see the description of the PDFPrintGUI sample program on our Developerâ€™s site, 
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#pdfprintgui
 
 /* Printing Support */
@@ -200,5 +200,5 @@ int main (int argc, char **argv)
         lib.displayError(errCode);                    // If there was an error, display it
     END_HANDLER
 
-        return errCode;                                   // APDFLib's destructor terminates the APDFL
+    return errCode;                                   // APDFLib's destructor terminates the APDFL
 };
