@@ -4,7 +4,7 @@
 //
 // This sample allows a user to send a PDF document to a printer, using a Windows print interface. 
 //
-// For more detail see the description of the PDFPrintGUI sample program on our Developerâ€™s site, 
+// For more detail see the description of the PDFPrintGUI sample program on our Developer’s site, 
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#pdfprintgui
 
 /* Printing Support */
@@ -95,6 +95,9 @@ int main (int argc, char **argv)
         if (!accepted)
         {
             std::wcout << L"Print Canceled by user" <<std::endl;
+            DisposePDPrintParams(&psParams);
+            DisposePDFLPrintUserParams(&userParams);
+            PDDocClose(inDoc);
             return (-1);
         }
 
@@ -170,8 +173,15 @@ int main (int argc, char **argv)
             }
             else
             {
-                std::wcout << L"Sending to the printer." << userParams.deviceNameW << std::endl;
+                std::wcout << L"Sending to the printer." << std::endl;
             }
+        }
+        else{
+            std::wcout << L"Print Canceled by user" <<std::endl;
+            DisposePDPrintParams(&psParams);
+            DisposePDFLPrintUserParams(&userParams);
+            PDDocClose(inDoc);
+            return (-1);
         }
 #endif
         //=====================================================================================================================
@@ -200,5 +210,5 @@ int main (int argc, char **argv)
         lib.displayError(errCode);                    // If there was an error, display it
     END_HANDLER
 
-    return errCode;                                   // APDFLib's destructor terminates the APDFL
+        return errCode;                                   // APDFLib's destructor terminates the APDFL
 };

@@ -30,7 +30,10 @@ namespace ColorConvertDocument
         {
             Console.WriteLine("ColorConvertDocument Sample:");
 
-            using (Library lib = new Library())
+            List<string> paths = new List<string>();
+            paths.Add("../../Resources/Fonts/");
+
+            using (Library lib = new Library(paths, "../../Resources/CMap/", "../../Resources/Unicode/", "../../Resources/Color", LibraryFlags.DisableMemorySuballocator))
             {
                 Console.WriteLine("Initialized the library.");
 
