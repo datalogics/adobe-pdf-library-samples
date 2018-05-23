@@ -1,10 +1,11 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.DocumentConversion.ColorConvertDocument;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import com.datalogics.PDFL.Document;
 import com.datalogics.PDFL.Library;
+import com.datalogics.PDFL.LibraryFlags;
 import com.datalogics.PDFL.SaveFlags;
 import com.datalogics.PDFL.ColorConvertActions;
 import com.datalogics.PDFL.ColorConvertObjAttrs;
@@ -43,10 +44,14 @@ public class ColorConvertDocument {
         public static void main(String[] args) throws Throwable {
         System.out.println("ColorConvertDocument sample:");
 
-        Library lib = new Library();
+        String resourceDirectory = Library.getResourceDirectory();
+        List<String> fontPaths = new ArrayList<String>();
+        fontPaths.add(resourceDirectory + "Fonts");
+
+        Library lib = new Library(fontPaths, resourceDirectory + "CMap", resourceDirectory + "Unicode", resourceDirectory + "Color", EnumSet.of(LibraryFlags.DISABLE_MEMORY_SUBALLOCATOR));
         
         try {
-            String sInput = "../../Resources/Sample_Input/ducky.pdf";
+            String sInput = resourceDirectory + "Sample_Input/ducky.pdf";
             String sOutput = "ColorConvertDocument-out.pdf";
             if (args.length > 0)
                 sInput = args[0];
