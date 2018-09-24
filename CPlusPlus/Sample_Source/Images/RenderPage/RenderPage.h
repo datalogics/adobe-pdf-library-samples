@@ -21,22 +21,16 @@
 #include "PagePDECntCalls.h"
 #include "PDFLExpT.h"
 #include "PDFLCalls.h"
+#include "DLExtrasCalls.h"
 
 
 class RenderPage 
 {
 private:
     PDPage              pdPage;
-    PDEImage            image; 
     PDEImageAttrs       attrs;
     PDEColorSpace       cs;
     PDEFilterArray      filterArray;
-    ASFixedMatrix       matrix;
-    ASFixedMatrix       scaleMatrix;
-    ASFixedMatrix       imageMatrix; 
-    ASFixedRect         destRect;
-    ASFixedRect         scaledDestRect;
-    ASFixedRect         pageRect;
     ASAtom              csAtom;
     ASInt32             nComps;
     ASInt32             bufferSize;
@@ -44,29 +38,23 @@ private:
     char*               buffer; 
     char*               colorSpace;
     char*               filterName;
-    float               resolution;
 
-    PDEImageAttrs       SetImageAttrs(ASFixedRect scaledDestRect, ASInt32 bpc);
-    PDEFilterArray      SetFilter(const char *filterName);
-    ASFixedMatrix       SetImageMatrix(PDEImageAttrs attrs, float resolution);
-    ASFixedMatrix       SetScaleMatrix(float resolution);
-    ASFixedRect         SetPageRect(ASFixedRect	destRect);
+    ASFixedRect         imageSize;      // This will carry the image size in PDF units.
+
+    PDEFilterArray      SetDCTFilterParams(CosDoc cosDoc);
     ASAtom              SetColorSpace(const char *colorSpace);
     ASInt32             SetBPC(ASInt32 bitsPerComp); 
-    ASInt32             PadCompute(PDEImageAttrs attrs, ASInt32 bpc, ASInt32 nComps, char *buffer, ASInt32 bufferSize);	 
-    ASInt32             SetBufferSize(PDPage pdPage, ASFixedMatrix &matrix, ASAtom csAtom, ASInt32 bpc, ASFixedRect scaledDestRect);
-    float               SetResolution(float resolution);
 
     static ASAtom       sDeviceRGB_K;
     static ASAtom       sDeviceCMYK_K;
     static ASAtom       sDeviceGray_K;
 
 public:
-    RenderPage(PDPage &pdPage, const char *colorSpace, const char *filterName, ASInt32 bpc, float resolution);
+    RenderPage(PDPage &pdPage, const char *colorSpace, const char *filterName, ASInt32 bpc, double resolution);
     ~RenderPage();
 
     char*               GetImageBuffer();
     ASInt32             GetImageBufferSize();
-    PDEImage            MakePDEImage();
-    ASFixedRect         GetImageRect();
+    PDEImage            GetPDEImage(PDDoc outDoc);
+    ASFixedRect         GetImageSize();
 };

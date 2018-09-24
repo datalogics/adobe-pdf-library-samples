@@ -19,10 +19,11 @@
 #include "PagePDECntCalls.h"
 #include "PEWCalls.h"
 #include "PERCalls.h"
+#include "PSFCalls.h"
 #include <vector>
 
 #define DIR_LOC "../../../../Resources/Sample_Input/"
-#define DEF_INPUT "TextSearch.pdf"
+#define DEF_INPUT "TextSelectEnum.pdf"
 #define DEF_OUTPUT "TextSelectEnum-out.pdf"
 
 // A structure to hold the information returned by text select enum
@@ -80,7 +81,7 @@ DURING
     PDPage page = PDDocAcquirePage (document.getPDDoc (), 0);
     ASFixedRect pageSize;
     PDPageGetCropBox (page, &pageSize);
-    PDTextSelect selection = PDDocCreateTextSelect (document.getPDDoc (), 0, &pageSize);
+    PDTextSelect selection = PDDocCreateTextSelectUCS (document.getPDDoc (), 0, &pageSize);
 
     // Step 2) Acquire a list of all selected word in UCS format
     wordList words;
@@ -92,20 +93,46 @@ DURING
     PDPageRelease (page);
 
 
-    // Step 4) Create an output document, and write each run to one line of that document.
+    // Step 4) Create an output document, and write each run to one line of that document,
+    // using the same size and color as the original font, but using a single unicode based 
+    // font. The general case of converting a PDFont to a writable PDEFont is very complex, 
+    // and not a suitable subject for this example.
+    //
+    // This sample will use Arial Unicode MS. It is available on all windows platforms. If used
+    // outside of windows, this should be replaced with an appropriate "wide" unicode font. 
+    // (For example Code2000, or Bitstream Cyberbit).
     PDDoc outDoc = PDDocCreate ();
+    CosDoc cosDoc = PDDocGetCosDoc (outDoc);
+
+    // Create a font to use to display the text
+    PDEFontAttrs fontAttrs;
+    memset (&fontAttrs, 0, sizeof (fontAttrs));
+    fontAttrs.name = ASAtomFromString ("ArialUnicodeMS");
+    fontAttrs.type = ASAtomFromString ("Type0");
+
+    PDSysFont sysFont = PDFindSysFont (&fontAttrs, sizeof (PDEFontAttrs), 0);
+    PDSysEncoding  sysEnc = PDSysEncodingCreateFromCMapName (ASAtomFromString ("Identity-H"));
+    PDEFont pdeFont = PDEFontCreateFromSysFontAndEncodingInCosDoc (sysFont, sysEnc, fontAttrs.name, kPDEFontCreateEmbedded | kPDEFontWillSubset | kPDEFontCreateToUnicode, cosDoc);
+    PDERelease ((PDEObject)sysEnc);
+
+    // Create a page to contain the text
     ASFixedRect newPageSize = { 0, FloatToASFixed (11.0 * 72), FloatToASFixed (8.5 * 72.0), 0 };
     ASFixed indents = FloatToASFixed (72.0);
     page = PDDocCreatePage (outDoc, PDDocGetNumPages (outDoc)-1, newPageSize);
     PDEContent content = PDPageAcquirePDEContent (page, 0);
     ASFixed Baseline = newPageSize.top - indents;
 
+    // For each word
     for (int i = 0; i < words.size (); i++)
     {
+        // Obtain the word
         EnumeratedRun run = words[i];
 
+        // Locate it vertically on the page
         Baseline -= run.size;
 
+        // If we are off the bottom of the page, 
+        // finish this page, and begin a new one
         if (Baseline < indents)
         {
             // If we go off the bottom of the page, 
@@ -119,11 +146,9 @@ DURING
             content = PDPageAcquirePDEContent (page, 0);
         }
 
+        // Create a PDEText to contain the line
         ASFixedMatrix matrix = { run.size, 0, 0, run.size, indents, Baseline };
-
         PDEText text = PDETextCreate ();
-        CosObj cosFont = PDFontGetCosObj (run.font);
-        PDEFont pdeFont = PDEFontCreateFromCosObj (&cosFont);
 
         // Create the graphic state to display the text
         PDEGraphicState gState;
@@ -156,14 +181,16 @@ DURING
         PDETextState tState;
         memset ((char *)&tState, 0, sizeof (PDETextState));
 
+        // Add the actual text to the PDEText object
         PDETextAddASText (text, kPDETextRun, kPDEAfterLast, run.text,
                             pdeFont, &gState, sizeof (PDEGraphicState),
                             &tState, sizeof (PDETextState), &matrix);
 
+        // Add the PDEText Object to the page contents
         PDEContentAddElem (content, PDEContentGetNumElems(content), (PDEElement)text);
 
+        // Release resources used in building this line.
         PDERelease ((PDEObject)text);
-        PDERelease ((PDEObject)pdeFont);
         PDERelease ((PDEObject)gState.fillColorSpec.space);
         PDERelease ((PDEObject)gState.strokeColorSpec.space);
     }
@@ -172,6 +199,11 @@ DURING
     PDPageSetPDEContent (page, 0);
     PDPageReleasePDEContent (page, 0);
     PDPageRelease (page);
+
+    // Subset and embed the font
+    // and release it
+    PDEFontSubsetNow (pdeFont, cosDoc);
+    PDERelease ((PDEObject)pdeFont);
 
     // Save the document 
     ASPathName outPath = APDFLDoc::makePath (csOutputFileName.c_str ());
