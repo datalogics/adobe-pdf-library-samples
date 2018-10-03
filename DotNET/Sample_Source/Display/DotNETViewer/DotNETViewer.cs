@@ -35,8 +35,17 @@ namespace DotNETViewer
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
 
-                if (!Library.EnableLicensedBehavior("Gqmeu6ollrqna8Pub5NmKYUwXmyH0IunziAwxui2fXc="))
-                    throw new ApplicationException("Licensed behavior failure");
+                /* You may find that you receive exceptions when you attempt to open
+                 * PDF files that contain permissions restrictions on content or image
+                 * extraction.  This is due to the APIs used for viewing: these can
+                 * also be used in other contexts for content extraction or enabling
+                 * save-as-image capabilities. If you are making a PDF file viewer and
+                 * you encounter this situation, please contact your support
+                 * representative or support@datalogics.com to request a key to enable
+                 * bypassing this restriction check.
+                 */
+                //if (!Library.EnableLicensedBehavior("xxxxxxxxxxxxxxxxxxxxx="))
+                //    throw new ApplicationException("Licensed behavior failure");
 
                 Application.Run(new Form1());
             }
