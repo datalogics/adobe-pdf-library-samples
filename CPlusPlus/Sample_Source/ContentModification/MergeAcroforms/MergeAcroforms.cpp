@@ -237,6 +237,7 @@ DURING
     PDPageSetPDEContent (OutPage, 0);
     PDPageReleasePDEContent (OutPage, 0);
     PDERelease ((PDEObject)RGBColor);
+    PDERelease ((PDEObject)PageImage);
 HANDLER
     free (BitMap);
     ASRaise (ERRORCODE);

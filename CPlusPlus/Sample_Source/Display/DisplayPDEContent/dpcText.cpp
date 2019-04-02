@@ -105,7 +105,7 @@ void DisplayTextRun ( PDEText Text, ASUns32 Run )
     UCSText = (ASUns8 *)ASmalloc(UCSBytes + 2);
     UCSBytes = PDFontXlateToUCS (TranslationFont, TextContent, NumBytes, UCSText, UCSBytes+2);
 
-    ASText displayText = ASTextFromSizedUnicode ( (ASUTF16Val*)UCSText, kUTF16BigEndian, UCSBytes/2 );
+    ASText displayText = ASTextFromSizedUnicode ( (ASUTF16Val*)UCSText, kUTF16BigEndian, UCSBytes );
     char* displayTextUTF8 = reinterpret_cast<char *>(ASTextGetUnicodeCopy(displayText, kUTF8));
     ASTextDestroy ( displayText );
 

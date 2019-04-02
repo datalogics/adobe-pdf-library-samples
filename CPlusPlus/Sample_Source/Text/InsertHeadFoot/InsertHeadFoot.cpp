@@ -125,9 +125,9 @@ DURING
     memset (&FootSpace, 0, sizeof (FootSpace));
 
     ASInt32 PageNumb;
+    CosObj CosHead = CosNewNull(), CosFoot = CosNewNull();
     for (PageNumb = 0; PageNumb < PDDocGetNumPages (InDoc); PageNumb++)
     {
-        CosObj CosHead, CosFoot;
         PDPage InPage;
         ASFixedRect MediaBox, BBox;
         ASFixed Width, Depth, Scale, HOffset, VOffset, Free, 

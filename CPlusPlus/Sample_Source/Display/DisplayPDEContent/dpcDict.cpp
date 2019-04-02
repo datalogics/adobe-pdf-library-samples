@@ -90,8 +90,8 @@ static ASBool LoadCosDictEnumProc (CosObj obj, CosObj value, void * clientData)
 
         case CosName:
             astValue = ASTextFromPDText(CosCopyNameStringValue(value, &NameSize));
-            Entry->Value = reinterpret_cast<char *>(ASTextGetUnicodeCopy(astKey, kUTF8));
-            ASTextDestroy(astKey);
+            Entry->Value = reinterpret_cast<char *>(ASTextGetUnicodeCopy(astValue, kUTF8));
+            ASTextDestroy(astValue);
             break;
 
         case CosNull:
@@ -106,7 +106,7 @@ static ASBool LoadCosDictEnumProc (CosObj obj, CosObj value, void * clientData)
 
         case CosString:
             astValue = ASTextFromPDText(CosCopyStringValue(value, &NameSize));
-            Entry->Value = reinterpret_cast<char *>(ASTextGetUnicodeCopy(astKey, kUTF8));
+            Entry->Value = reinterpret_cast<char *>(ASTextGetUnicodeCopy(astValue, kUTF8));
             ASTextDestroy(astValue);
             break;
     }

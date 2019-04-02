@@ -24,14 +24,16 @@
 #include "InitializeLibrary.h"
 #include "APDFLDoc.h"
 
-// For a Windows system, set this variable to TRUE to send the output to a printer rather than to a file.
-// The printer driver will still generate a file output.  It is possible to eliminate this file. Set the
-// psParams.emitPS parameter equal to "false"; you can find this parameter in the code below.
+#ifdef MAC_PLATFORM
+#include "Cocoa/Cocoa.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
 
-#define WIN_PRINT_TO_PRINTER 0
+// Set this variable to 1 to send the output to a printer rather than to a file.
+#define PRINT_TO_PRINTER 0
 
-#define INPUT_DIR "../../../../Resources/Sample_Input/"
-#define INPUT_FILE  "CopyContent.pdf"
+#define INPUT_FILE "../../../../Resources/Sample_Input/CopyContent.pdf"
 #define OUTPUT_FILE "PostscriptInjection-out.ps"
 
 int printOnePDF(const char* pdfName, const char* pName);
@@ -46,10 +48,15 @@ int main (int argc, char *argv[])
         return errCode;
     }
 
-    std::string csInputFileName(argc > 1 ? argv[1] : INPUT_DIR INPUT_FILE);
+    std::string csInputFileName(argc > 1 ? argv[1] :  INPUT_FILE);
     std::string csOutputFileName(argc > 2 ? argv[2] : OUTPUT_FILE);
+
+#if !PRINT_TO_PRINTER
     std::cout << "Reading " << csInputFileName.c_str() << ", injecting PostScript and saving as " 
               << csOutputFileName.c_str() << std::endl;
+#else
+    std::cout << "Reading " << csInputFileName.c_str () << ", injecting PostScript and Printing To ";
+#endif
 
     int rc = printOnePDF(csInputFileName.c_str(), csOutputFileName.c_str());
     if ( rc != 0)
@@ -213,6 +220,7 @@ END_HANDLER
     printParams.printParams = &psParams;
     printParams.size = sizeof(PDFLPrintUserParamsRec);
     printParams.nCopies = 1;
+    printParams.emitToFile = true;          // emitToFile produces generic PS, not tied to a printer PPD.
 
     // A few parameters are treated differently under Unix.
 #if UNIX_ENV
@@ -227,34 +235,165 @@ END_HANDLER
     printParams.shrinkToFit = true;
     printParams.startPage = 0;
     printParams.endPage = PDDocGetNumPages(inputPDDoc) - 1;
+    PDPageRange pdrange;
+    pdrange.startPage = 0;
+    pdrange.endPage = PDDocGetNumPages (inputPDDoc) - 1;
+    pdrange.pageSpec = PDAllPages;
+    psParams.ranges = &pdrange;
+    psParams.numRanges = 1;
 #endif
 
     ASFile pFile = 0;
     // For a Windows system, if the print-to-printer variable is non-zero (see the top
     // of the source file), the program will send the content to the printer.  Otherwise,
     // the program generates a PostScript file.
-#if (WIN_ENV && WIN_PRINT_TO_PRINTER)
-    printParams.emitToPrinter = true;
-    printParams.inFileName = "Postscript Injection Test";
-    printParams.driverName = "winspool";
+#if PRINT_TO_PRINTER
+    printParams.emitToPrinter = true;       // emitToPrinter, for Mac and Windows, tailors PS to a specific PPD.
+    printParams.emitToFile = false;
+#ifdef WIN_ENV
+    PRINTDLGW printDialog;
 
-    // Set the outFileName value to cause the printer driver to create a file, rather than APDFL.
-    // The result reflects on what would have been sent to the printer, which is useful for debugging.
-    printParams.outFileName = psName;
+    // Initialize the PRINTDLG structure.
+    memset(&printDialog, 0, sizeof(printDialog));
+    printDialog.lStructSize = sizeof(printDialog);
 
-    // Provide a printer name.  For a list of the current Windows printer drivers available, look at
-    // "Print server properties" in the Devices and Printers dialog in the Windows Control Panel.
-    // Make sure you provide a PostScript printer driver here.
-    printParams.deviceName = "\\\\gutenberg\\eaglesnest";
-    printParams.portName = "Ne05:";
-#else
-    printParams.emitToFile = true;
+    // Set the print dialog flags
+    // Necessary to set PD_USEDEVMODECOPIESANDCOLLATE since the DEVMODE structure is being used by
+    // APDFL to gather the number of copies and whether to collate or not.
+    // This will also disable the Collate check box and the Number of Copies edit control unless
+    // the printer driver supports multiple copies and collation.
+    printDialog.Flags = PD_USEDEVMODECOPIESANDCOLLATE | PD_NOSELECTION;
 
-    ASPathName path = APDFLDoc::makePath ( psName );
-    // Create writeable file stream to handle the print stream
-    ASFileSysOpenFile (NULL, path, ASFILE_WRITE | ASFILE_CREATE, &pFile);
-    printParams.printStm = ASFileStmWrOpen (pFile, 0);
+    // Set the minimum and maximum page to allow in print dialog Pages selection
+    printDialog.nMinPage = 1;
+    printDialog.nMaxPage = PDDocGetNumPages (inputPDDoc);
+
+    // Invoke the printer dialog box.
+    if (PrintDlgW (&printDialog))
+    {
+        // Make a copy of the DEVMODE structure to send to APDFL which contains information
+        // on the number of copies requested and whether to collate them or not.
+        LPDEVMODEW devMode = (LPDEVMODEW)(GlobalLock (printDialog.hDevMode));
+        printParams.pDevModeW = (DEVMODEW*)malloc (devMode->dmSize + devMode->dmDriverExtra);
+        memcpy (printParams.pDevModeW, devMode, devMode->dmSize + devMode->dmDriverExtra);
+        GlobalUnlock (printDialog.hDevMode);
+
+        // Need to retrieve the printer name from the hDevNames structure.  It is also available
+        // in the hDevMode structure but can be truncated due to the dmDeviceName field only
+        // being capable of holding CCHDEVICENAME (32) characters.
+        LPDEVNAMES devNames = (LPDEVNAMES)(GlobalLock (printDialog.hDevNames));
+        std::wstring dmDeviceName ((WCHAR*)(devNames)+devNames->wDeviceOffset);
+        std::wstring dmFileName ((WCHAR*)(devNames)+devNames->wOutputOffset);
+        GlobalUnlock (printDialog.hDevNames);
+
+        size_t lenDeviceName = dmDeviceName.length ();
+        printParams.deviceNameW = new ASUns16[lenDeviceName + 1];
+        memcpy (printParams.deviceNameW, dmDeviceName.data (), lenDeviceName * sizeof (ASUns16));
+        printParams.deviceNameW[lenDeviceName] = 0;
+
+        // Print specific pages if requested in the print dialog box.
+        // Otherwise, the All was left selected and all pages will be printed.
+        if (printDialog.Flags & PD_PAGENUMS)
+        {
+            printParams.startPage = printDialog.nFromPage - 1;          // Specify starting page
+            printParams.endPage = printDialog.nToPage - 1;              // Specify ending page
+            pdrange.startPage = printParams.startPage;
+            pdrange.endPage = printParams.endPage;
+        }
+
+        // Check to see if "Print to a file" has been selected.
+        // If "Print to file" is selected, all we need to do is set the outFileNameW to the
+        // returned dmFileName which will be returned as "FILE:".  No need to change any other
+        // APDFL parameters such as emitToFile or emitToPrinter.  Windows takes care of
+        // prompting for the output file and saves to the file instead of sending it
+        // to the printer. This will save PS tailored to the selected printers PPD.
+        if (printDialog.Flags & PD_PRINTTOFILE)
+        {
+            size_t lenFileName = dmFileName.length ();
+            printParams.outFileNameW = new ASUns16[lenFileName + 1];
+            memcpy (printParams.outFileNameW, dmFileName.data (), lenFileName * sizeof (ASUns16));
+            printParams.outFileNameW[lenFileName] = 0;
+            if (!wcscmp ((wchar_t *)printParams.outFileNameW, L"FILE:"))
+            {
+                delete (printParams.outFileNameW);
+                printParams.outFileNameW = NULL;
+                printParams.outFileName = new char[strlen (psName)+1];
+                strcpy (printParams.outFileName, psName);
+            }
+        }
+        printParams.printParams = &psParams;                // Connect the two structures
+
+        if (printDialog.Flags & PD_PRINTTOFILE)
+        {
+            std::wcout << (wchar_t *)printParams.deviceNameW << L". Sending to the file ";
+            if (printParams.outFileNameW != NULL)
+                std::wcout << (wchar_t *)printParams.outFileNameW << std::endl;
+            else
+                std::cout << printParams.outFileName << std::endl;
+        }
+        else
+        {
+            std::wcout << (wchar_t *)printParams.deviceNameW << std::endl;
+        }
+    }
+    else
+    {
+        std::wcout << std::endl << L"Print Canceled by user" << std::endl;
+        return (-1);
+    }
+#endif //End of ifdef WIN_ENV
+
+#ifdef MAC_PLATFORM
+    
+    /* set up dialog, and handle print settings */
+    Boolean accepted = true;
+
+    NSPrintInfo *thePrintInfo = [NSPrintInfo sharedPrintInfo];
+
+    [NSApplication sharedApplication];
+    NSPrintPanel *printPanel = [NSPrintPanel printPanel];
+    accepted = [printPanel runModalWithPrintInfo : thePrintInfo];
+
+
+    printParams.printSession = (PMPrintSession)[thePrintInfo PMPrintSession];
+    printParams.printSettings = (PMPrintSettings)[thePrintInfo PMPrintSettings];
+    printParams.pageFormat = (PMPageFormat)[thePrintInfo PMPageFormat];
+    UInt32 first, last, numCopies;
+    PMGetFirstPage (printParams.printSettings, &first);
+    printParams.startPage = first - 1;
+    PMGetLastPage (printParams.printSettings, &last);
+    printParams.endPage = last - 1;
+    PMGetCopies (printParams.printSettings, &numCopies);
+    printParams.nCopies = numCopies;
+
+    pdrange.startPage = printParams.startPage;
+    pdrange.endPage = printParams.endPage;
+
+    if (!accepted)
+    {
+        std::wcout << std::endl << L"Print Canceled by user" << std::endl;
+        return (-1);
+    }
+
+    const char *name = thePrintInfo.printer.name.cString;
+    std::cout << name << std::endl;
+
+#endif //end of ifdef MAC_ENV
+
+#ifdef UNIX_ENV
+    // print to the printer lp0, suppress reporting job number to stdout.
+    printParams.command = "lp -s";
+    std::cout << "LP0." << std::endl;
 #endif
+
+#else  //Print to a file
+printParams.emitToFile = true;
+
+ASPathName path = APDFLDoc::makePath (psName);
+// Create writeable file stream to handle the print stream
+ASFileSysOpenFile (NULL, path, ASFILE_WRITE | ASFILE_CREATE, &pFile);
+printParams.printStm = ASFileStmWrOpen (pFile, 0);
+#endif // end of ifdef PRINT_TO_PRINTER
 
 DURING
 

@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{26B0DAAC-1B6E-4020-BEC0-D47DDBA263C6}</ProjectGuid>
+    <ProjectGuid>{70DC7A8A-3F4A-43CF-9DE2-A9C477121319}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlankSample</RootNamespace>
     <ProjectName>TextSelectEnum</ProjectName>

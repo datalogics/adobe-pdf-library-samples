@@ -216,8 +216,15 @@ DURING
         
             ASUns16 wordAttrs = PDWordGetAttr(pdWord);
 
-            outputFile << utf8String << " ";
-            if ((WXE_LAST_WORD_ON_LINE & wordAttrs) == WXE_LAST_WORD_ON_LINE)                                           
+            outputFile << utf8String;
+
+            if (WXE_ADJACENT_TO_SPACE & wordAttrs)
+            {
+                outputFile << " ";
+            }
+
+            if ((WXE_LAST_WORD_ON_LINE & wordAttrs) == WXE_LAST_WORD_ON_LINE || 
+                PDWordIsLastWordInRegion(pdWord))                                           
             {
                 outputFile << std::endl;
             }

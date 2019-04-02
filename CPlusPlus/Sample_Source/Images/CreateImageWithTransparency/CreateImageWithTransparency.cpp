@@ -220,6 +220,7 @@ DURING
     PDERelease((PDEObject) pdeImageMask);
     PDERelease((PDEObject) ImageColorSpace);
     PDERelease((PDEObject) MaskColorSpace);
+    PDERelease((PDEObject) pdeColorSpace);
 
     delete[] ImageBuffer;
     delete[] MaskBuffer;

@@ -1,5 +1,6 @@
 /*--------------------------------------------------------------------------------
 ** Copyright (c) 2014, Datalogics, Inc. All rights reserved. 
+*/
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -94,12 +95,12 @@ BOOL CPDFViewerApp::InitInstance ()
 
     /* Where to look for fonts */
     ASUTF16Val  *Paths[3];
-    Paths[0] = (ASUTF16Val *)L"..\\..\\Resource\\CMap";
-    Paths[1] = (ASUTF16Val *)L"..\\..\\Resource\\Font";
+    Paths[0] = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\CMap";
+    Paths[1] = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\Font";
 
     /* Where to look for Color Profiles */
     ASUTF16Val  *Colors[3];
-    Colors[0] = (ASUTF16Val *)L"..\\..\\Resource\\Color";
+    Colors[0] = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\Color";
 
     /* Where Windows keeps color profiles */
     Colors[1] = (ASUTF16Val *)malloc (256 * sizeof (ASUTF16Val));
@@ -118,8 +119,8 @@ BOOL CPDFViewerApp::InitInstance ()
     pdflData.size = sizeof(PDFLDataRec);
     pdflData.dirList = Paths;
     pdflData.listLen = 2;
-    pdflData.cMapDirectory = (ASUTF16Val *)L"..\\..\\Resource\\CMap";
-    pdflData.unicodeDirectory = (ASUTF16Val *)L"..\\..\\Resource\\Unicode";
+    pdflData.cMapDirectory = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\CMap";
+    pdflData.unicodeDirectory = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\Unicode";
     pdflData.pluginDirList = Plugins;
     pdflData.pluginDirListLen = 1;
     pdflData.colorProfileDirList = Colors;
@@ -548,13 +549,43 @@ DWORD WINAPI RenderToDCViaThreadRepeatedly (void *clientData)
 
     /* Initialize the library in a second thread
     **
-    ** No need to set up locations of resources. 
-    ** These will be found via the primary thread
+    ** CMaps will not be located correctly unless they are included in the 
+    ** resource directory list of the second init
     */
-    PDFLDataRec    initData;
-    memset ((char *)&initData, 0, sizeof (PDFLDataRec));
-    initData.size = sizeof (PDFLDataRec);
-    if (PDFLInitHFT (&initData) != 0)
+
+    /* Where to look for fonts */
+    ASUTF16Val  *Paths[3];
+    Paths[0] = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\CMap";
+    Paths[1] = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\Font";
+
+    /* Where to look for Color Profiles */
+    ASUTF16Val  *Colors[3];
+    Colors[0] = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\Color";
+
+    /* Where Windows keeps color profiles */
+    Colors[1] = (ASUTF16Val *)malloc (256 * sizeof (ASUTF16Val));
+    GetSystemDirectory ((LPWSTR)Colors[1], 256);
+    wcscat_s ((wchar_t *)Colors[1], 256, L"\\spool\\drivers\\color");
+
+    /* Where to look for Plugins  */
+    ASUTF16Val  *Plugins[3];
+    Plugins[0] = (ASUTF16Val *)L"..\\..\\..\\Binaries";
+
+    /* Construct the APDFL Initialization record.
+    **  NOTE: PDFViewer does not use a local memory manager
+    */
+    PDFLDataRec  pdflData;
+    memset (&pdflData, 0, sizeof (PDFLDataRec));
+    pdflData.size = sizeof (PDFLDataRec);
+    pdflData.dirList = Paths;
+    pdflData.listLen = 2;
+    pdflData.cMapDirectory = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\CMap";
+    pdflData.unicodeDirectory = (ASUTF16Val *)L"..\\..\\..\\..\\Resources\\Unicode";
+    pdflData.pluginDirList = Plugins;
+    pdflData.pluginDirListLen = 1;
+    pdflData.colorProfileDirList = Colors;
+    pdflData.colorProfileDirListLen = 2;
+    if (PDFLInitHFT (&pdflData) != 0)
         return 0;
 
     /* Open the document whose page is to be rendered */

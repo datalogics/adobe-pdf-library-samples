@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     /* Step 1) Select conversion option */
     if (argc < 2)
     {
-        printf("PDF Conversion Standard not specified or unknown, defaulting to PDFA1bRGB.\n");
+        std::cout << "PDF Conversion Standard not specified or unknown, defaulting to PDFA1bRGB." << std::endl;
 
         convertOption = kPDFProcessorConvertToPDFA1bRGB;
         outputPathName = DEF_OUTPUT;
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        printf("PDF Conversion Standard not specified or unknown, defaulting to PDFA1bRGB.\n");
+        std::cout << "PDF Conversion Standard not specified or unknown, defaulting to PDFA1bRGB." << std::endl;
         convertOption = kPDFProcessorConvertToPDFA1bRGB;
         outputPathName = DEF_OUTPUT;
     }
@@ -121,23 +121,23 @@ DURING
 #if !MAC_ENV
         destFilePath = ASFileSysCreatePathName( NULL, ASAtomFromString("Cstring"), csOutputFileName.c_str(), NULL );
 #else
-        destFilePath = GetMacPath(outputPath);
+        destFilePath = APDFLDoc::makePath ( csOutputFileName.c_str() );
 #endif
 
         // Step 4) Convert the input PDF
         PDFProcessorPDFAConvertParamsRec userParamsA;
-        printf("\nConverting using PDFProcessorConvertAndSaveToPDFA (with Callback)\n");
+        std::cout << "Converting using PDFProcessorConvertAndSaveToPDFA (with Callback)" << std::endl;
         SetupPDFAProcessorParams(&userParamsA);
 
         res = PDFProcessorConvertAndSaveToPDFA(inAPDoc.getPDDoc(), destFilePath, ASGetDefaultFileSys(), convertOption, &userParamsA);
 
         if(res)
         {
-            printf("File %s has been successfully Converted.\n", csInputFileName.c_str());
+            std::cout << "File " << csInputFileName.c_str() << " has been successfully Converted." << std::endl;
         }
         else
         {
-            printf("Conversion of file %s has failed...\n", csInputFileName.c_str());
+            std::cout << "Conversion of file " << csInputFileName.c_str() << " has failed..." << std::endl;
         }
 
         // Cleanup and free memory
@@ -167,16 +167,17 @@ ASBool PDFProcessorProgressMonitorCB(ASInt32 pageNum, ASInt32 totalPages, float 
         ASBool * IsMonitorCalled = (ASBool*)clientData;
         if (*IsMonitorCalled == false)
         {
-            printf("PDFProcessor Progress Monitor CallBack\n");
+            std::cout << "PDFProcessor Progress Monitor CallBack" << std::endl;
             //Set to true to Display this Message Only Once
             *IsMonitorCalled = true;
         }
     }
 
-    printf("PDFProcessor Page %d of %d. Overall Progress = %f %%. \n",
-        pageNum + 1, /* Adding 1, since Page numbers are 0-indexed*/
-        totalPages,
-        current /* Current Overall Progress */);
+    std::cout << "PDFProcessor Page "
+        << pageNum + 1 << " of "                /* Adding 1, since Page numbers are 0-indexed*/
+        << totalPages << ". Overall Progress = "
+        << current << "%."                      /* Current Overall Progress */
+        << std::endl;
 
     //Return 1 to Cancel conversion
     return 0;

@@ -18,7 +18,7 @@
 #include "DLExtrasCalls.h"
 
 #define DIR_LOC "../../../../Resources/Sample_Input/"
-#define DEF_INPUT "Ulysses.pdf"
+#define DEF_INPUT "toOptimize.pdf"
 #define DEF_OUTPUT "PDFOptimizer-out.pdf"
 
 int main(int argc, char **argv)

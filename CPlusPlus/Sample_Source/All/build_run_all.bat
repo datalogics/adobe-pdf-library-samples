@@ -26,7 +26,6 @@ REM ***
 REM ***   ARGUMENT      EFFECT
 REM ***   -noRun        Don't run the samples, just build them.
 REM ***   -release      Build Release configuration instead of Debug configuration.
-REM ***   -64-bit       Build the 64-bit version instead of 32-bit version.
 REM ***
 REM *** Steps:
 REM *** 1) Initialize.
@@ -89,7 +88,15 @@ REM *************************************************
 REM *** Initialize environment variables, enable delayed expansion.
 SETLOCAL EnableDelayedExpansion  
 REM *** Filename of All project.
-SET ALL_DL_SLN=All_Datalogics_32Bit.sln
+IF EXIST "All_Datalogics_32Bit.sln" (
+  REM Do a 32-bit build
+  SET ALL_DL_SLN=All_Datalogics_32Bit.sln
+  SET ARCH=Win32
+) ELSE (
+  REM Do a 64-bit build
+  SET ALL_DL_SLN=All_Datalogics_64Bit.sln
+  SET ARCH=x64
+)
 
 REM ************* Initialize variables which track our progress ******************
 REM *** The number of samples that failed to build.
@@ -113,8 +120,6 @@ REM *** The configuration to use.
 SET STAGE=Debug
 REM *** Only build the samples, don't run them.
 SET ONLY_BUILD=N
-REM *** Build 32-Bit by default.
-SET ARCH=Win32
 
 :AcceptCommands
 REM *** Iterate through arguments, changing settings when needed.
@@ -126,11 +131,6 @@ IF /i "%1"=="-release" (
 ) 
 IF /i "%1"=="-noRun" (
 	SET ONLY_BUILD=Y
-)
-
-IF /i "%1"=="-64-bit" (
-	SET ALL_DL_SLN=All_Datalogics_64Bit.sln
-	SET ARCH=x64
 )
 SHIFT
 GOTO AcceptCommands
@@ -179,6 +179,8 @@ SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentModification\ImportPages"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentModification\AddWatermark"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentModification\EmbedFonts"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% DocumentConversion\ConvertPDFtoEPS"
+SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% DocumentConversion\ConvertToPDFA"
+SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% DocumentConversion\ConvertToPDFX"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% DocumentConversion\ConvertPDFtoPostscript"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% DocumentConversion\XPStoPDF"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Images\AddThumbnailsToPDF"
@@ -187,12 +189,14 @@ SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Images\CreateImageWithTransparency"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Images\CreateSeparations"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Images\CalcImageDPI"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Images\FindImageResolutions"
+SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Images\OutputPreview"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\InsertHeadFoot"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\ExtractText"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\AddText"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\UnicodeText"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\HelloJapan"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\TextSearch"
+SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Text\TextSelectEnum"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentCreation\AddArt"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentCreation\AddAttachments"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentCreation\AddContent"
@@ -203,6 +207,7 @@ SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% ContentCreation\CreateTransparency"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\AESEncryption"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\AddPassword"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\AddRedaction"
+SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\AddTriangularRedaction"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\EncryptDocument"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\LockDocument"
 SET "DL_SAMPLE_LIST=%DL_SAMPLE_LIST% Security\SetUniquePermissions"

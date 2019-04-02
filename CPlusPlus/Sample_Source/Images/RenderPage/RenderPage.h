@@ -33,7 +33,7 @@ private:
     PDEFilterArray      filterArray;
     ASAtom              csAtom;
     ASInt32             nComps;
-    ASInt32             bufferSize;
+    ASSize_t            bufferSize;
     ASInt32             bpc;
     char*               buffer; 
     char*               colorSpace;
@@ -54,7 +54,7 @@ public:
     ~RenderPage();
 
     char*               GetImageBuffer();
-    ASInt32             GetImageBufferSize();
+    ASSize_t            GetImageBufferSize();
     PDEImage            GetPDEImage(PDDoc outDoc);
     ASFixedRect         GetImageSize();
 };

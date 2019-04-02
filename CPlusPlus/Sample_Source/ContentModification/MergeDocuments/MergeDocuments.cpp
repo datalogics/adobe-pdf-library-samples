@@ -53,7 +53,7 @@ DURING
                        PDInsertAll, 
                        NULL, NULL, NULL, NULL);
 
-    doc1.saveDoc ( csOutputFileName.c_str(), PDSaveFull | PDSaveLinearized);
+    doc1.saveDoc ( csOutputFileName.c_str(), PDSaveFull | PDSaveLinearized, PDSaveCompressed );
 
 HANDLER                             
     errCode = ERRORCODE;

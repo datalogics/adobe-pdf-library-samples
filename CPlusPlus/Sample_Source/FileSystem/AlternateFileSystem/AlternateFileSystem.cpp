@@ -265,6 +265,27 @@ ASInt32 altFSFlush (MDFile File)
     return 0;
 }
 
+ASInt32 altFSSetPos64(MDFile File, ASFilePos64 Pos)
+{
+    altFSFileHandle    *altFileHandle = (altFSFileHandle *) File;
+    altFSFile            *altFile;
+
+    if (!File)
+        return (1);
+
+    altFile = altFileHandle->File;
+
+    altFSExpandBuffer (altFile, Pos);
+    if (Pos > altFile->CurrentSize)
+    {
+        memset(altFile->Buffer + altFile->CurrentSize, 0, Pos - altFile->CurrentSize);
+        altFile->CurrentSize = Pos;
+    }
+    altFileHandle->Position = Pos;
+
+    return 0;
+}
+
 // Set the cursor to this file at a particular position
 ASInt32    altFSSetPos (MDFile File, ASUns32 Pos)
 {
@@ -583,6 +604,7 @@ int defineAltFileSys ()
         altFSRec.close = altFSClose;
         altFSRec.flush = altFSFlush;
         altFSRec.setpos = altFSSetPos;
+        altFSRec.fsRec_setpos64 = altFSSetPos64;
         altFSRec.getpos = altFSGetPos;
         altFSRec.seteof = altFSSetEOF;
         altFSRec.geteof = altFSGetEOF;
