@@ -271,7 +271,16 @@ RenderPage::RenderPage(PDPage &pdPage, const char *colorSpace, const char *filte
     // is different from the 8-bit aligned width. If so, we fix the image data by 
     // stripping off the padding at the end of each row.
     ASInt32 createdWidth = ((((attrs.width * bpc * nComps) + 31) / 32) * 4);
-    ASInt32 desiredWidth = ((attrs.width * bpc * nComps) / 8);
+
+    //For 1bpc, because our pixels are packed into a size smaller than how each sample
+    //is represented we need to account for possibly the next byte of data in our width.
+    ASInt32 packing = 0;
+    if (bpc == 1)
+    {
+        packing = ((attrs.width % 8) != 0) ? 1 : 0;
+    }
+
+    ASInt32 desiredWidth = ((attrs.width * bpc * nComps) / 8) + packing;
 
     if (createdWidth != desiredWidth)
     {
@@ -296,7 +305,7 @@ char * RenderPage::GetImageBuffer()
     return buffer;
 }
 
-ASInt32 RenderPage::GetImageBufferSize()
+ASSize_t RenderPage::GetImageBufferSize()
 {
     return bufferSize;
 }

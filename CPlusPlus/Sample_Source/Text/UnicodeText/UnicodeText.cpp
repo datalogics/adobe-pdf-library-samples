@@ -196,8 +196,8 @@ DURING
     {
         for (int f = 0; f < 2; f++)                                                   
         {
-            const char* errString; 
-            PDEFont* nextFont;
+            const char* errString = "";
+            PDEFont* nextFont = NULL;
             
             switch (f)
             {

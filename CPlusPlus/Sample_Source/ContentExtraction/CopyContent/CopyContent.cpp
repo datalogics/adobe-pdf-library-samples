@@ -169,7 +169,8 @@ DURING
 
                 //The new container, to which which we give blank contents, and give to the output document.
                 PDEContainer toContainer = PDEContainerCreate(PDEContainerGetMCTag(fromContainer), NULL, true);
-                PDEContainerSetContent(toContainer, PDEContentCreate());
+                PDEContent _content = PDEContentCreate();
+                PDEContainerSetContent(toContainer, _content);
                 PDEContent toContent = PDEContainerGetContent(toContainer);
 
                 copyElements( toContent, fromContent, ElementTypesSet);
@@ -178,6 +179,7 @@ DURING
                 PDEContentAddElem( to, kPDEAfterLast, reinterpret_cast<PDEElement>(toContainer));    
 
                 PDERelease(reinterpret_cast<PDEObject>(toContainer));
+                PDERelease(reinterpret_cast<PDEObject>(_content));
                 break;
                 }
 
@@ -220,6 +222,7 @@ DURING
                 //Release the containers, since we're done with them.
                 PDERelease(reinterpret_cast<PDEObject>(fromFormContent));
                 PDERelease(reinterpret_cast<PDEObject>(toForm));
+                PDERelease(reinterpret_cast<PDEObject>(toContent));
                 break;
                 }
             default:

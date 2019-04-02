@@ -23,6 +23,8 @@
 // document, and includes an indication of how much of the page each colorant covers. The process and spot color
 // plates will be rendered in the specified colorant, or its conversion to CMYK, in the case of spot colors.
 
+#include <math.h>
+#include <stdio.h>
 #include <string>
 #include <vector>
 
@@ -47,7 +49,8 @@
 // Default sample input and output
 // (Can be overridden on command line as "CreateSeparations inputfilename outputfilename").
 #define INPUT_LOC "../../../../Resources/Sample_Input/"
-#define DEF_INPUT "RenderPage.pdf"
+#define DEF_INPUT "No_Transparency.pdf"
+//#define DEF_INPUT "With_Transparency.pdf"
 #define DEF_OUTPUT "Out.pdf"
 
 // This is a structure used to carry information between functions, so as to lower the requirements 
@@ -176,13 +179,25 @@ int main ( int argc, char *argv[] )
             // Create, and write to the output document, the CMYK rendering of this page
             WriteCMYKImage (&pageInfo, outputDoc);
 
-            //Create the DeviceN rendering of this page, output to document as composite page,
-            // only process colors, and only spot colors.
-            WriteDeviceNImage (&pageInfo, outputDoc);
+// When a page uses translucent ink, that page may not be accurately rendered as 
+// a deviceN bitmap. This is because a page with translucent ink may require an alpha 
+// value for each colorant at each pixel, but a deviceN bitmap may have only a single
+// alpha value for all colorants at a given pixel.
+// You can render a page with translucent ink to a CMYK bitmap instead.
+// The example file "With_Transparency.pdf" is the same as "No_Transparency.pdf"
+// except it has translucent ink.
+            if (!PDPageHasTransparency(pageInfo.page, false))
+            {
+                // doesn't have translucent ink
 
-            //Divide the DeviceN image into separations, and write each to the output document
-            for (int color = 0; color < pageInfo.numberOfColorants; color++)
-                WriteSeparationImage (&pageInfo, outputDoc, color);
+                //Create the DeviceN rendering of this page, output to document as composite page,
+                // only process colors, and only spot colors.
+                WriteDeviceNImage(&pageInfo, outputDoc);
+
+                //Divide the DeviceN image into separations, and write each to the output document
+                for (int color = 0; color < pageInfo.numberOfColorants; color++)
+                    WriteSeparationImage(&pageInfo, outputDoc, color);
+            }
 
             // Release the page.
             PDPageRelease (pdPage);
@@ -463,6 +478,9 @@ void WriteSeparationImage (PageInfo *pageInfo, PDDoc outputDoc, int separationNu
     // But for display, we will use the appropriate Separation color space to display the separation.
     PDEColorSpace cs = pageInfo->spotColors[separationNumber];
     AddImageToDoc (pageInfo, outputDoc, cs, buffer, (pageInfo->cols * pageInfo->rows), 1, colorantName, coverage);
+
+    // Free the separation bitmap
+    ASfree (buffer);
 
     return;
 }

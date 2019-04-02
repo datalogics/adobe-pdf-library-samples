@@ -91,3 +91,4 @@ void DoubleMatrixRotate (ASDoubleMatrix *M, ASDouble Angle);
 void CalculateResolution (ImageDef *image, ImageRef *reference);
 void CreateImageEntry (ASSize_t pageNo, PDEImage image, ASDoubleMatrix matrix, ImageList *imageList, ASBool mask, ASBool sMask);
 int MakeSample();
+void ReleaseSample();

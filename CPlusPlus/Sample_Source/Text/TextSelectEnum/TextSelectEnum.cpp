@@ -12,6 +12,19 @@
 // For more detail see the description of the UnicodeText sample program on our Developer’s site, 
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#TextSelectEnum
 
+// NOTE:
+//  This sample displays the extracted text in an output page, using a Unicode Font. As supplied, it uses 
+//  "AdobeMyungjoStd-Medium", which is available in our distributed resources. With the supplied document, 
+//  this font will have two undefined glyphs (A japanese character, and the "e grave").
+//
+//  The user should supply a font which he is fairly certain will contain all of the characters present in the
+//  selected range of text in the input document used. When the range of characters is not know, use a "wide" 
+//  Unicode font, such as ArialUnicodeMS, Code2000, or Bitstream Cyberbit.
+//
+//  The name of the selected font should replace AdobeMyungjoStd-Medium, in the following define
+#define Output_Font "AdobeMyungjoStd-Medium"
+
+
 #include "APDFLDoc.h"
 #include "InitializeLibrary.h"
 #include "DLExtrasCalls.h"
@@ -98,16 +111,16 @@ DURING
     // font. The general case of converting a PDFont to a writable PDEFont is very complex, 
     // and not a suitable subject for this example.
     //
-    // This sample will use Arial Unicode MS. It is available on all windows platforms. If used
-    // outside of windows, this should be replaced with an appropriate "wide" unicode font. 
-    // (For example Code2000, or Bitstream Cyberbit).
+    // This sample will use AdobeMyungjoStd-Medium. It is available in the distributed resources
+    // file. It should be replaced with a font which covers the unicode ranges of the input 
+    // documents text.
     PDDoc outDoc = PDDocCreate ();
     CosDoc cosDoc = PDDocGetCosDoc (outDoc);
 
     // Create a font to use to display the text
     PDEFontAttrs fontAttrs;
     memset (&fontAttrs, 0, sizeof (fontAttrs));
-    fontAttrs.name = ASAtomFromString ("ArialUnicodeMS");
+    fontAttrs.name = ASAtomFromString (Output_Font);
     fontAttrs.type = ASAtomFromString ("Type0");
 
     PDSysFont sysFont = PDFindSysFont (&fontAttrs, sizeof (PDEFontAttrs), 0);

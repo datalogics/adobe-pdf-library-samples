@@ -442,6 +442,7 @@ void InsertImageInForm (CosDoc doc, PDEContent content, ASInt32 imageIndex,
 
     PDEContentAddElem (content, kPDEAfterLast, (PDEElement)form);
     PDERelease ((PDEObject)form);
+    PDERelease ((PDEObject)formContent);
 }
 
 // Create the image inside a form. 
@@ -508,6 +509,18 @@ void InsertImageInFormInForm (CosDoc doc, PDEContent content, ASInt32 imageIndex
     PDEContentAddElem (content, kPDEAfterLast, (PDEElement)form2);
     PDERelease ((PDEObject)form);
     PDERelease ((PDEObject)form2);
+}
+
+void ReleaseSample()
+{
+	for (size_t count = 0; count < ImageTableSize; count++)
+	{
+		ImageDesc *current = &ImageTable[count];
+		if (current->m_softMask != NULL)
+		{
+			PDERelease((PDEObject)current->m_softMask);
+		}
+	}
 }
 
 int MakeSample ()

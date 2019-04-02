@@ -33,6 +33,7 @@
 #include "InitializeLibrary.h"
 #include "APDFLDoc.h"
 #include "CosCalls.h"
+#include <math.h>
 
 
 // Resolution of image desired for plates. 
@@ -59,7 +60,7 @@ typedef struct pageInfo
     // Width and Depth in pixels
     ASInt32                     rows;
     ASInt32                     cols;
-    ASInt32                     rowWidth;
+    ASUns32                     rowWidth;
 
     // Referenced from drawParams;
     ASRealRect                  drawWindow;
@@ -261,9 +262,8 @@ void FillPageInfo (PageInfo *pageInfo, PDPage page)
     pageInfo->drawParams.asRealDestRect = &pageInfo->drawWindow;
     pageInfo->drawParams.bpc = 8;
 
-    // If we want to control other effects during rendering, it can be done here. In general though
-    //   only lazyErase is used.
-    pageInfo->drawParams.flags = kPDPageDoLazyErase;
+    // If we want to control other effects during rendering, it can be done here.
+    pageInfo->drawParams.flags = kPDPageDoLazyErase | kPDPageUseAnnotFaces;
 
     // When doing separations, we NEVER want Anti-Aliasing!
     pageInfo->drawParams.smoothFlags = 0;

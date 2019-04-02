@@ -112,6 +112,8 @@ DURING
         ofs << "   Image " << cnt << *it;
     }
 
+    ReleaseSample();
+
 HANDLER
     APDFLib::displayError(ERRORCODE);
     return ERRORCODE;

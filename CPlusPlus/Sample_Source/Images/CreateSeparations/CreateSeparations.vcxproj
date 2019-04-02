@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Separations</ProjectName>
+    <ProjectName>CreateSeparations</ProjectName>
     <ProjectGuid>{9E815E2B-9D2E-4814-9FEE-F8919CEB3787}</ProjectGuid>
     <RootNamespace>Separations</RootNamespace>
     <Keyword>Win32Proj</Keyword>

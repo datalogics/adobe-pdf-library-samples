@@ -41,28 +41,26 @@ APDFLDoc::APDFLDoc()
 // and the bool repairDamagedFile determines whether to repair (true) or not (false) a damaged file.
 //==============================================================================================================================
 
-APDFLDoc::APDFLDoc(wchar_t * nameOfDocument, bool repairDamagedFile)
+APDFLDoc::APDFLDoc(wchar_t * docName, bool repairDamagedFile)
 {
-    CommonConstruct ( nameOfDocument, repairDamagedFile );
+    CommonConstruct ( docName, repairDamagedFile );
 }
 
 
 //==============================================================================================================================
 // Common constructor stuff.  Introduced to allow char* overload for constructor with minimal code rewriting
 //==============================================================================================================================
-void APDFLDoc::CommonConstruct(wchar_t* nameOfDocument, bool repairDamagedFile )
+void APDFLDoc::CommonConstruct(wchar_t* docName, bool repairDamagedFile )
 {
     initialize();                                                        
-    if (NULL == nameOfDocument)
+    if (NULL == docName)
     {
         return;
     }
 
-    wcscpy(this->nameOfDocument, nameOfDocument);                        //Set the nameOfDocument data member.
-
     DURING
         
-        setASPathName(this->nameOfDocument);                             //Set the ASPathName data member.
+        setASPathName(docName);                             //Set the ASPathName data member.
 
         pdDoc = PDDocOpen(asPathName, NULL, NULL, repairDamagedFile);    //Open the PDF document.
 
@@ -82,15 +80,15 @@ void APDFLDoc::CommonConstruct(wchar_t* nameOfDocument, bool repairDamagedFile )
 // Constructor - This overload accepts an ordinary c-string for the file name
 //==============================================================================================================================
 
-APDFLDoc::APDFLDoc(const char * nameOfDocument, bool repairDamagedFile)
+APDFLDoc::APDFLDoc(const char * docName, bool repairDamagedFile)
 {
-    if ( nameOfDocument )
+    if ( docName )
     {
-        const size_t cSize = strlen(nameOfDocument) + 1;
+        const size_t cSize = strlen(docName) + 1;
         wchar_t* wc = new wchar_t[cSize];
         if ( wc )
         {
-            mbstowcs ( wc, nameOfDocument, cSize );
+            mbstowcs ( wc, docName, cSize );
         }
         CommonConstruct ( wc, repairDamagedFile );
         if ( wc )
@@ -116,7 +114,7 @@ void APDFLDoc::initialize()
 // saveDoc() - This overload accepts a non-wide path name, then passes through to the real function
 //==============================================================================================================================
 
-ASErrorCode APDFLDoc::saveDoc(const char* pathToSaveDoc, PDSaveFlags saveFlags)
+ASErrorCode APDFLDoc::saveDoc(const char* pathToSaveDoc, PDSaveFlags saveFlags, PDSaveFlags2 saveFlags2)
 {
     wchar_t* wc = NULL;
     if ( pathToSaveDoc )
@@ -128,7 +126,7 @@ ASErrorCode APDFLDoc::saveDoc(const char* pathToSaveDoc, PDSaveFlags saveFlags)
             mbstowcs ( wc, pathToSaveDoc, cSize );
         }
     }
-    ASErrorCode rc = saveDoc(wc, saveFlags);
+    ASErrorCode rc = saveDoc(wc, saveFlags, saveFlags2);
     if ( wc )
     {
         delete [] wc;
@@ -142,7 +140,7 @@ ASErrorCode APDFLDoc::saveDoc(const char* pathToSaveDoc, PDSaveFlags saveFlags)
 // flags may be specified.
 //==============================================================================================================================
 
-ASErrorCode APDFLDoc::saveDoc(wchar_t * pathToSaveDoc, PDSaveFlags saveFlags)
+ASErrorCode APDFLDoc::saveDoc(wchar_t * pathToSaveDoc, PDSaveFlags saveFlags, PDSaveFlags2 saveFlags2)
 {
 
     DURING
@@ -161,9 +159,18 @@ ASErrorCode APDFLDoc::saveDoc(wchar_t * pathToSaveDoc, PDSaveFlags saveFlags)
         else
             setASPathName(nameOfDocument);          //Overwrite the original document if it hasn't been set.
         
+
+        PDDocSaveParamsRec saveParamsRec;
+        memset(&saveParamsRec, 0, sizeof(PDDocSaveParamsRec));
+
+        saveParamsRec.size = sizeof(PDDocSaveParamsRec);
+        saveParamsRec.newPath = asPathName;
+        saveParamsRec.saveFlags = saveFlags;
+        saveParamsRec.saveFlags2 = saveFlags2;
+
         //Error Checking: Ensure document has a page before saving.
         if (PDDocGetNumPages(pdDoc) > 0)
-            PDDocSave(pdDoc, saveFlags, asPathName, NULL, NULL, NULL);
+            PDDocSaveWithParams(pdDoc, &saveParamsRec);
         else
         {
             std::wcerr << L"Failed to save document ensure PDDoc has pages. " << std::endl;
@@ -190,7 +197,7 @@ ASErrorCode APDFLDoc::setASPathName(wchar_t * pathToCreate)
 {
     //Check to make sure there is room for path before copy
     if (wcslen(pathToCreate) <= MAX_PATH_LENGTH)
-        wcscpy(this->nameOfDocument, pathToCreate);
+        wcscpy(nameOfDocument, pathToCreate);
     else
     {
         std::wcerr << L"Failed to create path, please check length of path name." << std::endl;
@@ -203,7 +210,7 @@ ASErrorCode APDFLDoc::setASPathName(wchar_t * pathToCreate)
 
         //Determine size of wchar_t on system and get the ASText
         if (sizeof(wchar_t) == 2)
-            textToCreatePath = ASTextFromUnicode(reinterpret_cast<ASUTF16Val*> (nameOfDocument), kUTF16HostEndian);
+            textToCreatePath = ASTextFromUnicode(reinterpret_cast<ASUTF16Val*>(nameOfDocument), kUTF16HostEndian);
         else
             textToCreatePath = ASTextFromUnicode(reinterpret_cast<ASUTF16Val*>(nameOfDocument), kUTF32HostEndian);
 
