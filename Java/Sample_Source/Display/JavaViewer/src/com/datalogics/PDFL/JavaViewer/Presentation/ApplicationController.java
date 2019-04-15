@@ -6,7 +6,7 @@
  *
  */
 
-package com.datalogics.PDFL.JavaViewer.Presentation;
+package com.datalogics.pdfl.javaviewer.Presentation;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -25,38 +25,38 @@ import com.datalogics.PDFL.Library;
 import com.datalogics.PDFL.LineEndingStyle;
 import com.datalogics.PDFL.OptionalContentGroup;
 import com.datalogics.PDFL.Rect;
-import com.datalogics.PDFL.JavaViewer.Document.JavaDocument;
-import com.datalogics.PDFL.JavaViewer.Document.DocumentListener;
-import com.datalogics.PDFL.JavaViewer.Document.Annotations.AnnotationConsts;
-import com.datalogics.PDFL.JavaViewer.Document.Annotations.AnnotationFactory;
-import com.datalogics.PDFL.JavaViewer.Document.Annotations.AnnotationHolder;
-import com.datalogics.PDFL.JavaViewer.Document.Annotations.AnnotationListener;
-import com.datalogics.PDFL.JavaViewer.Document.Annotations.AnnotationProperties;
-import com.datalogics.PDFL.JavaViewer.Document.Command.BaseAnnotationCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.CloseCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.CommandStack;
-import com.datalogics.PDFL.JavaViewer.Document.Command.CommandType;
-import com.datalogics.PDFL.JavaViewer.Document.Command.CreateAnnotationCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.DocumentCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.MarqueeZoomCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.PendingCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.ViewCommand;
-import com.datalogics.PDFL.JavaViewer.Document.Command.CommandStack.StackListener;
-import com.datalogics.PDFL.JavaViewer.Document.Command.DocumentCommand.State;
-import com.datalogics.PDFL.JavaViewer.Presentation.Cache.PageModel;
-import com.datalogics.PDFL.JavaViewer.Presentation.Enums.ApplicationMode;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.BaseInteractive;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.EditAnnotationInteractive;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.Interactive;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.MarqueeZoomInteractive;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.ScrollModeInteractive;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.ZoomModeInteractive;
-import com.datalogics.PDFL.JavaViewer.Presentation.Interactive.Interactive.InteractiveContext;
-import com.datalogics.PDFL.JavaViewer.Presentation.PDFPresenter.ViewListener;
-import com.datalogics.PDFL.JavaViewer.Views.Interfaces.ColorPicker;
-import com.datalogics.PDFL.JavaViewer.Views.Interfaces.InputData;
-import com.datalogics.PDFL.JavaViewer.Views.Interfaces.PDF;
-import com.datalogics.PDFL.JavaViewer.Views.Interfaces.Viewer;
+import com.datalogics.pdfl.javaviewer.Document.JavaDocument;
+import com.datalogics.pdfl.javaviewer.Document.DocumentListener;
+import com.datalogics.pdfl.javaviewer.Document.Annotations.AnnotationConsts;
+import com.datalogics.pdfl.javaviewer.Document.Annotations.AnnotationFactory;
+import com.datalogics.pdfl.javaviewer.Document.Annotations.AnnotationHolder;
+import com.datalogics.pdfl.javaviewer.Document.Annotations.AnnotationListener;
+import com.datalogics.pdfl.javaviewer.Document.Annotations.AnnotationProperties;
+import com.datalogics.pdfl.javaviewer.Document.Command.BaseAnnotationCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.CloseCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.CommandStack;
+import com.datalogics.pdfl.javaviewer.Document.Command.CommandType;
+import com.datalogics.pdfl.javaviewer.Document.Command.CreateAnnotationCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.DocumentCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.MarqueeZoomCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.PendingCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.ViewCommand;
+import com.datalogics.pdfl.javaviewer.Document.Command.CommandStack.StackListener;
+import com.datalogics.pdfl.javaviewer.Document.Command.DocumentCommand.State;
+import com.datalogics.pdfl.javaviewer.Presentation.Cache.PageModel;
+import com.datalogics.pdfl.javaviewer.Presentation.Enums.ApplicationMode;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.BaseInteractive;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.EditAnnotationInteractive;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.Interactive;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.MarqueeZoomInteractive;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.ScrollModeInteractive;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.ZoomModeInteractive;
+import com.datalogics.pdfl.javaviewer.Presentation.Interactive.Interactive.InteractiveContext;
+import com.datalogics.pdfl.javaviewer.Presentation.PDFPresenter.ViewListener;
+import com.datalogics.pdfl.javaviewer.Views.Interfaces.ColorPicker;
+import com.datalogics.pdfl.javaviewer.Views.Interfaces.InputData;
+import com.datalogics.pdfl.javaviewer.Views.Interfaces.PDF;
+import com.datalogics.pdfl.javaviewer.Views.Interfaces.Viewer;
 
 /**
  * ApplicationController - service class which plays the role of the nexus
@@ -71,8 +71,18 @@ import com.datalogics.PDFL.JavaViewer.Views.Interfaces.Viewer;
 public class ApplicationController implements Application, DocumentListener, ViewListener, StackListener, Interactive, InteractiveContext, AnnotationListener {
     public ApplicationController() {
         library = new Library();
-        if (!Library.enableLicensedBehavior("Gqmeu6ollrqna8Pub5NmKYUwXmyH0IunziAwxui2fXc="))
-            throw new RuntimeErrorException(new Error());
+
+        /* You may find that you receive exceptions when you attempt to open
+         * PDF files that contain permissions restrictions on content or image
+         * extraction.  This is due to the APIs used for viewing: these can
+         * also be used in other contexts for content extraction or enabling
+         * save-as-image capabilities. If you are making a PDF file viewer and
+         * you encounter this situation, please contact your support
+         * representative or support@datalogics.com to request a key to enable
+         * bypassing this restriction check.
+         */
+        //if (!Library.enableLicensedBehavior("xxxxxxxxxxxxxxxxxxxxx="))
+        //    throw new RuntimeErrorException(new Error());
 
         this.pdfPresenter = new PDFPresenter(this);
         this.bookmarksPresenter = new BookmarksPresenter(this);
