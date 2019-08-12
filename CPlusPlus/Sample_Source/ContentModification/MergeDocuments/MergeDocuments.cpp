@@ -42,16 +42,26 @@ DURING
     APDFLDoc doc1 ( csInputFileName1.c_str(), true);
     APDFLDoc doc2 ( csInputFileName2.c_str(), true);
 
-    // Insert doc2's pages into doc1. 
-    //    Here, we've stated PDLastPage, which adds the pages just before the last page of the target.
-    //    If we specify PDBeforeFirstPage instead, doc2's pages will be inserted at the head of doc1.
-    PDDocInsertPages ( doc1.getPDDoc(), 
-                       PDLastPage, 
-                       doc2.getPDDoc(), 
-                       0, 
-                       PDAllPages, 
-                       PDInsertAll, 
-                       NULL, NULL, NULL, NULL);
+    DURING
+        // Insert doc2's pages into doc1.
+        //    Here, we've stated PDLastPage, which adds the pages just before the last page of the target.
+        //    If we specify PDBeforeFirstPage instead, doc2's pages will be inserted at the head of doc1.
+        PDDocInsertPages ( doc1.getPDDoc(),
+                           PDLastPage,
+                           doc2.getPDDoc(),
+                           0,
+                           PDAllPages,
+                           PDInsertAll,
+                           NULL, NULL, NULL, NULL);
+    HANDLER
+        errCode = ERRORCODE;
+        libInit.displayError(errCode);
+
+        if (ERRORCODE != PDSEditError(pdsErrBadStructureTree))
+        {
+            RERAISE();
+        }
+    END_HANDLER
 
     doc1.saveDoc ( csOutputFileName.c_str(), PDSaveFull | PDSaveLinearized, PDSaveCompressed );
 
