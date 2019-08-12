@@ -42,13 +42,19 @@ namespace AddTextToImage
 
 
                 OCRParams ocrParams = new OCRParams();
-                // Setting the segmentation mode to AUTOMATIC lets the OCR engine
-                // choose how to segment the page for text detection.
-                ocrParams.PageSegmentationMode = PageSegmentationMode.Automatic;
-                // This tells the selected engine to improve accuracy at the expense
-                // of increased run time. For Tesseract 3, it runs two different
-                // algorithms, and chooses the one that has the most confidence.
-                ocrParams.Performance = Performance.BestAccuracy;
+                //The OCRParams.Languages parameter controls which languages the OCR engine attempts
+                //to detect. By default the OCR engine searches for English.
+                List<LanguageSetting> langList = new List<LanguageSetting>();
+                LanguageSetting languageOne = new LanguageSetting(Language.English, false);
+                langList.Add(languageOne);
+
+                //You could add additional languages for the OCR engine to detect by adding 
+                //more entries to the LanguageSetting list. 
+
+                //LanguageSetting languageTwo = new LanguageSetting(Language.Japanese, false);
+                //langList.Add(languageTwo);
+                ocrParams.Languages = langList;
+
                 using (OCREngine ocrEngine = new OCREngine(ocrParams))
                 {
                     //Create a document object
