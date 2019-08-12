@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.MergePDF;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,8 +26,8 @@ public class MergePDF {
 
         Library lib = new Library();
 
-        String sInput1 = "../../Resources/Sample_Input/merge_pdf1.pdf";
-        String sInput2 = "../../Resources/Sample_Input/merge_pdf2.pdf";
+        String sInput1 = Library.getResourceDirectory() + "Sample_Input/merge_pdf1.pdf";
+        String sInput2 = Library.getResourceDirectory() + "Sample_Input/merge_pdf2.pdf";
         String sOutput = "MergePDF-out.pdf";
 
         if (args.length > 0)
@@ -43,7 +43,20 @@ public class MergePDF {
         Document doc1 = new Document(sInput1);
         Document doc2 = new Document(sInput2);
 
-        doc1.insertPages(Document.LAST_PAGE, doc2, 0, Document.ALL_PAGES, EnumSet.of(PageInsertFlags.ALL));
+        try
+        {
+            doc1.insertPages(Document.LAST_PAGE, doc2, 0, Document.ALL_PAGES, EnumSet.of(PageInsertFlags.ALL));
+        }
+        catch(LibraryException ex)
+        {
+            if (!ex.getMessage().contains("An incorrect structure tree was found in the PDF file but operation continued"))
+            {
+                throw ex;
+            }
+
+            System.out.println(ex.getMessage());
+        }
+
         doc1.save(EnumSet.of(SaveFlags.FULL, SaveFlags.LINEARIZED), sOutput);
 
         doc1.close();

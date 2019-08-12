@@ -740,8 +740,8 @@ namespace DocToImages
                     if (arg.StartsWith("-region="))
                     {
                         // process page output region option
-                        if (!(opt.Equals("crop") || opt.Equals("media") || opt.Equals("art")) ||
-                            opt.Equals("trim") || opt.Equals("bleed") || opt.Equals("bounding"))
+                        if (!(opt.Equals("crop") || opt.Equals("media") || opt.Equals("art") ||
+                            opt.Equals("trim") || opt.Equals("bleed") || opt.Equals("bounding")))
                         {
                             Console.WriteLine("Invalid value for the region option.  Value values are: crop|media|art|trim|bleed|bounding");
                             Environment.Exit(1);
