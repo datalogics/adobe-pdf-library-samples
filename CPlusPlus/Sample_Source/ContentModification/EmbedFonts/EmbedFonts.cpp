@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2010-2017, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2010-2019, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, see:
 // http://dev.datalogics.com/adobe-pdf-library/adobe-pdf-library-c-language-interface/license-for-downloaded-pdf-samples/
@@ -20,6 +20,7 @@
 // For more detail see the description of the EmbedFonts sample program on our Developer’s site, 
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#embedfonts
 
+#include "CosCalls.h"
 #include "PSFCalls.h"
 #include "PERCalls.h"
 #include "PEWCalls.h"
@@ -49,10 +50,9 @@ int main ( int argc, char **argv)
     std::cout << "Will embed fonts into " << csInputFileName.c_str() << " and rewrite file as "
               << csOutputFileName.c_str() << std::endl;
 
-    ContainerOfFonts vFontsInUse;
+    VectorOfFonts vFontsInUse;
 
 DURING
-
     // Open the input document
     APDFLDoc apdflDoc ( csInputFileName.c_str(), true );
     PDDoc pdDoc = apdflDoc.getPDDoc();
@@ -61,7 +61,7 @@ DURING
     PDDocEnumFonts(pdDoc, 0, PDDocGetNumPages(pdDoc) - 1, GetFontInfoProc, &vFontsInUse, 0, 0);
 
     // Embed a suitable system font for each font in the to-embed list
-    ContainerOfFonts::iterator it, itE = vFontsInUse.end();
+    VectorOfFonts::iterator it, itE = vFontsInUse.end();
     for ( it = vFontsInUse.begin(); it != itE; ++it )
     {
         EmbedSysFontForFontEntry ( *it, pdDoc);
@@ -72,13 +72,59 @@ DURING
    
     // Save the PDF to a new file
     apdflDoc.saveDoc ( csOutputFileName.c_str(), PDSaveFull | PDSaveCollectGarbage );
-
 HANDLER
     APDFLib::displayError(ERRORCODE);
     return ERRORCODE;
 END_HANDLER
  
     return 0;
+}
+
+//Collect any /Differences entries from the /Encoding dictionary if any are present.
+std::vector<const char*> CollectEncodingDifferencesIfPresent(CosObj fontObj)
+{
+    std::vector<const char*> differencesEncoding;
+
+    if (CosObjGetType(fontObj) == CosDict && CosDictKnown(fontObj, ASAtomFromString("Encoding")))
+    {
+        CosObj encodingObj = CosDictGet(fontObj, ASAtomFromString("Encoding"));
+
+        if (CosObjGetType(encodingObj) == CosDict && CosDictKnown(encodingObj, ASAtomFromString("Differences")))
+        {
+            CosObj differencesObj = CosDictGet(encodingObj, ASAtomFromString("Differences"));
+
+            if (CosObjGetType(differencesObj) == CosArray)
+            {
+                //For a simple font there will only be 256 entries at most.
+                differencesEncoding.resize(256);
+
+                ASInt32 differencesLength = CosArrayLength(differencesObj);
+
+                ASInt32 codeValue = 0;
+
+                //Walk through each array entry looking for an Integer that represents the Code Value, the Name that follows
+                //corresponds to that Code Value.  Subsequent Names correspond to the next Code Value, and then the next Code Value,
+                //etc. until an Integer is found which represents a new Code Value for the following Name, etc.
+                for (int index = 0; index < differencesLength; index++)
+                {
+                    CosObj differencesEntry = CosArrayGet(differencesObj, index);
+                    ASInt32 differencesType = CosObjGetType(differencesEntry);
+
+                    if (differencesType == CosInteger)
+                    {
+                        codeValue = CosIntegerValue(differencesEntry);
+                    }
+                    else if (differencesType == CosName)
+                    {
+                        differencesEncoding[codeValue] = ASAtomGetString(CosNameValue(differencesEntry));
+                        codeValue++;
+                    }
+                }
+            }
+        }
+    }
+
+    return differencesEncoding;
 }
 
 void EmbedSysFontForFontEntry(struct _t_pdfUsedFont *fontEntry, PDDoc pdDoc)
@@ -98,7 +144,10 @@ DURING
     }
     else
     {
-        sysEnc = PDSysEncodingCreateFromBaseName(attrs.encoding, NULL);
+        //Collect the /Differences from the /BaseEncoding if present for a simple font.
+        std::vector<const char*> differencesEncoding = CollectEncodingDifferencesIfPresent(fontEntry->fontCosObj);
+
+        sysEnc = PDSysEncodingCreateFromBaseName(attrs.encoding, differencesEncoding.size() > 0 ? differencesEncoding.data() : NULL);
     }
 
     fontEntry->pdSysFont = PDFindSysFontForPDEFont(fontEntry->pdeFont, kPDSysFontMatchNameAndCharSet);
@@ -164,6 +213,24 @@ ACCB1 ASBool ACCB2 GetFontInfoProc(PDFont pdFont, PDFontFlags *pdFontFlagsPtr, v
                 fontSubset = false,
                 fontIsSysFont = false;
 DURING
+    pVectorOfFonts pcf = (pVectorOfFonts)clientData;
+
+    CosObj fontObj = PDFontGetCosObj(pdFont);
+
+    //Check if we already have this font in our list and if we do, skip it.
+    for (std::vector<_t_pdfUsedFont*>::const_iterator usedFontIterator = pcf->begin(); usedFontIterator != pcf->end(); usedFontIterator++)
+    {
+        if (CosDictKnown(fontObj, ASAtomFromString("FontDescriptor")))
+        {
+            CosObj fontDescriptorObj = CosDictGet(fontObj, ASAtomFromString("FontDescriptor"));
+
+            if (CosObjGetType(fontDescriptorObj) == CosDict && CosObjEqual((*usedFontIterator)->fontDescriptorObj, fontDescriptorObj))
+            {
+                return true;
+            }
+        }
+    }
+
     memset(&attrs, 0, sizeof(attrs));
 
     PDFontGetName(pdFont, fontNameBuf, PSNAMESIZE);
@@ -207,9 +274,21 @@ DURING
     // that are fully embedded in the PDF file.
     if (fontIsSysFont && !fontEmbedded)
     {
-        pContainerOfFonts pcf = (pContainerOfFonts)clientData;
         cosFont = PDFontGetCosObj(pdFont);
-        pcf->push_back ( new _t_pdfUsedFont ( cosFont ) );
+
+        _t_pdfUsedFont* usedFont = new _t_pdfUsedFont(cosFont);
+
+        if (CosDictKnown(cosFont, ASAtomFromString("FontDescriptor")))
+        {
+            CosObj cosFontDescriptor = CosDictGet(cosFont, ASAtomFromString("FontDescriptor"));
+
+            if (CosObjGetType(cosFontDescriptor) == CosDict)
+            {
+                usedFont->fontDescriptorObj = cosFontDescriptor;
+            }
+        }
+
+        pcf->push_back(usedFont);
     }
 HANDLER
     std::cout << "Exception raised in GetFontInfoProc(): "; 
