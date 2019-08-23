@@ -147,7 +147,7 @@ DURING
         //Collect the /Differences from the /BaseEncoding if present for a simple font.
         std::vector<const char*> differencesEncoding = CollectEncodingDifferencesIfPresent(fontEntry->fontCosObj);
 
-        sysEnc = PDSysEncodingCreateFromBaseName(attrs.encoding, differencesEncoding.size() > 0 ? differencesEncoding.data() : NULL);
+        sysEnc = PDSysEncodingCreateFromBaseName(attrs.encoding, differencesEncoding.size() > 0 ? &(*differencesEncoding.begin()) : NULL);
     }
 
     fontEntry->pdSysFont = PDFindSysFontForPDEFont(fontEntry->pdeFont, kPDSysFontMatchNameAndCharSet);
