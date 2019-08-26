@@ -27,8 +27,8 @@ namespace MergePDF
             using (Library lib = new Library())
             {
 
-                String sInput1 = "../../Resources/Sample_Input/merge_pdf1.pdf";
-                String sInput2 = "../../Resources/Sample_Input/merge_pdf2.pdf";
+                String sInput1 = Library.ResourceDirectory + "Sample_Input/merge_pdf1.pdf";
+                String sInput2 = Library.ResourceDirectory + "Sample_Input/merge_pdf2.pdf";
                 String sOutput = "../MergePDF-out.pdf";
 
                 if (args.Length > 0)
@@ -46,7 +46,18 @@ namespace MergePDF
 
                 Document doc2 = new Document(sInput2);
 
-                doc1.InsertPages(Document.LastPage, doc2, 0, Document.AllPages, PageInsertFlags.All);
+                try
+                {
+                    doc1.InsertPages(Document.LastPage, doc2, 0, Document.AllPages, PageInsertFlags.All);
+                }
+                catch(LibraryException ex)
+                {
+                    if (!ex.Message.Contains("An incorrect structure tree was found in the PDF file but operation continued"))
+                    {
+                        throw ex;
+                    }
+                    Console.Out.WriteLine(ex.Message);
+                }
 
                 doc1.Save(SaveFlags.Full | SaveFlags.Linearized, sOutput);
             }

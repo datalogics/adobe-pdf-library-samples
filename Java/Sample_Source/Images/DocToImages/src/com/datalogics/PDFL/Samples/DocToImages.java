@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.DocToImages;
 
 /*
  * 
@@ -287,6 +287,7 @@ public class DocToImages
          }
     }
     
+    @SuppressWarnings("unchecked")
     public static void main(String[] args)
     {
         String docpath;
@@ -512,8 +513,8 @@ public class DocToImages
                 if (arg.startsWith("-region="))
                 {
                     // process page output region option
-                    if (!(opt.equals("crop") || opt.equals("media") || opt.equals("art")) ||
-                        opt.equals("trim") || opt.equals("bleed") || opt.equals("bounding"))
+                    if (!(opt.equals("crop") || opt.equals("media") || opt.equals("art") ||
+                        opt.equals("trim") || opt.equals("bleed") || opt.equals("bounding")))
                     {
                         System.out.println("Invalid value for the region option.  Value values are: crop|media|art|trim|bleed|bounding");
                         System.exit(1);
