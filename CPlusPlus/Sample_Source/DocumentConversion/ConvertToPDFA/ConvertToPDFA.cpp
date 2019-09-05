@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2017-2019, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -7,15 +7,18 @@
 // ConvertToPDFA converts the input PDF to a PDF/A compliant PDF.
 //
 // Command-line:  <input-pdf> <convert-option> <color-space>      (all parameters are optional moving from left to right)
-//        where convert-option is 'PDF1b' or 'PDF1a' and where color-space is 'rgb' or 'cmyk'
-//        if no parameters are specified, a pre-selected PDF is input and converted using PDFA1bRGB
+//        where convert-option is '1a', '1b', '2b', '2u', '3b', or '3u' and where color-space is 'rgb' or 'cmyk'
+//        if no parameters are specified, a pre-selected PDF is input and converted using 1b RGB.
 //
 //        For example, you might enter a command line statement that looks like this:
 //
-//        ConvertToPDFA input-file.pdf PDF1a
+//        ConvertToPDFA input-file.pdf 2b
 //
-//        This statement provides the name of an input file and specifies the PDF/A-1a format, rather than
+//        This statement provides the name of an input file and specifies the PDF/A-2b format, rather than
 //        the default PDF/A-1b format.
+//
+//        NOTE: Level A conformance requires logical structure information (tagging) exist for the document, if this is not
+//        present.  Conversion will be re-attempted using Level B conformance.
 // For more detail see the description of the ConvertToPDFA sample program on our Developer’s site, 
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#converttopdfa
 
@@ -46,7 +49,7 @@ int main(int argc, char **argv)
         convertOption = kPDFProcessorConvertToPDFA1bRGB;
         outputPathName = DEF_OUTPUT;
     }
-    else if (argc > 2 && (!strcmp(argv[2], "PDFA1b") || !strcmp(argv[2], "PDFA1B")))
+    else if (argc > 2 && (!strcmp(argv[2], "1b") || !strcmp(argv[2], "1B")))
     {
         if (argc > 3)
         {
@@ -65,7 +68,7 @@ int main(int argc, char **argv)
         }
         outputPathName = DEF_OUTPUT;
     }
-    else if (argc > 2 && (!strcmp(argv[2], "PDFA1a") || !strcmp(argv[2], "PDFA1A")))
+    else if (argc > 2 && (!strcmp(argv[2], "1a") || !strcmp(argv[2], "1A")))
     {
         if (argc > 3)
         {
@@ -81,6 +84,82 @@ int main(int argc, char **argv)
         else
         {
             convertOption = kPDFProcessorConvertToPDFA1aRGB;
+        }
+        outputPathName = DEF_OUTPUT;
+    }
+    else if (argc > 2 && (!strcmp(argv[2], "2b") || !strcmp(argv[2], "2B")))
+    {
+        if (argc > 3)
+        {
+            if (!strcmp(argv[3], "rgb") || !strcmp(argv[3], "RGB"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA2bRGB;
+            }
+            else if (!strcmp(argv[3], "cmyk") || !strcmp(argv[3], "CMYK"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA2bCMYK;
+            }
+        }
+        else
+        {
+            convertOption = kPDFProcessorConvertToPDFA2bRGB;
+        }
+        outputPathName = DEF_OUTPUT;
+    }
+    else if (argc > 2 && (!strcmp(argv[2], "2u") || !strcmp(argv[2], "2U")))
+    {
+        if (argc > 3)
+        {
+            if (!strcmp(argv[3], "rgb") || !strcmp(argv[3], "RGB"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA2uRGB;
+            }
+            else if (!strcmp(argv[3], "cmyk") || !strcmp(argv[3], "CMYK"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA2uCMYK;
+            }
+        }
+        else
+        {
+            convertOption = kPDFProcessorConvertToPDFA2uRGB;
+        }
+        outputPathName = DEF_OUTPUT;
+    }
+    else if (argc > 2 && (!strcmp(argv[2], "3b") || !strcmp(argv[2], "3B")))
+    {
+        if (argc > 3)
+        {
+            if (!strcmp(argv[3], "rgb") || !strcmp(argv[3], "RGB"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA3bRGB;
+            }
+            else if (!strcmp(argv[3], "cmyk") || !strcmp(argv[3], "CMYK"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA3bCMYK;
+            }
+        }
+        else
+        {
+            convertOption = kPDFProcessorConvertToPDFA3bRGB;
+        }
+        outputPathName = DEF_OUTPUT;
+    }
+    else if (argc > 2 && (!strcmp(argv[2], "3u") || !strcmp(argv[2], "3U")))
+    {
+        if (argc > 3)
+        {
+            if (!strcmp(argv[3], "rgb") || !strcmp(argv[3], "RGB"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA3uRGB;
+            }
+            else if (!strcmp(argv[3], "cmyk") || !strcmp(argv[3], "CMYK"))
+            {
+                convertOption = kPDFProcessorConvertToPDFA3uCMYK;
+            }
+        }
+        else
+        {
+            convertOption = kPDFProcessorConvertToPDFA3uRGB;
         }
         outputPathName = DEF_OUTPUT;
     }
@@ -129,7 +208,46 @@ DURING
         std::cout << "Converting using PDFProcessorConvertAndSaveToPDFA (with Callback)" << std::endl;
         SetupPDFAProcessorParams(&userParamsA);
 
-        res = PDFProcessorConvertAndSaveToPDFA(inAPDoc.getPDDoc(), destFilePath, ASGetDefaultFileSys(), convertOption, &userParamsA);
+        bool levelAConversionNotPossible = false;
+
+        DURING
+            res = PDFProcessorConvertAndSaveToPDFA(inAPDoc.getPDDoc(), destFilePath, ASGetDefaultFileSys(), convertOption, &userParamsA);
+        HANDLER
+            errCode = ERRORCODE;
+
+            char errStr[250];
+            ASGetErrorString(errCode, errStr, sizeof(errStr));
+
+            bool levelAConformanceNotPossible = false;
+
+            if (strcmp(errStr, "Structure Tree Root Is Missing") == 0)
+            {
+                std::cout << std::endl << "PDF/A Level A requires logical structure information (tagging), the input PDF was not " << std::endl
+                          << "created with this information and this information can not be created automatically." << std::endl
+                          << "Conversion will be re-attempted using Level B conformance instead." << std::endl << std::endl;
+
+                if (!strcmp(argv[3], "rgb") || !strcmp(argv[3], "RGB"))
+                {
+                    convertOption = kPDFProcessorConvertToPDFA1bRGB;
+                }
+                else if (!strcmp(argv[3], "cmyk") || !strcmp(argv[3], "CMYK"))
+                {
+                    convertOption = kPDFProcessorConvertToPDFA1bCMYK;
+                }
+
+                errCode = 0;
+                levelAConversionNotPossible = true;
+            }
+            else
+            {
+                RERAISE();
+            }
+        END_HANDLER
+
+        if (levelAConversionNotPossible)
+        {
+            res = PDFProcessorConvertAndSaveToPDFA(inAPDoc.getPDDoc(), destFilePath, ASGetDefaultFileSys(), convertOption, &userParamsA);
+        }
 
         if(res)
         {
@@ -191,4 +309,6 @@ void SetupPDFAProcessorParams(PDFProcessorPDFAConvertParams userParams)
     userParams->noRasterizationOnFontErrors = false;
     userParams->removeAllAnnotations = false;
     userParams->colorCompression = kPDFProcessorColorJpegCompression;
+    userParams->noValidationErrors = false;
+    userParams->validateImplementationLimitsOfDocument = true;
 }
