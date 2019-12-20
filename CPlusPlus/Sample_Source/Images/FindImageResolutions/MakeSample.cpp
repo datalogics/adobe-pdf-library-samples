@@ -283,13 +283,13 @@ void CompleteImageTable(CosDoc doc) {
 
     ImageDesc *current = &ImageTable[DPI300bgStencil];
     ImageDesc *base = &ImageTable[DPI300bg];
-    memmove(&current->m_attrs, &base->m_attrs, sizeof(ImageDesc));
+    memmove(&current->m_attrs, &base->m_attrs, sizeof(PDEImageAttrs));
     current->m_cosImage = CosObjCopy(base->m_cosImage, doc, true);
     CosDictPutKeyString(current->m_cosImage, "Mask", ImageTable[DPI300Mask].m_cosImage);
 
     current = &ImageTable[DPI300sMask];
     base = &ImageTable[DPI300Mask];
-    memmove(&current->m_attrs, &base->m_attrs, sizeof(ImageDesc));
+    memmove(&current->m_attrs, &base->m_attrs, sizeof(PDEImageAttrs));
     current->m_cosImage = CosObjCopy(base->m_cosImage, doc, true);
     CosDictPutKeyString(current->m_cosImage, "ColorSpace", CosNewNameFromString(doc, false, "DeviceGray"));
     CosDictRemoveKeyString(current->m_cosImage, "ImageMask");
@@ -297,13 +297,13 @@ void CompleteImageTable(CosDoc doc) {
 
     current = &ImageTable[DPI300bgSmask];
     base = &ImageTable[DPI300bg];
-    memmove(&current->m_attrs, &base->m_attrs, sizeof(ImageDesc));
+    memmove(&current->m_attrs, &base->m_attrs, sizeof(PDEImageAttrs));
     current->m_cosImage = CosObjCopy(base->m_cosImage, doc, true);
     CosDictPutKeyString(current->m_cosImage, "SMask", ImageTable[DPI300sMask].m_cosImage);
 
     current = &ImageTable[DPI300SMForm];
     base = &ImageTable[DPI300sMask];
-    memmove(&current->m_attrs, &base->m_attrs, sizeof(ImageDesc));
+    memmove(&current->m_attrs, &base->m_attrs, sizeof(PDEImageAttrs));
     PDEColorSpace rgbSpace = PDEColorSpaceCreateFromName(ASAtomFromString("DeviceRGB"));
     ASDoubleMatrix unity = {base->m_attrs.width, 0, 0, base->m_attrs.height, 0, 0};
     PDEImage smImage = PDEImageCreateFromCosObjEx(&base->m_cosImage, &unity, rgbSpace, NULL);
