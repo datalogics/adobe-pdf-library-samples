@@ -39,6 +39,9 @@
 **
 */
 
+#include <cstdio>
+#include <cmath>
+
 #include "APDFLDoc.h"
 #include "InitializeLibrary.h"
 
@@ -49,10 +52,13 @@
 #include "ASCalls.h"
 #include "PagePDECntCalls.h"
 
-#include "io.h"
-
 #ifdef WIN_PLATFORM
+#include "io.h"
 #define access _access
+#endif
+
+#ifdef UNIX_PLATFORM
+#include <unistd.h>
 #endif
 
 #define INPUT_LOC "../../../../Resources/Sample_Input/"
@@ -195,7 +201,7 @@ void  AddWatermarkToPage(CosObj cosPage, ASDoubleMatrix matrix, char *text, CosO
     /* insert a push, and a cm to the matrix supplied
     */
     strcat(watermark, "q ");
-    sprintf_s(work, 1024, "%1.5f %1.5f %1.5f %1.5f %1.5f %1.5f cm\n", matrix.a, matrix.b, matrix.c, matrix.d, matrix.h, matrix.v);
+    sprintf(work, "%1.5f %1.5f %1.5f %1.5f %1.5f %1.5f cm\n", matrix.a, matrix.b, matrix.c, matrix.d, matrix.h, matrix.v);
     strcat(watermark, work);
 
     /* Start a text block */
@@ -214,9 +220,9 @@ void  AddWatermarkToPage(CosObj cosPage, ASDoubleMatrix matrix, char *text, CosO
     {
         strcat(watermark, "2 Tr 0.5 w\n");
         if ((strokeColor->R == strokeColor->G) && (strokeColor->R == strokeColor->B))
-            sprintf_s(work, 1024, "%1.3f G\n", strokeColor->R);
+            sprintf(work, "%1.3f G\n", strokeColor->R);
         else
-            sprintf_s(work, 1024, "%1.3f %1.3f %1.3f RG\n", strokeColor->R, strokeColor->G, strokeColor->B);
+            sprintf(work, "%1.3f %1.3f %1.3f RG\n", strokeColor->R, strokeColor->G, strokeColor->B);
         strcat(watermark, work);
     }
     else
@@ -225,9 +231,9 @@ void  AddWatermarkToPage(CosObj cosPage, ASDoubleMatrix matrix, char *text, CosO
     /* Set the text color */
     /*if the color channels are all the same, use gray, otheriwse use RGB */
     if ((textColor->R == textColor->G) && (textColor->R == textColor->B))
-        sprintf_s(work, 1024, "%1.3f g\n", textColor->R);
+        sprintf(work, "%1.3f g\n", textColor->R);
     else
-        sprintf_s(work, 1024, "%1.3f %1.3f %1.3f rg\n", textColor->R, textColor->G, textColor->B);
+        sprintf(work, "%1.3f %1.3f %1.3f rg\n", textColor->R, textColor->G, textColor->B);
     strcat(watermark, work);
 
     CosObj opacityGS = CosNewNull();
@@ -245,8 +251,8 @@ void  AddWatermarkToPage(CosObj cosPage, ASDoubleMatrix matrix, char *text, CosO
 
     /* Write the text string 
     */
-    sprintf_s(work, 1024, "(%s) Tj\n", text);
-    strcat (watermark, work);
+    sprintf(work, "(%s) Tj\n", text);
+    strcat(watermark, work);
 
     /* end the text, and pop the stack*/
     strcat(watermark, "ET\nQ");
