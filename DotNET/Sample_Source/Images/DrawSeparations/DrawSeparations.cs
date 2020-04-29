@@ -32,7 +32,7 @@ namespace DrawSeparations
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "../DrawSeparations-out";
 
                 if (args.Length > 0)
@@ -63,12 +63,20 @@ namespace DrawSeparations
 
                 // Must invert the page to get from PDF with origin at lower left,
                 // to a bitmap with the origin at upper right.
-                Matrix matrix = new Matrix().Scale(1, -1).Translate(0, -height);
+                Matrix matrix = new Matrix().Scale(1, -1).Translate(-pg.MediaBox.Left, -pg.MediaBox.Top);
 
                 DrawParams parms = new DrawParams();
                 parms.Matrix = matrix;
                 parms.DestRect = new Rect(0, 0, width, height);
                 parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces;
+
+                double bottom = 0;
+                if (pg.MediaBox.Bottom != 0)
+                {
+                    bottom = pg.MediaBox.Bottom < 0 ? -pg.MediaBox.Top : pg.MediaBox.Top;
+                }
+
+                parms.UpdateRect = new Rect(pg.MediaBox.Left, bottom, width, height);
 
                 // Acquiring list of separations
                 List<Bitmap> separatedColorChannels = pg.DrawContents(parms, colorants);
