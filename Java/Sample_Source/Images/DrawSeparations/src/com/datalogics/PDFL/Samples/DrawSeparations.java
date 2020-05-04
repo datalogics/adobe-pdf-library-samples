@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.DrawSeparations;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -38,8 +38,8 @@ public class DrawSeparations {
         Library lib = new Library();
 
         try {
-            String sInput = "../../Resources/Sample_Input/ducky.pdf";
-            String sOutput = "DrawSeparations-out-";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
+            String sOutput = "DrawSeparations-out.pdf";
             if (args.length > 0)
                 sInput = args[0];
             if (args.length > 1)
@@ -67,13 +67,21 @@ public class DrawSeparations {
 
             // Must invert the page to get from PDF with origin at lower left,
             // to a bitmap with the origin at upper right.
-            Matrix matrix = new Matrix().scale(1, -1).translate(0, -height);
+            Matrix matrix = new Matrix().scale(1, -1).translate(-pg.getMediaBox().getLeft(), -pg.getMediaBox().getTop());
             
             DrawParams params = new DrawParams();
             params.setMatrix(matrix);
             params.setDestRect(new Rect(0, 0, width, height));
             params.setFlags(EnumSet.of(DrawFlags.DO_LAZY_ERASE, DrawFlags.USE_ANNOT_FACES));
-            
+
+            double bottom = 0;
+            if (pg.getMediaBox().getBottom() != 0)
+            {
+                bottom = pg.getMediaBox().getBottom() < 0 ? -pg.getMediaBox().getTop() : pg.getMediaBox().getTop();
+            }
+
+            params.setUpdateRect(new Rect(pg.getMediaBox().getLeft(), bottom, width, height));
+
             // Acquiring list of separations
             List<BufferedImage> separatedImages = pg.drawContents(params, colorants);
             
