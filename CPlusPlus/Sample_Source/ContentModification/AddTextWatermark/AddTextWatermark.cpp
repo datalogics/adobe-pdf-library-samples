@@ -118,6 +118,7 @@ ASTCount CopyStreamAddingWatermark(char *data, ASTArraySize nData, void *clientD
         return (length);
     }
 
+    ASTArraySize bytesRead = 0;
     if (!info->currentStream)
     {
         /* The first time we are called is the only time this will be true. 
@@ -125,10 +126,22 @@ ASTCount CopyStreamAddingWatermark(char *data, ASTArraySize nData, void *clientD
         */
         CosObj work = CosArrayGet(info->pageArray, 0);
         info->currentStream = CosStreamOpenStm(work, cosOpenFiltered);
+
+        /* Insert a "save" before all stream contentm then
+        ** Copy from the current stream to the new stream */
+        data[0] = 'q';
+        data[1] = ' ';
+        bytesRead = ASStmRead(data+2, 1, nData-2, info->currentStream) + 2;
+    }
+    else
+    {
+        /* Copy from the current stream to the new stream */
+        bytesRead = ASStmRead(data, 1, nData, info->currentStream);
     }
 
-    /* Copy from the current stream to the new stream */
-    ASTArraySize bytesRead = ASStmRead(data, 1, nData, info->currentStream);
+    if (bytesRead == nData)
+        return (bytesRead);
+
 
     /* If the number of bytes copied is less than the size of the buffer
     ** open the next stream
@@ -148,6 +161,9 @@ ASTCount CopyStreamAddingWatermark(char *data, ASTArraySize nData, void *clientD
         ASTArraySize bytesRead2 = ASStmRead(&data[bytesRead], 1, nData-bytesRead, info->currentStream);
         bytesRead += bytesRead2;
     }
+
+    if (bytesRead == nData)
+        return (bytesRead);
 
     /* Close the last stream */
     ASStmClose(info->currentStream);
@@ -198,9 +214,10 @@ void  AddWatermarkToPage(CosObj cosPage, ASDoubleMatrix matrix, char *text, CosO
     char work[1024];
     watermark[0] = 0;
 
-    /* insert a push, and a cm to the matrix supplied
+    /* insert a POP to match the push we added before the stream, 
+    ** then insert a push, and a cm to the matrix supplied
     */
-    strcat(watermark, "q ");
+    strcat(watermark, "Q q ");
     sprintf(work, "%1.5f %1.5f %1.5f %1.5f %1.5f %1.5f cm\n", matrix.a, matrix.b, matrix.c, matrix.d, matrix.h, matrix.v);
     strcat(watermark, work);
 
