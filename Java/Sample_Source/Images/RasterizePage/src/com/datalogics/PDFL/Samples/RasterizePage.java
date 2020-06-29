@@ -1,7 +1,8 @@
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.RasterizePage;
 
 import com.datalogics.PDFL.*;
+import java.util.EnumSet;
 
 public class RasterizePage {
 
@@ -44,7 +45,7 @@ public class RasterizePage {
         try {
             System.out.println("Initialized the library.");
             
-            String sInput = "../../Resources/Sample_Input/ducky.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
             String sOutput = "RasterizePage";
 
             if (args.length > 0)
@@ -68,6 +69,7 @@ public class RasterizePage {
 
             // Create a PageImageParams with the default settings.
             PageImageParams pip = new PageImageParams();
+            pip.setPageDrawFlags(EnumSet.of(DrawFlags.USE_ANNOT_FACES));
 
             // Set the PixelWidth to be exactly 400 pixels.
             // We don't need to set the PixelHeight, as DLE will calculate
@@ -123,6 +125,7 @@ public class RasterizePage {
         double scalefactor = 0.5;
         double resolution = 96.0;
         PageImageParams pip = scalePage(pg, scalefactor, resolution);
+        pip.setPageDrawFlags(EnumSet.of(DrawFlags.USE_ANNOT_FACES));
         pip.setImageColorSpace(cspace);
 
         // Create the image and save it to a file.
@@ -176,6 +179,7 @@ public class RasterizePage {
         // pixel width and height of the image.  We'll create a PageImageParams object
         // to store this information.
         PageImageParams pip = new PageImageParams();
+        pip.setPageDrawFlags(EnumSet.of(DrawFlags.USE_ANNOT_FACES));
         pip.setPixelWidth((int)(physWidth * resolution));
         pip.setPixelHeight((int)(physHeight * resolution));
         pip.setHorizontalResolution(resolution);
@@ -193,6 +197,7 @@ public class RasterizePage {
         // the bitmap, so we won't change these settings from the default.
 
         PageImageParams pip = new PageImageParams();
+        pip.setPageDrawFlags(EnumSet.of(DrawFlags.USE_ANNOT_FACES));
         pip.setImageColorSpace(cspace);
 
         // Set up our exportRect to define the drawing area.

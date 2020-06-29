@@ -43,7 +43,7 @@ namespace RasterizePage
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "../RasterizePage.pdf";
 
                 if (args.Length > 0)
@@ -66,6 +66,7 @@ namespace RasterizePage
 
                 // Create a PageImageParams with the default settings.
                 PageImageParams pip = new PageImageParams();
+                pip.PageDrawFlags = DrawFlags.UseAnnotFaces;
 
                 // Set the PixelWidth to be exactly 400 pixels.
                 // We don't need to set the PixelHeight, as the Library will calculate
@@ -125,6 +126,7 @@ namespace RasterizePage
             double scalefactor = 0.5;
             double resolution = 96.0;
             PageImageParams pip = ScalePage(pg, scalefactor, resolution);
+            pip.PageDrawFlags = DrawFlags.UseAnnotFaces;
             pip.ImageColorSpace = cspace;
 
             // Create the image and save it to a file.
@@ -178,6 +180,7 @@ namespace RasterizePage
             // pixel width and height of the image.  We'll create a PageImageParams object
             // to store this information.
             PageImageParams pip = new PageImageParams();
+            pip.PageDrawFlags = DrawFlags.UseAnnotFaces;
             pip.PixelWidth = (int)(physWidth * resolution);
             pip.PixelHeight = (int)(physHeight * resolution);
             pip.HorizontalResolution = resolution;
@@ -196,6 +199,7 @@ namespace RasterizePage
             // the bitmap, so we won't change these settings from the default.
 
             PageImageParams pip = new PageImageParams();
+            pip.PageDrawFlags = DrawFlags.UseAnnotFaces;
             pip.ImageColorSpace = cspace;
 
             // Set up our exportRect to define the drawing area.
