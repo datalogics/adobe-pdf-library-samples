@@ -31,7 +31,7 @@ namespace PageLabels
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/pagelabels.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/pagelabels.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

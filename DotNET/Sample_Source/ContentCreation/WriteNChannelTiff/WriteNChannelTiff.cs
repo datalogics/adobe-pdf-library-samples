@@ -33,7 +33,7 @@ namespace WriteNChannelTiff
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sOutput = "../WriteNChannelTiff-out.tif";
 
                 if(args.Length > 0)

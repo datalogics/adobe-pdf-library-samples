@@ -32,7 +32,7 @@ namespace CreateLayer
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "../CreateLayer-out.pdf";
 
                 if (args.Length > 0)

@@ -31,8 +31,8 @@ namespace ImageSoftMask
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/ducky.jpg";
-                String sMask = "../../Resources/Sample_Input/Mask.tif";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
+                String sMask = Library.ResourceDirectory + "Sample_Input/Mask.tif";
                 String sOutput = "../ImageSoftMask-out.pdf";
 
                 if (args.Length > 0)

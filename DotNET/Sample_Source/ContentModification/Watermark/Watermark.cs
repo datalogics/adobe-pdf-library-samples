@@ -33,8 +33,8 @@ namespace Watermark
 
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
-                String sWatermark = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
+                String sWatermark = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "../Watermark-out.pdf";
 
                 if (args.Length > 0)

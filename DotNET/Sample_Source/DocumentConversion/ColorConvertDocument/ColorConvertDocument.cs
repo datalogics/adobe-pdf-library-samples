@@ -31,13 +31,13 @@ namespace ColorConvertDocument
             Console.WriteLine("ColorConvertDocument Sample:");
 
             List<string> paths = new List<string>();
-            paths.Add("../../Resources/Fonts/");
+            paths.Add(Library.ResourceDirectory + "Fonts/");
 
-            using (Library lib = new Library(paths, "../../Resources/CMap/", "../../Resources/Unicode/", "../../Resources/Color", LibraryFlags.DisableMemorySuballocator))
+            using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap/", Library.ResourceDirectory + "Unicode/", Library.ResourceDirectory + "Color", LibraryFlags.DisableMemorySuballocator))
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "../ColorConvertDocument-out.pdf";
 
                 if (args.Length > 0)

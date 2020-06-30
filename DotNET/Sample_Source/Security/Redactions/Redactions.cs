@@ -28,7 +28,7 @@ namespace Redactions
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sOutput1 = "../Redactions-out.pdf";
                 String sOutput2 = "../Redactions-out-applied.pdf";
 
@@ -78,12 +78,26 @@ namespace Redactions
 
                 Console.WriteLine("Found Cloudy instances: " + cloudyQuads.Count);
                 Color red = new Color(1.0, 0.0, 0.0);
+                Color white = new Color(1.0);
 
                 Redaction not_cloudy = new Redaction(docpage, cloudyQuads, red);
+
+                /* fill the "normal" appearance with 20% red */
+                not_cloudy.FillNormal = true;
+                not_cloudy.SetFillColor (red, 0.25);
 
                 Console.WriteLine("Found rain instances: " + rainQuads.Count);
                 Redaction no_rain = new Redaction(docpage, rainQuads);
                 no_rain.InternalColor = new Color(0.0, 1.0, 0.0);
+
+                /* Fill the redaction with the word "rain", drawn in white */
+                no_rain.OverlayText = "rain";
+                no_rain.Repeat = true;
+                no_rain.ScaleToFit = true;
+                no_rain.TextColor = white;
+                no_rain.FontFace = "CourierStd";
+                no_rain.FontSize = 8.0;
+
                 doc.Save(SaveFlags.Full, sOutput1);
 
                 Console.WriteLine("Wrote a pdf doc with unapplied redactions.");

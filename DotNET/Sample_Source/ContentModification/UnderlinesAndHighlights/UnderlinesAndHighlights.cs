@@ -28,8 +28,8 @@ namespace UnderlinesAndHighlights
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
-                String sOutput = "../HighlightAndUnderlineAnnotations-out.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
+                String sOutput = "../UnderlinesAndHighlights-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

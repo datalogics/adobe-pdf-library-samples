@@ -29,7 +29,7 @@ namespace GetSeparatedImages
         {
             Console.WriteLine("GetSeparatedImages Sample:");
 
-            String sInput = "../../Resources/Sample_Input/ducky.pdf";
+            String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
             String sOutput = "../GetSeparatedImages-out.tiff";
 
             if (args.Length > 0)

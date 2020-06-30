@@ -31,7 +31,7 @@ namespace ListInfo
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sOutput = "../ListInfo-out.pdf";
 
                 if (args.Length > 0)

@@ -30,16 +30,16 @@ namespace ImageImportSample
                 Console.WriteLine("Initialized the library.");
                 Document doc = new Document();
 
-                String sInput = "../../Resources/Sample_Input/ducky.jpg";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
                 String sOutput = "../ImageImport-out1.pdf";
-
-                Console.WriteLine("Reading image file" + sInput + " and writing " + sOutput);
 
                 if (args.Length > 0)
                     sInput = args[0];
 
                 if (args.Length > 1)
                     sOutput = args[1];
+
+                Console.WriteLine("Reading image file" + sInput + " and writing " + sOutput);
 
                 using (Image newimage = new Image(sInput, doc))
                 {

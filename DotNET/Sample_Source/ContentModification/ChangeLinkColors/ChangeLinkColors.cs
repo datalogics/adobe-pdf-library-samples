@@ -32,7 +32,7 @@ namespace ChangeLinkColors
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample_links.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample_links.pdf";
                 String sOutput = "../ChangeLinkColors-out.pdf";
 
                 if (args.Length > 0)

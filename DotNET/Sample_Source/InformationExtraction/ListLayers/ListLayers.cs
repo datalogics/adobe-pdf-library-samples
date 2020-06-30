@@ -28,7 +28,7 @@ namespace ListLayers
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/Layers.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/Layers.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

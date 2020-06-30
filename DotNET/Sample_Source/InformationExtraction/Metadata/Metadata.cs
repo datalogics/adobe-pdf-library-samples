@@ -28,8 +28,8 @@ namespace Metadata
             using (Library lib = new Library())
             {
 
-                String sInput1 = "../../Resources/Sample_Input/sample.pdf";
-                String sInput2 = "../../Resources/Sample_Input/Ducky_with_metadata.pdf";
+                String sInput1 = Library.ResourceDirectory + "Sample_Input/sample.pdf";
+                String sInput2 = Library.ResourceDirectory + "Sample_Input/Ducky_with_metadata.pdf";
                 String sOutput = "../sample-metadata-out.pdf";
 
                 if (args.Length > 0)

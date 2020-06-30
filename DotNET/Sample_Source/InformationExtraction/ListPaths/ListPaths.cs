@@ -29,7 +29,7 @@ namespace ListPaths
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
