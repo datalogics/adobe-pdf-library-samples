@@ -24,7 +24,7 @@ namespace LaunchActions
             using (Library lib = new Library())
             {
 
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "../LaunchActions-out.pdf";
 
                 if (args.Length > 0)

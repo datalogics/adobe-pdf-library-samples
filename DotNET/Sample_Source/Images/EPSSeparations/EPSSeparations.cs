@@ -30,8 +30,8 @@ namespace Actions
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput1 = "../../Resources/Sample_Input/spotcolors1.pdf";
-                String sInput2 = "../../Resources/Sample_Input/spotcolors.pdf";
+                String sInput1 = Library.ResourceDirectory + "Sample_Input/spotcolors1.pdf";
+                String sInput2 = Library.ResourceDirectory + "Sample_Input/spotcolors.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];

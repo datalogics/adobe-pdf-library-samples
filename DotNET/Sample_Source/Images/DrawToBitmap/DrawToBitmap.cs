@@ -313,10 +313,11 @@ namespace DrawToBitmap
             using (DrawParams parms = new DrawParams())
             {
                 parms.ColorSpace = ColorSpace.DeviceRGB;
-                parms.DestRect = new Rect(0, 0, width, height);
+                parms.UpdateRect = pg.MediaBox;
                 parms.Matrix = matrix;
                 parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces | DrawFlags.SwapComponents;
                 parms.SmoothFlags = SmoothFlags.Image | SmoothFlags.Text;
+                parms.DestRect = parms.UpdateRect.Transform(matrix);
 
                 parms.CancelProc = new SampleCancelProc();
                 parms.ProgressProc = new SampleRenderProgressProc();
@@ -339,8 +340,8 @@ namespace DrawToBitmap
                 IntPtr p = Marshal.UnsafeAddrOfPinnedArrayElement(rawBytes, 0);
                 if (p != null)
                 {   // Make a Bitmap...
-                    int w = (int)Math.Ceiling(width);
-                    int h = (int)Math.Ceiling(height);
+                    int w = (int)width;
+                    int h = (int)height;
                     int stride = (w * 3 /* components */ + 3 /* padding */) & ~3;
 
                     using (Bitmap bitmap = new Bitmap(w, h, stride, PixelFormat.Format24bppRgb, p))
@@ -365,7 +366,7 @@ namespace DrawToBitmap
                 {
                     Console.WriteLine("Initialized the library.");
 
-                    String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                    String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
 
                     if (args.Length > 0)
                         sInput = args[0];
@@ -384,7 +385,16 @@ namespace DrawToBitmap
                             double scaleFactor = resolution / 72.0;
                             double width = (pg.MediaBox.Width * scaleFactor);
                             double height = (pg.MediaBox.Height * scaleFactor);
-                            Matrix matrix = new Matrix().Scale(scaleFactor, -scaleFactor).Translate(0, -pg.MediaBox.Height);
+
+                            //When the MediaBox's origin isn't at the lower-left of the page we can't use the 'Height' member and
+                            //instead used the 'Top'.
+                            double ty = pg.MediaBox.Height;
+                            if (pg.MediaBox.Bottom != 0)
+                            {
+                                ty = pg.MediaBox.Top;
+                            }
+
+                            Matrix matrix = new Matrix().Scale(scaleFactor, -scaleFactor).Translate(0, -ty);
 
                             bool enableBlackPointCompensation = true;
 

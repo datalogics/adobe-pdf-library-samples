@@ -31,7 +31,7 @@ namespace AddCollection
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/Attachments.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/Attachments.pdf";
                 String sOutput = "../Portfolio.pdf";
 
                 if (args.Length > 0)

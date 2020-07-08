@@ -32,7 +32,7 @@ namespace PDFXConverter
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/sample.pdf"; ;
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf"; ;
                 String sOutput = "../PDFXConverter-out-X1a-csh.pdf";
 
                 if (args.Length > 0)

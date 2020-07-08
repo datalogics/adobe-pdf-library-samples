@@ -25,7 +25,7 @@ namespace MakeDocWithICCBasedColorSpace
             using (Library lib = new Library())
             {
 
-                String sInput = "../../Resources/Sample_Input/sRGB_IEC61966-2-1_noBPC.icc";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sRGB_IEC61966-2-1_noBPC.icc";
                 String sOutput = "../ICCBased-out.pdf";
 
                 if (args.Length > 0)

@@ -173,8 +173,8 @@ namespace ExtendedGraphicStates
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput1 = "../../Resources/Sample_Input/ducky_alpha.tif";
-                String sInput2 = "../../Resources/Sample_Input/rainbow.tif";
+                String sInput1 = Library.ResourceDirectory + "Sample_Input/ducky_alpha.tif";
+                String sInput2 = Library.ResourceDirectory + "Sample_Input/rainbow.tif";
                 String sOutput = "../ExtendedGraphicStates-out.pdf";
 
                 if (args.Length > 0)

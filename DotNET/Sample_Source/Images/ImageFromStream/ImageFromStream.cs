@@ -35,8 +35,8 @@ namespace ImageFromStream
             {
                 Console.WriteLine("Initialized the library.");
 
-                String bitmapInput = "../../Resources/Sample_Input/Datalogics.bmp";
-                String jpegInput = "../../Resources/Sample_Input/ducky.jpg";
+                String bitmapInput = Library.ResourceDirectory + "Sample_Input/Datalogics.bmp";
+                String jpegInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
                 String docOutput = "../ImageFromStream-out2.pdf";
 
                 if (args.Length > 0)

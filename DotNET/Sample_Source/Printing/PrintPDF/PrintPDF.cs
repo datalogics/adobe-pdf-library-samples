@@ -87,7 +87,7 @@ namespace PrintPDF
                 {
                     Console.WriteLine(@"Library initialized.");
 
-                    String sInput = "../../Resources/Sample_Input/sample.pdf";
+                    String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                     String outFileNamePrn = "../PrintPDF_out.prn";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
                     string outFileNamePs = "../PrintPDF_out.ps";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
 

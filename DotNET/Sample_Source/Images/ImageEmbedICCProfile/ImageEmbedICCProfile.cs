@@ -105,8 +105,8 @@ namespace ImageEmbedICCProfile
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
-                String profileName = "../../Resources/Sample_Input/Probev1_ICCv2.icc";
+                String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
+                String profileName = Library.ResourceDirectory + "Sample_Input/Probev1_ICCv2.icc";
 
                 Console.WriteLine("Input file: " + sInput + " will have profile " + profileName + " applied.");
 

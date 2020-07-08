@@ -16,7 +16,7 @@ using Datalogics.PDFL;
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  * 
- * Suggested input file: ../../Resources/Sample_Input/sample_annotations.pdf
+ * Suggested input file: Library.ResourceDirectory + "Sample_Input/sample_links.pdf"
  * Input file properties: First page must have an annotation with a URI link
  */
 
@@ -31,7 +31,7 @@ namespace PDFObject
             using (Library lib = new Library())
             {
 
-                String sInput = "../../Resources/Sample_Input/sample_annotations.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample_links.pdf";
                 String sOutput = "../PDFObject-out.pdf";
 
                 if (args.Length > 0)

@@ -32,13 +32,13 @@ namespace TextExtract
                 Console.WriteLine("Initialized the library.");
 
                 // This is a tagged PDF.
-                String sInput = "../../Resources/Sample_Input/pdf_intro.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/pdf_intro.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
 
                 // This is an untagged PDF.
-                //../../Resources/Sample_Input/constitution.pdf"
+                //Resources/Sample_Input/constitution.pdf"
 
                 Document doc = new Document(sInput);
 
