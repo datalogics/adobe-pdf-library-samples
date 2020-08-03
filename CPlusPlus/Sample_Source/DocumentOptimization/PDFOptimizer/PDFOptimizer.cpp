@@ -10,7 +10,7 @@
 //
 // Command-line:  <input-file>   <output-file>    (Both optional)
 //
-// For more detail see the description of the PDFOptimizer sample program on our Developer’s site, 
+// For more detail see the description of the PDFOptimizer sample program on our Developer’s site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#pdfoptimizer
 
 #include "InitializeLibrary.h"
@@ -21,49 +21,49 @@
 #define DEF_INPUT "toOptimize.pdf"
 #define DEF_OUTPUT "PDFOptimizer-out.pdf"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
     APDFLib libInit;
     ASErrorCode errCode = 0;
-    if (libInit.isValid() == false)
-    {
+    if (libInit.isValid() == false) {
         errCode = libInit.getInitError();
         std::cout << "Initialization failed with code " << errCode << std::endl;
         return libInit.getInitError();
     }
-    
-    std::string csInputFileName ( argc > 1 ? argv[1] : DIR_LOC DEF_INPUT );
-    std::string csOutputFileName ( argc > 2 ? argv[2] : DEF_OUTPUT );
+
+    std::string csInputFileName(argc > 1 ? argv[1] : DIR_LOC DEF_INPUT);
+    std::string csOutputFileName(argc > 2 ? argv[2] : DEF_OUTPUT);
     std::cout << "Will optimize " << csInputFileName.c_str() << " and save as "
               << csOutputFileName.c_str() << std::endl;
 
     DURING
 
-// Step 1) Open the input PDF
+        // Step 1) Open the input PDF
 
-    APDFLDoc inAPDoc ( csInputFileName.c_str(), true);
-    PDDoc inDoc = inAPDoc.getPDDoc();
+        APDFLDoc inAPDoc(csInputFileName.c_str(), true);
+        PDDoc inDoc = inAPDoc.getPDDoc();
 
-    // Set defaults
-    PDFOptimizationParams optParams = PDDocOptimizeDefaultParams();
+        // Set defaults
+        PDFOptimizationParams optParams = PDDocOptimizeDefaultParams();
 
-//Step 2: Optimize and save the document and release resources. 
+        // Step 2: Optimize and save the document and release resources.
 
-    ASPathName outPathName = APDFLDoc::makePath ( csOutputFileName.c_str() );
+        ASPathName outPathName = APDFLDoc::makePath(csOutputFileName.c_str());
 
-    PDDocumentOptimize(inDoc, outPathName, NULL, optParams, NULL, NULL, NULL, NULL);
+        PDDocumentOptimize(inDoc, outPathName, NULL, optParams, NULL, NULL, NULL, NULL);
 
-// Step 3) Release all objects that are still in use.
+        // Step 3) Release all objects that are still in use.
 
-    ASFileSysReleasePath(NULL, outPathName);    
+        ASFileSysReleasePath(NULL, outPathName);
 
-    PDDocClose(inDoc);
+        PDDocOptimizeReleaseParams(optParams);
 
-HANDLER
-    errCode = ERRORCODE;
-    libInit.displayError(errCode);
-END_HANDLER
+        PDDocClose(inDoc);
+
+    HANDLER
+        errCode = ERRORCODE;
+        libInit.displayError(errCode);
+    END_HANDLER
 
     return errCode;
 };

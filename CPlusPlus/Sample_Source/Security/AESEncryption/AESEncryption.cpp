@@ -20,13 +20,11 @@
 #define DEF_INPUT_FILE "AESEncryption-in.pdf"
 #define DEF_OUTPUT_FILE "AESEncryption-out.pdf"
 
-int main (int argc, char* argv[])
-{
-    APDFLib libInit;       // Initialize the library
-    if (libInit.isValid() == false)
-    {
+int main(int argc, char *argv[]) {
+    APDFLib libInit; // Initialize the library
+    if (libInit.isValid() == false) {
         ASErrorCode errCode = libInit.getInitError();
-        APDFLib::displayError ( errCode );
+        APDFLib::displayError(errCode);
         return errCode;
     }
 
@@ -35,36 +33,36 @@ int main (int argc, char* argv[])
     std::cout << "Processing input file " << csInputFile.c_str() << std::endl;
     std::cout << "Will write to output file " << csOutputFile.c_str() << std::endl;
 
-DURING
+    DURING
 
-    // Open the input document
-    APDFLDoc apdflDoc ( csInputFile.c_str(), true );
-    PDDoc pdDoc = apdflDoc.getPDDoc();
+        // Open the input document
+        APDFLDoc apdflDoc(csInputFile.c_str(), true);
+        PDDoc pdDoc = apdflDoc.getPDDoc();
 
-    // Prepare the security data structure
-    StdSecurityData volatile securityData = NULL;
-    PDDocSetNewCryptHandler(pdDoc, ASAtomFromString("Standard"));
-    securityData = (StdSecurityData) PDDocNewSecurityData (pdDoc);
-    securityData->size = sizeof(StdSecurityDataRec);
-    securityData->newUserPW = true;
-    securityData->hasUserPW = true;
-    strcpy (securityData->userPW, "secure");
-    securityData->perms = pdPrivPermFillandSign | pdPrivPermAccessible;	
-    securityData->keyLength = STDSEC_KEYLENGTH_AES256;
-    securityData->encryptMethod = STDSEC_METHOD_AES_V3;	
+        // Prepare the security data structure
+        StdSecurityData securityData = NULL;
+        PDDocSetNewCryptHandler(pdDoc, ASAtomFromString("Standard"));
+        securityData = (StdSecurityData)PDDocNewSecurityData(pdDoc);
+        securityData->size = sizeof(StdSecurityDataRec);
+        securityData->newUserPW = true;
+        securityData->hasUserPW = true;
+        strcpy(securityData->userPW, "secure");
+        securityData->perms = pdPrivPermFillandSign | pdPrivPermAccessible;
+        securityData->keyLength = STDSEC_KEYLENGTH_AES256;
+        securityData->encryptMethod = STDSEC_METHOD_AES_V3;
 
-    // Apply security settings
-    PDDocSetNewSecurityData (pdDoc, (void*) securityData);
-    PDDocSetFlags(pdDoc, PDDocRequiresFullSave);
+        // Apply security settings
+        PDDocSetNewSecurityData(pdDoc, (void *)securityData);
+        PDDocSetFlags(pdDoc, PDDocRequiresFullSave);
 
-    // Save file
-    apdflDoc.saveDoc ( csOutputFile.c_str(), PDSaveFull | PDSaveLinearized );
+        // Save file
+        apdflDoc.saveDoc(csOutputFile.c_str(), PDSaveFull | PDSaveLinearized);
 
-HANDLER
-    APDFLib::displayError(ERRORCODE);
-    return ERRORCODE;
-END_HANDLER
+        ASfree(securityData);
+    HANDLER
+        APDFLib::displayError(ERRORCODE);
+        return ERRORCODE;
+    END_HANDLER
 
     return 0;
 }
-
