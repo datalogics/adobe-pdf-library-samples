@@ -9,9 +9,9 @@ using Datalogics.PDFL;
  * specific words using the Adobe PDF Library WordFinder, and then removes these words from the text.
  * 
  * For more detail see the description of the Redactions sample program on our Developer's site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/redacting-text-from-a-pdf-document
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/redacting-text-from-a-pdf-document
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -29,8 +29,8 @@ namespace Redactions
             {
                 Console.WriteLine("Initialized the library.");
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput1 = "../Redactions-out.pdf";
-                String sOutput2 = "../Redactions-out-applied.pdf";
+                String sOutput1 = "Redactions-out.pdf";
+                String sOutput2 = "Redactions-out-applied.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

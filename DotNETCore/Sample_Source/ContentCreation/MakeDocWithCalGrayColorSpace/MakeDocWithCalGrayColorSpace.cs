@@ -25,7 +25,7 @@ namespace MakeDocWithCalGrayColorSpace
             using (Library lib = new Library())
             {
 
-                String sOutput = "../CalGray-out.pdf";
+                String sOutput = "CalGray-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

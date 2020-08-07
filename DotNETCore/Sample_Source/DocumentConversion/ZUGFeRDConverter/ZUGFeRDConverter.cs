@@ -40,7 +40,7 @@ namespace ZUGFeRDConverter
 
                 String sInputPDF = args[0];
                 String sInputInoviceXML = args[1];
-                String sOutput = "../ZUGFeRDConverter-out.pdf";
+                String sOutput = "ZUGFeRDConverter-out.pdf";
 
                 Console.WriteLine("Converting " + sInputPDF + " with " + sInputInoviceXML + ", output file is " + sOutput);
 

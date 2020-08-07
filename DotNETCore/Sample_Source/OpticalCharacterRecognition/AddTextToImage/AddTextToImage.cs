@@ -30,7 +30,7 @@ namespace AddTextToImage
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/text_as_image.jpg";
-                String sOutput = "../AddTextToImage-out.pdf";
+                String sOutput = "AddTextToImage-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

@@ -14,7 +14,7 @@ using Datalogics.PDFL;
  * into a single image on the page.
  *
  * For more detail see the description of the FlattenTransparency sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core=sample-programs/layers_and_transparencies#flattentransparency 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/layers_and_transparencies#flattentransparency
  * 
  * 
  * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
@@ -37,9 +37,9 @@ namespace FlattenTransparency
             {
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/trans_1page.pdf";
-                String sOutput1 =  "../FlattenTransparency-out1.pdf";
+                String sOutput1 =  "FlattenTransparency-out1.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/trans_multipage.pdf";
-                String sOutput2 =  "../FlattenTransparency-out2.pdf";
+                String sOutput2 =  "FlattenTransparency-out2.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];
@@ -63,7 +63,7 @@ namespace FlattenTransparency
                 if(isTransparent)
                 {
                     // Flattening the document will check each page for transparency.
-                    // If a page has transparency, DLE will create a new, flattened
+                    // If a page has transparency, PDFL will create a new, flattened
                     // version of the page and replace the original page with the
                     // new one.  Because of this, make sure to dispose of outstanding Page objects
                     // that refer to pages in the Document before calling flattenTransparency.

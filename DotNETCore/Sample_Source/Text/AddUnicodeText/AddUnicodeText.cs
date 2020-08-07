@@ -29,7 +29,7 @@ namespace AddUnicodeText
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../AddUnicodeText-out.pdf";
+                String sOutput = "AddUnicodeText-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

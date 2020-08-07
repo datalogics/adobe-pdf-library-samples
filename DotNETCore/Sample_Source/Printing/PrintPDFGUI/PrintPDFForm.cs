@@ -44,7 +44,7 @@ namespace PrintPDFGUI
                                 userParams.PaperHeight = PrintUserParams.UseMediaBox;
                                 userParams.PaperWidth = PrintUserParams.UseMediaBox;
 
-                                // If you un-comment the file path (binding) below, DLE will print via the platform print driver to disk.
+                                // If you un-comment the file path (binding) below, PDFL will print via the platform print driver to disk.
                                 // The type of file produced when doing so (e.g., PS, PCL, PCLXL) depends upon the type of printer/driver. 
                                 //userParams.OutFileName = String.Format("{0}\\{1}.prn", finfo.Directory.FullName, System.IO.Path.GetFileNameWithoutExtension(finfo.FullName));
 

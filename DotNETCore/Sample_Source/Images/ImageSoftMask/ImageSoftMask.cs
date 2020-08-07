@@ -33,7 +33,7 @@ namespace ImageSoftMask
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
                 String sMask = Library.ResourceDirectory + "Sample_Input/Mask.tif";
-                String sOutput = "../ImageSoftMask-out.pdf";
+                String sOutput = "ImageSoftMask-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

@@ -7,7 +7,7 @@ using Datalogics.PDFL;
  * 
  * This program creates a PDF file with an embedded hyperlink, which takes the reader to the second page of the document.
  * 
- * For more detail see the description of the LinkAnnotation sample program on our Developer’s site, 
+ * For more detail see the description of the LinkAnnotation sample program on our Developerâ€™s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/working-with-annotations#linkannotation
  * 
  *
@@ -30,7 +30,7 @@ namespace LinkAnnotations
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput = "../LaunchActions-out.pdf";
+                String sOutput = "LaunchActions-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

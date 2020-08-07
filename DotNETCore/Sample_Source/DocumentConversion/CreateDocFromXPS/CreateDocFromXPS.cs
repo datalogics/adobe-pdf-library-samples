@@ -28,7 +28,7 @@ namespace CreateDocFromXPS
             {
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/brownfox.xps";
-                String sOutput = "../CreateDocFromXPS-out.pdf";
+                String sOutput = "CreateDocFromXPS-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

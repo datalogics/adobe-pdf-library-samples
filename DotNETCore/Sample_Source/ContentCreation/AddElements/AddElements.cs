@@ -29,7 +29,7 @@ namespace AddElements
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../AddElements-out.pdf";
+                String sOutput = "AddElements-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

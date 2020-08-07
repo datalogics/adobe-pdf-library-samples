@@ -28,7 +28,7 @@ namespace PrintPDF
     {
         /// <summary>
         /// The method implements a callback (it MUST be named "Call" and exhibit the method signature described)
-        /// It will be driven by DLE and provide data that can be used to update a progress bar, etc.
+        /// It will be driven by PDFL and provide data that can be used to update a progress bar, etc.
         /// </summary>
         /// <param name="page">The current page number. It is *always* 0-based. One *will* encounter a value of -1. That means "not applicable".</param>
         /// <param name="totalPages">The total number of pages printing. One *may* encounter a value of -1. That means "not applicable".</param>
@@ -73,14 +73,14 @@ namespace PrintPDF
             Console.WriteLine("PrintPDF Sample:");
 
             try
-            {   // Printing may fail for reasons that have nothing to do with DLE / APDFL.
+            {   // Printing may fail for reasons that have nothing to do with APDFL.
                 // PDF documents may contain material that cannot be printed, etc. Given
                 // that, it's always best to expect the printing step to fail and take
                 // appropriate measures. Such care becomes critical for server-based 24/7
                 // systems. This try block is simply here as an example (the steps one
                 // would normally take are more involved).
 
-                // To use DLE / APDFL one must always begin by initializing the library. This action
+                // To use APDFL one must always begin by initializing the library. This action
                 // is expensive (both time and resource wise) and should only be done when necessary.
                 // In a threaded product, a separate library must be instantiated on each thread.
                 using (Library lib = new Library())
@@ -104,7 +104,7 @@ namespace PrintPDF
                         // Platform print to a file...
                         //
                         // Printed output from the following method is composed by the selected
-                        // printer's driver; along with assistance from DLE / APDFL. The actual
+                        // printer's driver; along with assistance from APDFL. The actual
                         // output format will vary (e.g., PCL, PostScript, XPS, etc.). PostScript
                         // files produced via a PostScript driver and this method are NOT suitable
                         // for Distillation, Normalization, etc. All output from the method below
@@ -142,7 +142,7 @@ namespace PrintPDF
                             // If you don't provide a page range, only the first page of the document will print.
                             //
                             // The code below creates 3 page ranges...
-                            // As specified (below), DLE will emit up to 8 pages (1-4, 2, 4, 1, 3).
+                            // As specified (below), PDFL will emit up to 8 pages (1-4, 2, 4, 1, 3).
                             int upToFourPages = ((doc.NumPages > 4) ? 3 : doc.NumPages - 1);  // 0-based
                             if (upToFourPages == 0)
                             {   // the end page must always be >= 1
@@ -176,7 +176,7 @@ namespace PrintPDF
                         // Now let's, print directly to a printer (without ui)...
                         //
                         // Printed output from the following method is composed by the selected
-                        // printer's driver; along with assistance from DLE / APDFL. The actual
+                        // printer's driver; along with assistance from APDFL. The actual
                         // output format will vary (e.g., PCL, PostScript, XPS, etc.). PostScript
                         // files produced via a PostScript driver and this method are NOT suitable
                         // for Distillation, Normalization, etc. All output from the method below
@@ -214,7 +214,7 @@ namespace PrintPDF
                             // linear sequence) instead. If you do not specify anything the entire
                             // document will print (i.e., all pages).
                             //
-                            // As specified (below), DLE will print up to 4 pages (1-4).
+                            // As specified (below), PDFL will print up to 4 pages (1-4).
                             int upToFourPages = ((doc.NumPages > 4) ? 3 : doc.NumPages - 1);
                             userParams.StartPage = 0;           // 0-based
                             userParams.EndPage = upToFourPages; // 0-based
@@ -233,7 +233,7 @@ namespace PrintPDF
                         #endregion
 
                         #region Export As PostScript (Device Independent, DSC Compliant)
-                        // Export as (DLE/PDFL composed) PostScript...
+                        // Export as (PDFL composed) PostScript...
                         //
                         // PostScript files produced via this *export* method are suitable
                         // for Distillation, Normalization, etc. If a PostScript Printer

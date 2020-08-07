@@ -44,7 +44,7 @@ namespace RasterizePage
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../RasterizePage.pdf";
+                String sOutput = "RasterizePage.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -195,7 +195,7 @@ namespace RasterizePage
         {
             // Create a PageImageParams with the default settings and set
             // the color space as appropriate.
-            // We'll let DLE decide the final pixel dimensions of
+            // We'll let PDFL decide the final pixel dimensions of
             // the bitmap, so we won't change these settings from the default.
 
             PageImageParams pip = new PageImageParams();

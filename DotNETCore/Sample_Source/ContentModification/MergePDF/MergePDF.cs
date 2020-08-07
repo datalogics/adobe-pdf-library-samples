@@ -29,7 +29,7 @@ namespace MergePDF
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/merge_pdf1.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/merge_pdf2.pdf";
-                String sOutput = "../MergePDF-out.pdf";
+                String sOutput = "MergePDF-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];

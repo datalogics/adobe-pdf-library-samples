@@ -32,7 +32,7 @@ namespace PDFObject
             {
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample_links.pdf";
-                String sOutput = "../PDFObject-out.pdf";
+                String sOutput = "PDFObject-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

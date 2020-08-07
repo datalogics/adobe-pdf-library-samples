@@ -27,7 +27,7 @@ namespace PolygonAnnotations
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../PolygonAnnotations-out.pdf";
+                String sOutput = "PolygonAnnotations-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -78,9 +78,9 @@ namespace PolygonAnnotations
                 page.UpdateContent();
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }

@@ -95,13 +95,13 @@ namespace NumberTrees
 			    Console.WriteLine("\nThe PDFDict from the NumberTree:"); 
 			    Console.WriteLine(dict);
     			
-			    // Kill the NumberTree object
+			    // Dispose the NumberTree object
                 numbertree.Dispose();
-			    Console.WriteLine("\nKilled the NumberTree object.");
+			    Console.WriteLine("\nDisposed the NumberTree object.");
     			
-			    // Kill the doc object
+			    // Dispose the doc object
                 doc.Dispose();
-			    Console.WriteLine("Killed document object.");
+			    Console.WriteLine("Disposed document object.");
             }
         }
     }

@@ -31,7 +31,7 @@ namespace RemoteGoToActions
             {
 
                 String sFileSpec = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../RemoteGoToActions-out.pdf";
+                String sOutput = "RemoteGoToActions-out.pdf";
 
                 if (args.Length > 0)
                     sFileSpec = args[0];

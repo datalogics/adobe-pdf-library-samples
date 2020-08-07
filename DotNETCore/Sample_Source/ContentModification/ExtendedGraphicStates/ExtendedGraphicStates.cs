@@ -175,7 +175,7 @@ namespace ExtendedGraphicStates
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/ducky_alpha.tif";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/rainbow.tif";
-                String sOutput = "../ExtendedGraphicStates-out.pdf";
+                String sOutput = "ExtendedGraphicStates-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];

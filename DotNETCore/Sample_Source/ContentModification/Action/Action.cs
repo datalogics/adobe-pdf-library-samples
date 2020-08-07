@@ -24,7 +24,7 @@ namespace Actions
 
             using (Library lib = new Library())
             {
-                String sOutput = "../Actions-out.pdf";
+                String sOutput = "Actions-out.pdf";
 
                 Console.WriteLine("Initialized the library.");
                 
@@ -39,7 +39,7 @@ namespace Actions
                     Console.WriteLine("Created page.");
 
                     // Create our first link with a URI action
-                    LinkAnnotation newLink = (LinkAnnotation)docpage.CreateAnnotation("Link", new Rect(1.0, 2.0, 3.0, 4.0));
+                    LinkAnnotation newLink = new LinkAnnotation(docpage, new Rect(1.0, 2.0, 3.0, 4.0));
                     Console.WriteLine(newLink.ToString());
 
                     doc.BaseURI = "http://www.datalogics.com";
@@ -47,17 +47,15 @@ namespace Actions
                     Console.WriteLine("Action data: " + uri.ToString());
 
                     newLink.Action = uri;
-                    docpage.AddAnnotation(-2, newLink);
 
                     // Create a second link with a GoTo action
-                    LinkAnnotation secondLink = (LinkAnnotation)docpage.CreateAnnotation("Link", new Rect(5.0, 6.0, 7.0, 8.0));
+                    LinkAnnotation secondLink = new LinkAnnotation(docpage, new Rect(5.0, 6.0, 7.0, 8.0));
 
                     Rect r = new Rect(5, 5, 100, 100);
                     GoToAction gta = new GoToAction(new ViewDestination(doc, 0, "FitR", r, 1.0));
                     Console.WriteLine("Action data: " + gta.ToString());
 
                     secondLink.Action = gta;
-                    docpage.AddAnnotation(-2, secondLink);
 
                     // Read some URI properties
                     Console.WriteLine("Extracted URI: " + uri.URI);

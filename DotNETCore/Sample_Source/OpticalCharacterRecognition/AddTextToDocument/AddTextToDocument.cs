@@ -61,7 +61,7 @@ namespace AddTextToDocument
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/scanned_images.pdf";
-                String sOutput = "../AddTextToDocument-out.pdf";
+                String sOutput = "AddTextToDocument-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

@@ -53,45 +53,53 @@ namespace ImageFromStream
                 // Create a .NET MemoryStream object.
                 // A MemoryStream is used here for demonstration only, but the technique
                 // works just as well for other streams which support seeking.
-                System.IO.MemoryStream BitmapStream = new System.IO.MemoryStream();
+                using (System.IO.MemoryStream BitmapStream = new System.IO.MemoryStream())
+                {
 
-                // Load a bitmap image into the MemoryStream.
-                System.Drawing.Bitmap BitmapImage = new System.Drawing.Bitmap(bitmapInput);
-                BitmapImage.Save(BitmapStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                    // Load a bitmap image into the MemoryStream.
+                    using (System.Drawing.Bitmap BitmapImage = new System.Drawing.Bitmap(bitmapInput))
+                    {
+                        BitmapImage.Save(BitmapStream, System.Drawing.Imaging.ImageFormat.Bmp);
 
-                // Reset the MemoryStream's seek position before handing it to the DLE API, 
-                // which expects the seek position to be at the beginning of the stream.
-                BitmapStream.Seek(0, System.IO.SeekOrigin.Begin);
+                        // Reset the MemoryStream's seek position before handing it to the PDFL API, 
+                        // which expects the seek position to be at the beginning of the stream.
+                        BitmapStream.Seek(0, System.IO.SeekOrigin.Begin);
 
-                // Create the DLE Image object.
-                Datalogics.PDFL.Image DLEBitmapImage = new Datalogics.PDFL.Image(BitmapStream);
+                        // Create the PDFL Image object.
+                        Datalogics.PDFL.Image PDFLBitmapImage = new Datalogics.PDFL.Image(BitmapStream);
 
-                // Save the image to a PNG file.
-                DLEBitmapImage.Save("ImageFromStream-out.png", ImageType.PNG);
+                        // Save the image to a PNG file.
+                        PDFLBitmapImage.Save("ImageFromStream-out.png", ImageType.PNG);
 
-                // The following demonstrates reading an image from a Stream and placing it into a document.
-                // First, create a new Document and add a Page to it.
-                Document doc = new Document();
-                doc.CreatePage(Document.BeforeFirstPage, new Rect(0, 0, 612, 792));
+                        // The following demonstrates reading an image from a Stream and placing it into a document.
+                        // First, create a new Document and add a Page to it.
+                        Document doc = new Document();
+                        doc.CreatePage(Document.BeforeFirstPage, new Rect(0, 0, 612, 792));
 
-                // Create a new MemoryStream for a new image file.
-                System.IO.MemoryStream JpegStream = new System.IO.MemoryStream();
+                        // Create a new MemoryStream for a new image file.
+                        using (System.IO.MemoryStream JpegStream = new System.IO.MemoryStream())
+                        {
 
-                // Load a JPEG image into the MemoryStream.
-                System.Drawing.Image JpegImage = System.Drawing.Image.FromFile(jpegInput);
-                JpegImage.Save(JpegStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                            // Load a JPEG image into the MemoryStream.
+                            using (System.Drawing.Image JpegImage = System.Drawing.Image.FromFile(jpegInput))
+                            {
+                                JpegImage.Save(JpegStream, System.Drawing.Imaging.ImageFormat.Jpeg);
 
-                // An alternative method for resetting the MemoryStream's seek position.
-                JpegStream.Position = 0;
+                                // An alternative method for resetting the MemoryStream's seek position.
+                                JpegStream.Position = 0;
 
-                // Create the DLE Image object and put it in the Document.
-                // Since the image will be placed in a Document, use the constructor with the optional 
-                // Document parameter to optimize data usage for this image within the Document.
-                Datalogics.PDFL.Image DLEJpegImage = new Datalogics.PDFL.Image(JpegStream, doc);
-                Page pg = doc.GetPage(0);
-                pg.Content.AddElement(DLEJpegImage);
-                pg.UpdateContent();
-                doc.Save(SaveFlags.Full, docOutput);
+                                // Create the PDFL Image object and put it in the Document.
+                                // Since the image will be placed in a Document, use the constructor with the optional 
+                                // Document parameter to optimize data usage for this image within the Document.
+                                Datalogics.PDFL.Image PDFLJpegImage = new Datalogics.PDFL.Image(JpegStream, doc);
+                                Page pg = doc.GetPage(0);
+                                pg.Content.AddElement(PDFLJpegImage);
+                                pg.UpdateContent();
+                                doc.Save(SaveFlags.Full, docOutput);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

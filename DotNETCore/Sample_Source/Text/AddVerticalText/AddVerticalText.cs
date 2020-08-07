@@ -30,7 +30,7 @@ namespace AddVerticalText
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../AddVerticalText-out.pdf";
+                String sOutput = "AddVerticalText-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

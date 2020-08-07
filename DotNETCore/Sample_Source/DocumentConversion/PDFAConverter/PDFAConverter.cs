@@ -30,7 +30,7 @@ namespace PDFAConverter
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../PDFAConverter-out.pdf";
+                String sOutput = "PDFAConverter-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

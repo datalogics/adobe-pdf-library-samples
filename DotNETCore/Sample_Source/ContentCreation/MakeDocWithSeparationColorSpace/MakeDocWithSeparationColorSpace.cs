@@ -6,11 +6,11 @@ using Datalogics.PDFL;
 /*
  * This sample demonstrates creating a PDF document that uses a Separation color space.
  *
- * For more detail see the description of the ColorSpace sample programs on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/getting-pdf-documents-using-color-spaces
+ * For more detail see the description of the ColorSpace sample programs on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/getting-pdf-documents-using-color-spaces
  *
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -25,7 +25,7 @@ namespace MakeDocWithSeparationColorSpace
             using (Library lib = new Library())
             {
 
-                String sOutput = "../Separation-out.pdf";
+                String sOutput = "Separation-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

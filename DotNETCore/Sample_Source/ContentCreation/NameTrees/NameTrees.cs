@@ -97,7 +97,7 @@ namespace NameTrees
 
 			    // Kill the NameTree object
 			    nametree.Dispose();
-			    Console.WriteLine("\nKilled the NameTree object.");
+			    Console.WriteLine("\nDisposed the NameTree object.");
 
 			    //////////////////////////////////////////////////
 			    // Now use Document methods to operate on NameTree
@@ -124,7 +124,7 @@ namespace NameTrees
 			    docCreatedNameTree = doc.GetNameTree("MyNameTree");
 			    Console.WriteLine(docCreatedNameTree);
 
-			    // Kill the doc object
+			    // Dispose the doc object
 			    doc.Dispose();
             }
         }

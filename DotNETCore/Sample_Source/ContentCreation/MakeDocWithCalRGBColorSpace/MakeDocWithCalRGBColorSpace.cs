@@ -8,7 +8,7 @@ using Datalogics.PDFL;
  * A, B, and C represent red, blue, and green color values.
  *
  * For more detail see the description of the ColorSpace sample programs on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/getting-pdf-documents-using-color-spaces
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/getting-pdf-documents-using-color-spaces
  *
  * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
@@ -25,7 +25,7 @@ namespace MakeDocWithCalRGBColorSpace
         {
             using (Library lib = new Library())
             {
-                String sOutput = "../CalRGB-out.pdf";
+                String sOutput = "CalRGB-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

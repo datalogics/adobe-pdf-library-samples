@@ -35,7 +35,7 @@ namespace AnnotationCopyPaste
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/sample_annotations.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/Layers.pdf";
-                String sOutput = "../AnnotationCopyPaste-out.pdf";
+                String sOutput = "AnnotationCopyPaste-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];

@@ -8,7 +8,7 @@ using Datalogics.PDFL;
  * This sample demonstrates working with Clip objects. A clipping path is used to edit the borders of a graphics object.
  *
  * 
- * For more detail see the description of the Clips sample program on our Developer’s site, 
+ * For more detail see the description of the Clips sample program on our Developerâ€™s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/manipulating-graphics-and-separating-colors-for-images
  * 
  * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
@@ -30,7 +30,7 @@ namespace Clips
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../Clips-out.pdf";
+                String sOutput = "Clips-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -85,9 +85,9 @@ namespace Clips
                 page.UpdateContent();
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }

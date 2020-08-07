@@ -33,7 +33,7 @@ namespace DrawSeparations
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../DrawSeparations-out";
+                String sOutput = "DrawSeparations-out";
 
                 if (args.Length > 0)
                     sInput = args[0];

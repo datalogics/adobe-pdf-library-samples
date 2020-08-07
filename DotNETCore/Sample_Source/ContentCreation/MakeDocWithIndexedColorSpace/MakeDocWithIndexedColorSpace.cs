@@ -28,7 +28,7 @@ namespace MakeDocWithIndexedColorSpace
             using (Library lib = new Library())
             {
 
-                String sOutput = "../Indexed-out.pdf";
+                String sOutput = "Indexed-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

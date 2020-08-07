@@ -27,7 +27,7 @@ namespace PolyLineAnnotations
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../PolyLineAnnotations-out.pdf";
+                String sOutput = "PolyLineAnnotations-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -82,9 +82,9 @@ namespace PolyLineAnnotations
                 page.UpdateContent();
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }

@@ -7,7 +7,7 @@ using Datalogics.PDFL;
  *
  * The sample program shows how to add an annotation to a PDF file that features a flash video embedded under an image.
  * 
- * For more detail see the description of the FlashAnnotCreate sample program on our Developer’s site, 
+ * For more detail see the description of the FlashAnnotCreate sample program on our Developerâ€™s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/working-with-annotations#flashannotcreate
  * 
  * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
@@ -34,7 +34,7 @@ namespace FlashAnnotCreate
                 // Name of the PDF file to use for the annotation appearance - the
                 // first page of the PDF is imported
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/cottage.pdf";
-                String sOutput = "../FlashAnnotCreate-out.pdf";
+                String sOutput = "FlashAnnotCreate-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];

@@ -35,7 +35,7 @@ namespace Watermark
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sWatermark = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../Watermark-out.pdf";
+                String sOutput = "Watermark-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

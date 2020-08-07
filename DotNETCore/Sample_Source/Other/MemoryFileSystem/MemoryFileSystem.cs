@@ -30,7 +30,7 @@ namespace MemoryFileSystem
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../TempFileSystem.pdf";
+                String sOutput = "TempFileSystem.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

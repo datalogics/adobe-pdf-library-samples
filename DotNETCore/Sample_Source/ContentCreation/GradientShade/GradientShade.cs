@@ -8,7 +8,7 @@ using Datalogics.PDFL;
  * This sample demonstrates changing the shading of an image on a PDF document page. The image gradually
  * changes from black on the left side of the image, to red on the right side.
  * 
- * For more detail see the description of the GradientShade sample program on our Developer’s site, 
+ * For more detail see the description of the GradientShade sample program on our Developerâ€™s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/entering-or-generating-graphics-from-pdf-files
  * 
  * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
@@ -29,7 +29,7 @@ namespace GradientShade
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../GradientShade-out.pdf";
+                String sOutput = "GradientShade-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

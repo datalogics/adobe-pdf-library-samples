@@ -38,7 +38,7 @@ namespace ColorConvertDocument
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../ColorConvertDocument-out.pdf";
+                String sOutput = "ColorConvertDocument-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

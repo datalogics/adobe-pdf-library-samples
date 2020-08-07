@@ -31,7 +31,7 @@ namespace ImageImportSample
                 Document doc = new Document();
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
-                String sOutput = "../ImageImport-out1.pdf";
+                String sOutput = "ImageImport-out1.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

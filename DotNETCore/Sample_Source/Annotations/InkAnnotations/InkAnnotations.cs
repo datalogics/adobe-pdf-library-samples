@@ -9,7 +9,7 @@ using Datalogics.PDFL;
  * This sample creates and adds a new Ink annotation to a PDF document. An Ink annotation is a freeform line,
  * similar to what you would create with a pen, or with a stylus on a mobile device.
  *
- * For more detail see the description of the InkAnnotations sample program on our Developer’s site, 
+ * For more detail see the description of the InkAnnotations sample program on our Developerâ€™s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/working-with-annotations#inkannotations
  *  
  * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
@@ -116,7 +116,7 @@ namespace InkAnnotations
 
                 // Update the page's content and save the file with clipping
                 page.UpdateContent();
-                doc.Save(SaveFlags.Full, "../InkAnnotations-out1.pdf");
+                doc.Save(SaveFlags.Full, "InkAnnotations-out1.pdf");
                 Console.WriteLine("Saved InkAnnotations-out1.pdf");
 
                 // Remove 0th scribble
@@ -129,11 +129,11 @@ namespace InkAnnotations
 
                 // Update the page's content and save the file with clipping
                 page.UpdateContent();
-                doc.Save(SaveFlags.Full, "../InkAnnotations-out2.pdf");
+                doc.Save(SaveFlags.Full, "InkAnnotations-out2.pdf");
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }

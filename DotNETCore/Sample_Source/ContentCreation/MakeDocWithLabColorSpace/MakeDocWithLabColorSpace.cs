@@ -8,11 +8,11 @@ using Datalogics.PDFL;
  * CIE XYZ color space, but it includes a dimension L, for lightness,
  * along with a and b coordinates, to define the color.
  *
- * For more detail see the description of the ColorSpace sample programs on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/getting-pdf-documents-using-color-spaces
+ * For more detail see the description of the ColorSpace sample programs on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/getting-pdf-documents-using-color-spaces
  *
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -28,7 +28,7 @@ namespace MakeDocWithLabColorSpace
             using (Library lib = new Library())
             {
 
-                String sOutput = "../Lab-out.pdf";
+                String sOutput = "Lab-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];

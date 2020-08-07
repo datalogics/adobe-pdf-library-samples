@@ -82,7 +82,7 @@ namespace ChangeLayerConfiguration
                  */
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/Layers.pdf";
-                String sOutput = "../ChangeLayerConfiguration-out.pdf";
+                String sOutput = "ChangeLayerConfiguration-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
