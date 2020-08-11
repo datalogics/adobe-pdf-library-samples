@@ -67,9 +67,9 @@ namespace ImageSoftMask
 
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }

@@ -31,9 +31,9 @@ namespace DrawToBitmap
     {
         /// <summary>
         /// The method implements a callback (it MUST be named "Call", return a bool and take no arguments)
-        /// It will be driven by DLE and if the method returns true rendering will attempt to cancel.
+        /// It will be driven by PDFL and if the method returns true rendering will attempt to cancel.
         /// </summary>
-        /// <returns>A boolean that tells DLE to continue (false) or cancel (true)</returns>
+        /// <returns>A boolean that tells PDFL to continue (false) or cancel (true)</returns>
         public override bool Call()
         {
             mSomeBoolean = ((mSomeBoolean) ? false : true);
@@ -52,7 +52,7 @@ namespace DrawToBitmap
     {
         /// <summary>
         /// The method implements a callback (it MUST be named "Call" and exhibit the method signature described)
-        /// It will be driven by DLE and provide data that can be used to update a progress bar, etc.
+        /// It will be driven by PDFL and provide data that can be used to update a progress bar, etc.
         /// </summary>
         /// <param name="stagePercent">A percentage complete (of the stage!). Values will always be in the range of 0.0 (0%) to 1.0 (100%)</param>
         /// <param name="info">A string that will present optional information that may be written to user interface</param>
@@ -139,9 +139,8 @@ namespace DrawToBitmap
             int height = (int)Math.Ceiling(parms.DestRect.Height);
 
             using (Bitmap bitmap = new Bitmap(width, height))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
             {
-                pg.DrawContents(graphics, parms);
+                pg.DrawContents(bitmap, parms);
                 bitmap.Save(String.Format("DrawLayer{0}ToGraphics.png", layerName), ImageFormat.Png);
             }
         }
@@ -267,9 +266,8 @@ namespace DrawToBitmap
             //
 
             using (Bitmap bitmap = new Bitmap(width, height))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
             {
-                pg.DrawContents(graphics, parms);
+                pg.DrawContents(bitmap, parms);
                 SaveBitmap(bitmap, "Graphics");
             }
         }
@@ -291,10 +289,9 @@ namespace DrawToBitmap
             //
 
             using (Bitmap bitmap = new Bitmap(w, h))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
             {
                 Rect updateRect = new Rect(0, 0, width, height);
-                pg.DrawContents(graphics, matrix, updateRect);
+                pg.DrawContents(bitmap, matrix, updateRect);
                 SaveBitmap(bitmap, "Graphics");
             }
         }
@@ -358,6 +355,20 @@ namespace DrawToBitmap
 
         static void Main(string[] args)
         {
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
+            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
+                return;
+            }
+
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
+                return;
+            }
+
             Console.WriteLine("DrawToBitmap Sample");
 
             try
@@ -400,7 +411,6 @@ namespace DrawToBitmap
 
                             using (DrawParams parms = ConstructDrawParams(matrix, pg.MediaBox, enableBlackPointCompensation))
                             {
-#if !MONO
                                 // Draw to Graphics
                                 Console.WriteLine(String.Format("DrawToGraphicsWithMatrix: {0} {1} {2}", matrix.ToString(), width, height));
                                 DrawToGraphicsWithMatrix(pg, matrix, width, height);    // Will NOT drive SampleRenderProgress(Cancel)Proc
@@ -413,7 +423,7 @@ namespace DrawToBitmap
                                 // Demonstrate drawing layers
                                 Console.WriteLine(String.Format("DrawLayersToGraphics: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
                                 DrawLayersToGraphics(doc, pg, parms);   // Will NOT drive SampleRenderProgress(Cancel)Proc
-#endif
+
                                 // Demonstrate drawing to Bitmaps with params and OCGs
                                 // Demonstrate drawing layers
                                 Console.WriteLine(String.Format("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));

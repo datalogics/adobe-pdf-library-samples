@@ -42,9 +42,9 @@ namespace CreateDocFromXPS
                 // for creating the document.
                 XPSConvertParams xpsparams = new XPSConvertParams();
                 
-                // DLE requires a .joboptions file to specify settings for XPS conversion. 
+                // PDFL requires a .joboptions file to specify settings for XPS conversion.
                 // A default .joboptions file is provided in the Resources directory of 
-                // the DLE distribution.  This file is used by default, but a custom file
+                // the PDFL distribution.  This file is used by default, but a custom file
                 // can be used instead by setting the pathToSettingsFile property.
                 Console.WriteLine("Using settings file located at: " + xpsparams.PathToSettingsFile);
                 
