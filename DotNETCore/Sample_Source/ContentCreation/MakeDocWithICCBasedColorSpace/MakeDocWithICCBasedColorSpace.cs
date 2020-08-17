@@ -24,7 +24,6 @@ namespace MakeDocWithICCBasedColorSpace
         {
             using (Library lib = new Library())
             {
-
                 String sInput = Library.ResourceDirectory + "Sample_Input/sRGB_IEC61966-2-1_noBPC.icc";
                 String sOutput = "ICCBased-out.pdf";
 
@@ -38,8 +37,23 @@ namespace MakeDocWithICCBasedColorSpace
                 Document doc = new Document();
                 Page page = doc.CreatePage(Document.BeforeFirstPage, new Rect(0, 0, 5 * 72, 4 * 72));
                 Content content = page.Content;
-                Font font = new Font("Times-Roman", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                Font font;
+                try
+                {
+                    font = new Font("Times-Roman", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
 
+                    throw ex;
+                }
                 FileStream stream = new FileStream(sInput, FileMode.Open);
                 PDFStream pdfStream = new PDFStream(stream, doc, null, null);
 

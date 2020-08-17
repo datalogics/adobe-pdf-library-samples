@@ -27,7 +27,6 @@ namespace MakeDocWithIndexedColorSpace
         {
             using (Library lib = new Library())
             {
-
                 String sOutput = "Indexed-out.pdf";
 
                 if (args.Length > 0)
@@ -38,8 +37,23 @@ namespace MakeDocWithIndexedColorSpace
                 Document doc = new Document();
                 Page page = doc.CreatePage(Document.BeforeFirstPage, new Rect(0, 0, 5 * 72, 4 * 72));
                 Content content = page.Content;
-                Font font = new Font("Times-Roman", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                Font font;
+                try
+                {
+                    font = new Font("Times-Roman", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
 
+                    throw ex;
+                }
                 ColorSpace baseCS = ColorSpace.DeviceRGB;
 
                 List<Int32> lookup = new List<Int32>();

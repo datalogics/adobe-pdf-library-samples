@@ -42,7 +42,23 @@ namespace AddGlyphs
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
                 Console.WriteLine("Created page.");
 
-                Font font = new Font("Times-Roman");
+                Font font;
+                try
+                {
+                    font = new Font("Times-Roman");
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
+
+                    throw ex;
+                }
 
                 List<Char> glyphIDs = new List<Char>();
                 glyphIDs.Add('\u002b');

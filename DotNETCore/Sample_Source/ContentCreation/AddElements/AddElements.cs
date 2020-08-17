@@ -142,7 +142,23 @@ namespace AddElements
 // Now add text to the PDF page. By default, text is filled with
 // the fill color from the graphic state
                 Text t = new Text();
-                Font f = new Font("Arial", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                Font f;
+                try
+                {
+                    f = new Font("Arial", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
+
+                    throw ex;
+                }
                 gs = new GraphicState();
                 gs.FillColor = new Color(0, 0, 1.0);
                 TextState ts = new TextState();
