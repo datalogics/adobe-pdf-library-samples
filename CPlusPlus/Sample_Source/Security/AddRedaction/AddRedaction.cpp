@@ -196,7 +196,7 @@ int main(int argc, char **argv) {
             if (0 == cnt) {
                 std::cout << "Verified." << std::endl;
             } else {
-                std::cout << "Uh oh... something didn't work right here." << std::endl;
+                std::cout << "Some words remain in the document that weren't redacted yet." << std::endl;
             }
         }
         document.saveDoc(csOutputFileName.c_str(), true);
