@@ -72,6 +72,13 @@ namespace PrintPDF
         {
             Console.WriteLine("PrintPDF Sample:");
 
+            System.Drawing.Printing.PrinterSettings settings = new System.Drawing.Printing.PrinterSettings();
+            if (String.IsNullOrEmpty(settings.PrinterName))
+            {
+                Console.WriteLine("A printer must be made available to use this sample.");
+                return;
+            }
+
             try
             {   // Printing may fail for reasons that have nothing to do with APDFL.
                 // PDF documents may contain material that cannot be printed, etc. Given
@@ -88,8 +95,8 @@ namespace PrintPDF
                     Console.WriteLine(@"Library initialized.");
 
                     String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                    String outFileNamePrn = "../PrintPDF_out.prn";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
-                    string outFileNamePs = "../PrintPDF_out.ps";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
+                    String outFileNamePrn = "PrintPDF_out.prn";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
+                    string outFileNamePs = "PrintPDF_out.ps";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
 
                     if (args.Length > 0)
                         sInput = args[0];
@@ -115,10 +122,11 @@ namespace PrintPDF
                         using (PrintUserParams userParams = new PrintUserParams())
                         {   // NOTE: userParams are only valid for ONE print job...
                             userParams.NCopies = 1;
-                            userParams.ShrinkToFit = true;
                             userParams.PrintParams.ExpandToFit = true;
 
-#if !MONO
+#if WINDOWS
+                            userParams.ShrinkToFit = true;
+
                             // This sets the file name that the printer driver knows about
                             // It's completely optional and only needs to be set if one wants
                             // a value that differs from the PDF file name (which is
@@ -187,10 +195,11 @@ namespace PrintPDF
                         using (PrintUserParams userParams = new PrintUserParams())
                         {   // NOTE: userParams are only valid for ONE print job...
                             userParams.NCopies = 1;
-                            userParams.ShrinkToFit = true;
                             userParams.PrintParams.ExpandToFit = true;
 
-#if !MONO
+#if WINDOWS
+                            userParams.ShrinkToFit = true;
+
                             // This sets the file name that the printer driver knows about
                             // It's completely optional and only needs to be set if one wants
                             // a value that differs from the PDF file name (which is
@@ -207,7 +216,6 @@ namespace PrintPDF
                                 nameOnly = sInput;
 
                             userParams.InFileName = nameOnly;
-#endif
 
                             // When printing (directly) to a printer you cannot use page ranges...
                             // You need to use userParams.StartPage and EndPage (to request a single,
@@ -218,19 +226,24 @@ namespace PrintPDF
                             int upToFourPages = ((doc.NumPages > 4) ? 3 : doc.NumPages - 1);
                             userParams.StartPage = 0;           // 0-based
                             userParams.EndPage = upToFourPages; // 0-based
+#endif
 
                             // Use the default printer...
+#if Windows || MacOS
                             userParams.UseDefaultPrinter(doc);
+#endif
 
                             // ...or uncomment the code below (and comment out the code above) and
                             // assign the name of a (accessible) printer to userParams.DeviceName so
                             // as to explicitly target a printer.
                             //userParams.DeviceName = @"Change Me to a valid Printer Name";
 
+#if WINDOWS
                             Console.WriteLine(String.Format("Printing (direct) to Printer: {0}", userParams.DeviceName));
+#endif
                             doc.Print(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc());
                         }
-                        #endregion
+#endregion
 
                         #region Export As PostScript (Device Independent, DSC Compliant)
                         // Export as (PDFL composed) PostScript...
@@ -261,7 +274,7 @@ namespace PrintPDF
                             Console.WriteLine(String.Format("Exporting as PostScript to File: {0}", outFileNamePs));
                             doc.ExportAsPostScript(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc(), outFileNamePs);
                         }
-                        #endregion
+#endregion
                     }
                 }
             }
