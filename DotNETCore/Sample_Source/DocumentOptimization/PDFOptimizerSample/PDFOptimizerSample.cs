@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -30,11 +28,12 @@ namespace PDFOptimizerSample
         {
             Console.WriteLine("PDF Optimization Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf"; ;
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sOutput = "PDFOptimizer-out.pdf";
 
                 if (args.Length > 0)

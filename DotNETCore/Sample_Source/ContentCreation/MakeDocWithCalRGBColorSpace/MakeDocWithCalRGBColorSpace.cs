@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -23,6 +21,7 @@ namespace MakeDocWithCalRGBColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "CalRGB-out.pdf";
@@ -50,7 +49,7 @@ namespace MakeDocWithCalRGBColorSpace
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 // a CalRGB color space for the CCIR XA/11-recommended D65
                 // white point with 1.8 gammas and Sony Trinitron phosphor
@@ -66,7 +65,7 @@ namespace MakeDocWithCalRGBColorSpace
 
 
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new Double[] { 0.3, 0.7, 0.3 });
+                gs.FillColor = new Color(cs, new[] { 0.3, 0.7, 0.3 });
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size

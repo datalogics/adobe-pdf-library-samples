@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -22,6 +20,7 @@ namespace MakeDocWithCalGrayColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "CalGray-out.pdf";
@@ -49,7 +48,7 @@ namespace MakeDocWithCalGrayColorSpace
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 // a space consisting of the Y dimension of the CIE 1931 XYZ
                 // space with the CCIR XA/11-recommended D65 white point and
@@ -61,7 +60,7 @@ namespace MakeDocWithCalGrayColorSpace
 
                 ColorSpace cs = new CalGrayColorSpace(whitePoint, blackPoint, gamma);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new Double[] { 0.5 });
+                gs.FillColor = new Color(cs, new[] { 0.5 });
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size

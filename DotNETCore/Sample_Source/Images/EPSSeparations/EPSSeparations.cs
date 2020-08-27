@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -18,14 +17,15 @@ using Datalogics.PDFL;
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
-namespace Actions
+namespace EPSSeparations
 {
-    class Actions
+    class EPSSeparations
     {
         static void Main(string[] args)
         {
             Console.WriteLine("EPS Separations Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

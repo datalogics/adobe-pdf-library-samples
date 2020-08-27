@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Datalogics.PDFL;
 
@@ -31,7 +29,8 @@ namespace StreamIO
         /// <summary>
         /// Demonstrate reading a PDF Document from a .NET Stream object.
         /// </summary>
-        /// <param name="filename">The filename of the PDF document to read.</param>
+        /// <param name="path">The filename of the PDF document to read.</param>
+        /// <param name="output">A string to receive the contents of the PDF document.</param>
         void ReadFromStream(String path, String output)
 		{
 			// Create a .NET FileStream object, opened using the path argument.
@@ -122,12 +121,13 @@ namespace StreamIO
         {
             StreamIOSample sample = new StreamIOSample();
             Console.WriteLine("StreamIO Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput1 =  "../StreamIO-out1.pdf";
-                String sOutput2 = "../StreamIO-out2.pdf";
+                String sOutput1 =  "StreamIO-out1.pdf";
+                String sOutput2 = "StreamIO-out2.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -33,7 +31,8 @@ namespace FlattenTransparency
         {
             Console.WriteLine("FlattenTransparency sample:");
 
-        	using (Library lib = new Library())
+            // ReSharper disable once UnusedVariable
+            using (Library lib = new Library())
             {
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/trans_1page.pdf";

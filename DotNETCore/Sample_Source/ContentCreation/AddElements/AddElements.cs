@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -25,6 +24,7 @@ namespace AddElements
         {
             Console.WriteLine("AddElements Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -157,7 +157,7 @@ namespace AddElements
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 gs = new GraphicState();
                 gs.FillColor = new Color(0, 0, 1.0);

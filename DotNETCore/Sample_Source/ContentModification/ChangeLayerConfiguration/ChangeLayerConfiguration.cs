@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -30,6 +29,7 @@ namespace ChangeLayerConfiguration
         {
             Console.WriteLine("ChangeLayerConfiguration Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -90,7 +90,7 @@ namespace ChangeLayerConfiguration
                 if (args.Length > 1)
                     sOutput = args[1];
 
-                Console.WriteLine("Input file: " + sInput + ", writing to " + sOutput); ;
+                Console.WriteLine("Input file: " + sInput + ", writing to " + sOutput);
 
                 Document doc = new Document(sInput);
 

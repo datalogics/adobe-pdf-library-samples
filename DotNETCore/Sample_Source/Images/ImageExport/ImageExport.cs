@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -29,7 +27,7 @@ namespace ImageExport
     public class ExportDocumentImages 
     {
        ImageType exporttype;
-        int next = 0;
+        int next;
         ImageCollection ic = new ImageCollection();
         
         public void export_doc_images_type( Document doc, ImageType imtype)
@@ -145,10 +143,25 @@ namespace ImageExport
 
     class ImageExport
     {
-         static void Main(String[] args)
+        static void Main(String[] args)
         {
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
+            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
+                return;
+            }
+
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
+                return;
+            }
+
             Console.WriteLine("Image Export sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

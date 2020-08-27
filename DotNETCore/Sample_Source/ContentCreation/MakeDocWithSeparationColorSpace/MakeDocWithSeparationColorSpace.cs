@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -22,6 +20,7 @@ namespace MakeDocWithSeparationColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "Separation-out.pdf";
@@ -49,7 +48,7 @@ namespace MakeDocWithSeparationColorSpace
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 ColorSpace alternate = ColorSpace.DeviceRGB;
 
@@ -63,7 +62,7 @@ namespace MakeDocWithSeparationColorSpace
 
                 ColorSpace cs = new SeparationColorSpace("DLColor", alternate, tintTransform);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new Double[] { 1.0 });
+                gs.FillColor = new Color(cs, new[] { 1.0 });
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
                                          1 * 72, 2 * 72);  // x, y coordinate on page, 1" x 2"

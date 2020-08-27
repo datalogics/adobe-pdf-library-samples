@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -25,6 +23,7 @@ namespace MakeDocWithLabColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "Lab-out.pdf";
@@ -52,7 +51,7 @@ namespace MakeDocWithLabColorSpace
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 // CIE 1976 L*a*b* space with the CCIR XA/11-recommended D65
                 // white point. The a* and b* components, although

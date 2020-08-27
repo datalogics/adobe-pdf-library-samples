@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -14,14 +12,15 @@ using Datalogics.PDFL;
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
-namespace Actions
+namespace Action
 {
-    class Actions
+    class Action
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Actions Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "Actions-out.pdf";
@@ -30,7 +29,7 @@ namespace Actions
                 
                 Document doc = new Document();
 
-                using (Path newpath = new Path())
+                using (new Path())
                 {
                     // Create a PDF page which is the same size of the image.
                     Rect pageRect = new Rect(0, 0, 100, 100);
@@ -44,7 +43,7 @@ namespace Actions
 
                     doc.BaseURI = "http://www.datalogics.com";
                     URIAction uri = new URIAction("/products/pdf/pdflibrary/", false);
-                    Console.WriteLine("Action data: " + uri.ToString());
+                    Console.WriteLine("Action data: " + uri);
 
                     newLink.Action = uri;
 
@@ -53,7 +52,7 @@ namespace Actions
 
                     Rect r = new Rect(5, 5, 100, 100);
                     GoToAction gta = new GoToAction(new ViewDestination(doc, 0, "FitR", r, 1.0));
-                    Console.WriteLine("Action data: " + gta.ToString());
+                    Console.WriteLine("Action data: " + gta);
 
                     secondLink.Action = gta;
 
@@ -79,10 +78,10 @@ namespace Actions
                         Console.WriteLine("Don't send mouse coordinates");
 
                     // Testing gta
-                    Console.WriteLine("Fit type of destination: " + gta.Destination.FitType.ToString());
-                    Console.WriteLine("Rectangle of destination: " + gta.Destination.DestRect.ToString());
-                    Console.WriteLine("Zoom of destination: " + gta.Destination.Zoom.ToString());
-                    Console.WriteLine("Page number of destination: " + gta.Destination.PageNumber.ToString());
+                    Console.WriteLine("Fit type of destination: " + gta.Destination.FitType);
+                    Console.WriteLine("Rectangle of destination: " + gta.Destination.DestRect);
+                    Console.WriteLine("Zoom of destination: " + gta.Destination.Zoom);
+                    Console.WriteLine("Page number of destination: " + gta.Destination.PageNumber);
 
                     doc.Save(SaveFlags.Full, sOutput);
                 }

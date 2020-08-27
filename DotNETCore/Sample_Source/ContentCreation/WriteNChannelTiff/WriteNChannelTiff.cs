@@ -1,10 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-
 using Datalogics.PDFL;
 
 /*
@@ -29,6 +24,7 @@ namespace WriteNChannelTiff
         {
             Console.WriteLine("WriteNChannelTiff Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -48,7 +44,7 @@ namespace WriteNChannelTiff
                 Page pg = doc.GetPage(0);
 
                 // Get all inks that are present on the page
-                List<Ink> inks = (List<Ink>)pg.ListInks();
+                IList<Ink> inks = pg.ListInks();
                 List<SeparationColorSpace> colorants = new List<SeparationColorSpace>();
 
                 // Here we decide, which inks should be drawn
@@ -63,7 +59,7 @@ namespace WriteNChannelTiff
                 pip.HorizontalResolution = 300;
                 pip.VerticalResolution = 300;
 
-                Datalogics.PDFL.Image images = pg.GetImage(pg.CropBox, pip, colorants);
+                Image images = pg.GetImage(pg.CropBox, pip, colorants);
                 // Save images as multi-channeled tiff.
                 images.Save(sOutput, ImageType.TIFF);
             }

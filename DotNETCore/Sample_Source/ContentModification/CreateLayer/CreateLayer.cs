@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -28,6 +26,7 @@ namespace CreateLayer
         {
             Console.WriteLine("CreateLayer Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -104,7 +103,7 @@ namespace CreateLayer
             // 'typical' usage; other options can be used to create an 'inverting' layer
             // (i.e. 'Display this content when the layer is turned OFF'), or to make the
             // Container's visibility depend on several OptionalContentGroups
-            OptionalContentMembershipDict ocmd = new OptionalContentMembershipDict(doc, new OptionalContentGroup[] {ocg}, VisibilityPolicy.AnyOn);
+            OptionalContentMembershipDict ocmd = new OptionalContentMembershipDict(doc, new[] {ocg}, VisibilityPolicy.AnyOn);
 
             // Associate the Container with the OptionalContentMembershipDict
             cont.OptionalContentMembershipDict = ocmd;

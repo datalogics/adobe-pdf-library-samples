@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -24,6 +22,7 @@ namespace MergePDF
         {
             Console.WriteLine("MergePDF Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
 
@@ -54,7 +53,7 @@ namespace MergePDF
                 {
                     if (!ex.Message.Contains("An incorrect structure tree was found in the PDF file but operation continued"))
                     {
-                        throw ex;
+                        throw;
                     }
                     Console.Out.WriteLine(ex.Message);
                 }

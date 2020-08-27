@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -22,6 +20,7 @@ namespace MakeDocWithDeviceNColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "DeviceN-out.pdf";
@@ -49,7 +48,7 @@ namespace MakeDocWithDeviceNColorSpace
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 ColorSpace alternate = ColorSpace.DeviceRGB;
 
@@ -58,9 +57,9 @@ namespace MakeDocWithDeviceNColorSpace
                 string code = "{ 0 exch }";
                 Function tintTransform = new PostScriptCalculatorFunction(domain, range, code);
 
-                ColorSpace cs = new DeviceNColorSpace(new string[] { "DLRed", "DLBlue" }, alternate, tintTransform);
+                ColorSpace cs = new DeviceNColorSpace(new[] { "DLRed", "DLBlue" }, alternate, tintTransform);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new Double[] { 0.75, 0.75 });
+                gs.FillColor = new Color(cs, new[] { 0.75, 0.75 });
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size

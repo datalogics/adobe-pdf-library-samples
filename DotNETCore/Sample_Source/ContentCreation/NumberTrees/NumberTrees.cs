@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 
@@ -25,9 +23,10 @@ namespace NumberTrees
 {
     class NumberTrees
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("NumberTree Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -35,7 +34,7 @@ namespace NumberTrees
 			    // Create a new document and blank first page
 			    Document doc = new Document();
 			    Rect rect = new Rect(0, 0, 612, 792);
-			    Page page = doc.CreatePage(Document.BeforeFirstPage, rect);
+			    doc.CreatePage(Document.BeforeFirstPage, rect);
 			    Console.WriteLine("Created new document and first page.");
 
 			    // Create a NumberTree and put a key-value pair in it

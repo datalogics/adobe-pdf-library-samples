@@ -1,6 +1,6 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -11,7 +11,7 @@ using Datalogics.PDFL;
  *
  * This program sample converts a PDF file to a series of bitmap image files.
  * 
- * For more detail see the description of the DrawtoBitmap sample program on our Developer’s site, 
+ * For more detail see the description of the DrawtoBitmap sample program on our Developer’s site,
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/converting-pdf-pages-to-images/#drawtobitmap
  * 
  * 
@@ -60,7 +60,7 @@ namespace DrawToBitmap
         public override void Call(float stagePercent, string info, RenderProgressStage stage)
         {
             mSomeBoolean = ((mSomeBoolean) ? false : true);
-            Console.WriteLine(String.Format("SampleRenderProgressProc Call (stage/stagePercent/info): {0} {1} {2}", stage, stagePercent, info));
+            Console.WriteLine("SampleRenderProgressProc Call (stage/stagePercent/info): {0} {1} {2}", stage, stagePercent, info);
         }
 
         static private bool mSomeBoolean;
@@ -74,8 +74,7 @@ namespace DrawToBitmap
         /// The method constructs a DrawParams instance.
         /// </summary>
         /// <param name="matrix">the matrix for DrawParams</param>
-        /// <param name="width">the width for Update/Dest rectangle</param>
-        /// <param name="height">the height for Update/Dest rectangle</param>
+        /// <param name="updateRect">The portation of the page to draw</param>
         /// <param name="blackPointCompensation">the flag which allows to turn on black point compensation</param>
         /// <returns>DrawParams instance</returns>
         private static DrawParams ConstructDrawParams(Matrix matrix, Rect updateRect, bool blackPointCompensation)
@@ -300,13 +299,12 @@ namespace DrawToBitmap
         /// The method renders the specified page to a raw byte buffer.
         /// </summary>
         /// <param name="pg">page to render</param>
-        /// <param name="width">width of the destination rect </param>
-        /// <param name="height">height of the destination rect </param>
         /// <param name="matrix">the matrix</param>
-        static void DrawToByteArray(Page pg, double width, double height, Matrix matrix)
+        static void DrawToByteArray(Page pg, Matrix matrix)
         {
-            Byte[] rawBytes = null;
+            Byte[] rawBytes;
 
+            Rect roundedDestRect;
             using (DrawParams parms = new DrawParams())
             {
                 parms.ColorSpace = ColorSpace.DeviceRGB;
@@ -314,12 +312,24 @@ namespace DrawToBitmap
                 parms.Matrix = matrix;
                 parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces | DrawFlags.SwapComponents;
                 parms.SmoothFlags = SmoothFlags.Image | SmoothFlags.Text;
-                parms.DestRect = parms.UpdateRect.Transform(matrix);
+                var destRect = parms.UpdateRect.Transform(matrix);
+
+                // Round the corners of the destRect so that it's a whole number of pixels.
+                // This removes any ambiguity about how DrawContents treats a rectangle that has
+                // a width or height that contains a fraction. It ensures that our assumptions about
+                // the data in the returned Byte array are the same as those made by DrawContents.
+                roundedDestRect = new Rect(
+                    Math.Round(destRect.LLx),
+                    Math.Round(destRect.LLy),
+                    Math.Round(destRect.URx),
+                    Math.Round(destRect.URy));
+
+                parms.DestRect = roundedDestRect;
 
                 parms.CancelProc = new SampleCancelProc();
                 parms.ProgressProc = new SampleRenderProgressProc();
 
-                rawBytes = (Byte[])pg.DrawContents(parms);
+                rawBytes = pg.DrawContents(parms);
             }
 
             if (rawBytes == null)
@@ -327,42 +337,35 @@ namespace DrawToBitmap
                 return;
             }
 
-            //
-            // Get an (unsafe) pointer to the beginning of the array
-            //
+            // Make a Bitmap. Get the dimensions from the same rectangle specified
+            // as the DestRect in the DrawParams.
+            int w = (int) roundedDestRect.Width;
+            int h = (int) roundedDestRect.Height;
+            int stride = (w * 3 /* components */ + 3 /* padding */) & ~3;
 
-            GCHandle arrayHandle = GCHandle.Alloc(rawBytes, GCHandleType.Pinned);
-            try
+            using (Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format24bppRgb))
             {
-                IntPtr p = Marshal.UnsafeAddrOfPinnedArrayElement(rawBytes, 0);
-                if (p != null)
-                {   // Make a Bitmap...
-                    int w = (int)width;
-                    int h = (int)height;
-                    int stride = (w * 3 /* components */ + 3 /* padding */) & ~3;
-
-                    using (Bitmap bitmap = new Bitmap(w, h, stride, PixelFormat.Format24bppRgb, p))
-                    {
-                        bitmap.Save("DrawToByteArray.png", ImageFormat.Png);
-                    }
-                }
-            }
-            finally
-            {   // Must unpin the byte array or it'll hang around forever
-                arrayHandle.Free();
+                Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                var bitmapData =
+                    bitmap.LockBits(rect, ImageLockMode.WriteOnly,
+                                    bitmap.PixelFormat);
+                Debug.Assert(stride == bitmapData.Stride);
+                Marshal.Copy(rawBytes, 0, bitmapData.Scan0, rawBytes.Length);
+                bitmap.UnlockBits(bitmapData);
+                bitmap.Save("DrawToByteArray.png", ImageFormat.Png);
             }
         }
 
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
             !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) &&
             !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
@@ -373,6 +376,7 @@ namespace DrawToBitmap
 
             try
             {
+                // ReSharper disable once UnusedVariable
                 using (Library lib = new Library())
                 {
                     Console.WriteLine("Initialized the library.");
@@ -409,37 +413,38 @@ namespace DrawToBitmap
 
                             bool enableBlackPointCompensation = true;
 
+                            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                             using (DrawParams parms = ConstructDrawParams(matrix, pg.MediaBox, enableBlackPointCompensation))
                             {
                                 // Draw to Graphics
-                                Console.WriteLine(String.Format("DrawToGraphicsWithMatrix: {0} {1} {2}", matrix.ToString(), width, height));
+                                Console.WriteLine("DrawToGraphicsWithMatrix: {0} {1} {2}", matrix, width, height);
                                 DrawToGraphicsWithMatrix(pg, matrix, width, height);    // Will NOT drive SampleRenderProgress(Cancel)Proc
 
                                 // Draw to Graphics using DrawParams with turned on black point compensation
-                                Console.WriteLine(String.Format("DrawToGraphicsWithDrawParams: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
+                                Console.WriteLine("DrawToGraphicsWithDrawParams: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
                                 DrawToGraphicsWithDrawParams(pg, parms);    // Will drive SampleRenderProgress(Cancel)Proc
 
                                 // Demonstrate drawing to Graphics with params and OCGs
                                 // Demonstrate drawing layers
-                                Console.WriteLine(String.Format("DrawLayersToGraphics: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
+                                Console.WriteLine("DrawLayersToGraphics: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
                                 DrawLayersToGraphics(doc, pg, parms);   // Will NOT drive SampleRenderProgress(Cancel)Proc
 
                                 // Demonstrate drawing to Bitmaps with params and OCGs
                                 // Demonstrate drawing layers
-                                Console.WriteLine(String.Format("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
+                                Console.WriteLine("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
                                 DrawLayersToBitmap(doc, pg, parms); // Will NOT drive SampleRenderProgressProc
 
                                 // Make a Bitmap
-                                Console.WriteLine(String.Format("DrawToBitmapWithMatrix: {0} {1} {2}", matrix.ToString(), width, height));
+                                Console.WriteLine("DrawToBitmapWithMatrix: {0} {1} {2}", matrix, width, height);
                                 DrawToBitmapWithMatrix(pg, matrix, width, height);  // Will NOT drive SampleRenderProgress(Cancel)Proc
 
                                 // Make a Bitmap using DrawParams with black point compensation turned on
-                                Console.WriteLine(String.Format("DrawToBitmapWithDrawParams: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
+                                Console.WriteLine("DrawToBitmapWithDrawParams: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
                                 DrawToBitmapWithDrawParams(pg, parms);  // Will drive SampleRenderProgress(Cancel)Proc
 
                                 // Demonstrate drawing to a byte array
-                                Console.WriteLine(String.Format("DrawToByteArray: {0} {1} {2}", matrix.ToString(), width, height));
-                                DrawToByteArray(pg, width, height, matrix); // Will drive SampleRenderProgress(Cancel)Proc
+                                Console.WriteLine("DrawToByteArray: {0} {1} {2}", matrix, width, height);
+                                DrawToByteArray(pg, matrix); // Will drive SampleRenderProgress(Cancel)Proc
                             }
                         }
                     }

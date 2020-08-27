@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -54,7 +52,7 @@ namespace ExtendedGraphicStates
                     return;
                 }
 
-                throw ex;
+                throw;
             }
             GraphicState gsText = new GraphicState();
             gsText.FillColor = new Color(0, 0, 1.0);
@@ -186,6 +184,7 @@ namespace ExtendedGraphicStates
         static void Main(string[] args)
         {
             Console.WriteLine("ExtendedGraphicStates Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

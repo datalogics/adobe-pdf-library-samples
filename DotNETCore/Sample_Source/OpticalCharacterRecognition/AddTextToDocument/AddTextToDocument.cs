@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -28,7 +27,7 @@ namespace AddTextToDocument
             for (int index = 0; index < content.NumElements; index++)
             {
                 Element e = content.GetElement(index);
-                if (e is Datalogics.PDFL.Image)
+                if (e is Image)
                 {
                     //PlaceTextUnder creates a form with the image and the generated text
                     //under the image. The original image in the page is then replaced by
@@ -56,6 +55,7 @@ namespace AddTextToDocument
         {
             Console.WriteLine("AddTextToDocument Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 namespace AddElements
@@ -26,7 +24,7 @@ namespace AddElements
             {
                 if (replacementText != null)
                 {
-                    message.Replace("%s", replacementText);
+                    message = message.Replace("%s", replacementText);
                 }
                 Console.WriteLine(message);
             }

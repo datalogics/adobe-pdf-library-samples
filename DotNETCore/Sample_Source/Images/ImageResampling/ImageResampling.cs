@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Datalogics.PDFL;
 
 /*
@@ -36,15 +31,15 @@ namespace ImageResampling
             while (i < content.NumElements)
             {
                 Element e = content.GetElement(i);
-                Console.WriteLine(i + " / "+content.NumElements+" = " + e.GetType().ToString());
-                if (e is Datalogics.PDFL.Image)
+                Console.WriteLine(i + " / "+content.NumElements+" = " + e.GetType());
+                if (e is Image)
                 {
-                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image)e;
+                    Image img = (Image)e;
                     try
                     {
-                        Datalogics.PDFL.Image newimg = img.ChangeResolution(400);
+                        Image newimg = img.ChangeResolution(400);
                         Console.WriteLine("Replacing an image...");
-                        content.AddElement((Element)newimg, i);
+                        content.AddElement(newimg, i);
                         content.RemoveElement(i);
                         Console.WriteLine("Replaced.");
                         numreplaced++;
@@ -79,6 +74,7 @@ namespace ImageResampling
         {
             Console.WriteLine("ImageResampling Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

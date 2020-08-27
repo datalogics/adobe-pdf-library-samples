@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -27,6 +25,7 @@ namespace RemoteGoToActions
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
 
@@ -77,7 +76,7 @@ namespace RemoteGoToActions
                 Console.WriteLine("Page Number : " + remoteDest.PageNumber);
                 Console.WriteLine("zoom level : " + remoteDest.Zoom);
                 Console.WriteLine("fit type : " + remoteDest.FitType);
-                Console.WriteLine("rectangle : " + remoteDest.DestRect.ToString());
+                Console.WriteLine("rectangle : " + remoteDest.DestRect);
 
                 // Now create the RemoteGoToAction from the fileSpec and the RemoteDestination
                 RemoteGoToAction remoteAction = new RemoteGoToAction(fileSpec, remoteDest);

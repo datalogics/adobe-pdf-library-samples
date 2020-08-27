@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -25,6 +23,7 @@ namespace ZUGFeRDConverter
             Console.WriteLine("ZUGFeRDConverter Sample:");
 
             //Initialize the Library
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -48,7 +47,7 @@ namespace ZUGFeRDConverter
                 using (Document doc = new Document(sInputPDF))
                 {
                     // Step 2) Open the input Invoice XML and attach it to the PDF
-                    using (FileAttachment attachment = new FileAttachment(doc, sInputInoviceXML))
+                    using (new FileAttachment(doc, sInputInoviceXML))
                     {
                         // Make a conversion parameters object
                         PDFAConvertParams pdfaParams = new PDFAConvertParams();

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -28,11 +26,12 @@ namespace PDFXConverter
         {
             Console.WriteLine("PDFXConverter Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf"; ;
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sOutput = "PDFXConverter-out-X1a-csh.pdf";
 
                 if (args.Length > 0)

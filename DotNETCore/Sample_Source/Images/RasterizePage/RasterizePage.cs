@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
 using Datalogics.PDFL;
 
 /*
@@ -37,8 +34,23 @@ namespace RasterizePage
     {
         static void Main(string[] args)
         {
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
+            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
+                return;
+            }
+
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
+                return;
+            }
+
             Console.WriteLine("RasterizePage Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -84,7 +96,7 @@ namespace RasterizePage
                 // Again, we'll create an image of the entire page using the page's
                 // CropBox as the exportRect.  The default ColorSpace is DeviceRGB, 
                 // so the image will be DeviceRGB.
-                Datalogics.PDFL.Image inputImage = pg.GetImage(pg.CropBox, pip);
+                Image inputImage = pg.GetImage(pg.CropBox, pip);
                 inputImage.Save(sOutput + "-400pixel-width.jpg", ImageType.JPEG);
                 Console.WriteLine("Created " + sOutput + "-400pixel-width.jpg...");                
 
@@ -112,6 +124,7 @@ namespace RasterizePage
                 //
                 ////////////////////////////////////////////////////////
 
+                // ReSharper disable once UnusedVariable
                 System.Drawing.Bitmap halfImage = CreateBitmapWithTopHalfOfPage(pg, sOutput + "-tophalf.jpg",
                                                         System.Drawing.Imaging.ImageFormat.Jpeg, ColorSpace.DeviceRGB);
             }
@@ -132,7 +145,7 @@ namespace RasterizePage
             // Create the image and save it to a file.
             // We want to create an image of the entire page, so we'll use the
             // page's CropBox as the exportRect.
-            Datalogics.PDFL.Image img = pg.GetImage(pg.CropBox, pip);
+            Image img = pg.GetImage(pg.CropBox, pip);
             img.Save(filename, imgtype);
             Console.WriteLine("Created " + filename + "...");
         }
@@ -234,7 +247,6 @@ namespace RasterizePage
                     // of the unrotated page (this corresponds to top half of rotated page)
                     topHalfOfRotatedPage.LLx = pg.CropBox.LLx + ((pg.CropBox.URx - pg.CropBox.LLx) / 2);
                     break;
-                case PageRotation.Rotate0:
                 default:
                     topHalfOfRotatedPage.LLy = pg.CropBox.LLy + ((pg.CropBox.URy - pg.CropBox.LLy) / 2);
                     break;

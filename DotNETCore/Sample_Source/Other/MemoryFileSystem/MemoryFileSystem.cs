@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -47,10 +45,7 @@ namespace MemoryFileSystem
                 lib.DefaultTempStoreMemLimit = 100;
                 using (Document doc = new Document())
                 {
-                    using (Page page = doc.CreatePage(Document.BeforeFirstPage, bounds))
-                    {
-
-                    }
+                    doc.CreatePage(Document.BeforeFirstPage, bounds);
                     doc.Save(SaveFlags.Full, sOutput);
                 }
             }

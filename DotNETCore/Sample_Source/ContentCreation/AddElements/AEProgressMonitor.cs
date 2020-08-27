@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 namespace AddElements
@@ -24,9 +22,9 @@ namespace AddElements
             return duration;
         }
 
-        public override void SetDuration(int duration)
+        public override void SetDuration(int newDuration)
         {
-            this.duration = duration;
+            this.duration = newDuration;
         }
 
         public override int GetCurrentValue()
@@ -34,10 +32,10 @@ namespace AddElements
             return currentValue;
         }
 
-        public override void SetCurrentValue(int currentValue)
+        public override void SetCurrentValue(int newValue)
         {
-            this.currentValue = currentValue;
-            Console.Write(currentValue * 100 / duration);
+            this.currentValue = newValue;
+            Console.Write(newValue * 100 / duration);
             Console.Write("%...");
             Console.Out.Flush();
         }

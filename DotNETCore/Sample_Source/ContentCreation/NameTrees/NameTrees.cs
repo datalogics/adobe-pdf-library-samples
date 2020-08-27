@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 
@@ -25,9 +23,10 @@ namespace NameTrees
 {
     class NameTrees
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("NameTree Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -35,15 +34,15 @@ namespace NameTrees
 			    // Create a new document and blank first page
 			    Document doc = new Document();
 			    Rect rect = new Rect(0, 0, 612, 792);
-                Page page = doc.CreatePage(Document.BeforeFirstPage, rect);
+                doc.CreatePage(Document.BeforeFirstPage, rect);
 			    Console.WriteLine("Created new document and first page.");
 
 			    // Create a NumberTree and put a key-value pair in it
 			    NameTree nametree = new NameTree(doc);
 
 			    // Use put() to put a key-value pair in it
-			    PDFString key = new PDFString("Bailout", doc, false, false);;
-			    PDFString value = new PDFString("Smorgasbord", doc, false, false);
+			    PDFString key = new PDFString("Bailout", doc, false, false);
+                PDFString value = new PDFString("Smorgasbord", doc, false, false);
 			    nametree.Put(key, value);
 			    Console.WriteLine("\nCreated NameTree and added first key-value pair.");
 

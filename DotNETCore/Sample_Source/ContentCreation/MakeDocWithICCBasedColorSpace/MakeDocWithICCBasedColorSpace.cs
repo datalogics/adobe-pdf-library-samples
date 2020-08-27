@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Datalogics.PDFL;
 
@@ -22,6 +20,7 @@ namespace MakeDocWithICCBasedColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sInput = Library.ResourceDirectory + "Sample_Input/sRGB_IEC61966-2-1_noBPC.icc";
@@ -46,20 +45,20 @@ namespace MakeDocWithICCBasedColorSpace
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
                         System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                        !Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 FileStream stream = new FileStream(sInput, FileMode.Open);
                 PDFStream pdfStream = new PDFStream(stream, doc, null, null);
 
                 ColorSpace cs = new ICCBasedColorSpace(pdfStream, 3);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new Double[] { 1.0, 0.0, 0.0 });
+                gs.FillColor = new Color(cs, new[] { 1.0, 0.0, 0.0 });
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size

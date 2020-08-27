@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -25,6 +24,7 @@ namespace AddGlyphs
         {
             Console.WriteLine("AddGlyphs Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -57,7 +57,7 @@ namespace AddGlyphs
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
 
                 List<Char> glyphIDs = new List<Char>();

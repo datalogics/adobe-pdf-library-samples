@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -25,6 +24,7 @@ namespace AddUnicodeText
         {
             Console.WriteLine("AddUnicodeText Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -55,7 +55,22 @@ namespace AddUnicodeText
                 strings.Add("Russian - \u0412\u0441\u0435\u043e\u0431\u0449\u0430\u044f\u0020\u0434\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0438\u044f\u0020\u043f\u0440\u0430\u0432\u0020\u0447\u0435\u043b\u043e\u0432\u0435\u043a\u0430");
 
                 List<Font> fonts = new List<Font>();
-                fonts.Add(new Font("Arial"));
+                try
+                {
+                    fonts.Add(new Font("Arial"));
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
+
+                    throw;
+                }
                 fonts.Add(new Font("KozGoPr6N-Medium"));
                 fonts.Add(new Font("AdobeMyungjoStd-Medium"));
 

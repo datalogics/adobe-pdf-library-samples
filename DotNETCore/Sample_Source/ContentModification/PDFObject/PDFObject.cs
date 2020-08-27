@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -28,6 +26,7 @@ namespace PDFObject
         {
             Console.WriteLine("PDFObject Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
 
@@ -50,7 +49,7 @@ namespace PDFObject
 
                 // Print some info about the URI action, before we modify it
                 Console.WriteLine("Initial URL: " + uri.URI);
-                Console.WriteLine("Is Map property: " + uri.IsMap.ToString());
+                Console.WriteLine("Is Map property: " + uri.IsMap);
                 
                 // Modify the URIAction
                 //
@@ -71,7 +70,7 @@ namespace PDFObject
                 uri_dict.Remove("IsMap");           // Remove the IsMap entry
 
                 // Check that we deleted the IsMap entry
-                Console.WriteLine("Does this dictionary have an IsMap entry? " + uri_dict.Contains("IsMap").ToString());
+                Console.WriteLine("Does this dictionary have an IsMap entry? " + uri_dict.Contains("IsMap"));
 
                 doc.Save(SaveFlags.Full, sOutput);
                 doc.Close();
@@ -83,7 +82,7 @@ namespace PDFObject
                 uri = (URIAction)annot.Action;
 
                 Console.WriteLine("Modified URL: " + uri.URI);
-                Console.WriteLine("Is Map property (if not present, defaults to false): " + uri.IsMap.ToString());
+                Console.WriteLine("Is Map property (if not present, defaults to false): " + uri.IsMap);
             }
         }
     }

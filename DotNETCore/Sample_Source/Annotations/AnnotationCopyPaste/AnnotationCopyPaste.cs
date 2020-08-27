@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -29,6 +27,7 @@ namespace AnnotationCopyPaste
         {
             Console.WriteLine("AnnotationCopyPaste Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -81,6 +80,7 @@ namespace AnnotationCopyPaste
                             // copy/paste the annotation, in either case the message in
                             // the exception will specify which operation (copy or paste)
                             // that it could not complete.
+                            // ReSharper disable once UnusedVariable
                             LinkAnnotation copiedLink = ((LinkAnnotation)ann).CopyTo(destinationPage, linkCenter);
                         }
                         catch (ApplicationException ae)

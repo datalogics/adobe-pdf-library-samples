@@ -1,10 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-
 using Datalogics.PDFL;
 
 /*
@@ -27,6 +22,20 @@ namespace GetSeparatedImages
     {
         static void Main(string[] args)
         {
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
+            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
+                return;
+            }
+
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
+                return;
+            }
+
             Console.WriteLine("GetSeparatedImages Sample:");
 
             String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
@@ -39,6 +48,7 @@ namespace GetSeparatedImages
 
             Console.WriteLine("Input file: " + sInput + ", will write to " + sOutput);
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
 
@@ -46,7 +56,7 @@ namespace GetSeparatedImages
                 Page pg = doc.GetPage(0);
 
                 // Get all inks that are present on the page
-                List<Ink> inks = (List<Ink>)pg.ListInks();
+                IList<Ink> inks = pg.ListInks();
                 List<SeparationColorSpace> colorants = new List<SeparationColorSpace>();
 
                 // Here we decide, which inks should be drawn

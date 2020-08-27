@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -26,6 +24,7 @@ namespace ListWords
         {
             Console.WriteLine("ListWords Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -27,6 +25,7 @@ namespace TextExtract
         {
             Console.WriteLine("TextExtract Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -121,7 +120,7 @@ namespace TextExtract
                         //
                         // For the purposes of this sample, we'll remove all hyphens.  In practice, you may need to check 
                         // words against a dictionary to determine if the hyphenated word is actually one word or two.
-                        string[] splitstrs = s.Split(new Char[] {'-', '\u00ad'});
+                        string[] splitstrs = s.Split(new[] {'-', '\u00ad'});
                         textToExtract += splitstrs[0] + splitstrs[1];
                     }
                     else
@@ -177,7 +176,7 @@ namespace TextExtract
                     {
                         // Remove the hyphen and combine the two parts of the word before adding to the extracted text.
                         // Note that we pass in the Unicode character for soft hyphen.
-                        string[] splitstrs = s.Split(new Char[] { '\u00ad' });
+                        string[] splitstrs = s.Split(new[] { '\u00ad' });
                         textToExtract += splitstrs[0] + splitstrs[1];
                     }
                     else

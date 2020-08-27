@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -28,6 +27,7 @@ namespace ChangeLinkColors
         {
             Console.WriteLine("ChangeLinkColors Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -142,7 +142,6 @@ namespace ChangeLinkColors
                 // getting false positives or false negatives, you may need to tweak the
                 // heuristic.
                 Matrix charMatrix = txt.GetTextMatrixForCharacter(charIndex);
-                Point lowerLeftCorner = new Point(charMatrix.H, charMatrix.V);
                 bool hWithinLinkBox = (Math.Floor(linkAnnots[i].Rect.LLx) < Math.Ceiling(charMatrix.H)) && (Math.Floor(charMatrix.H) < Math.Ceiling(linkAnnots[i].Rect.URx));
                 bool vWithinLinkBox = (Math.Floor(linkAnnots[i].Rect.LLy) < Math.Ceiling(charMatrix.V)) && (Math.Floor(charMatrix.V) < Math.Ceiling(linkAnnots[i].Rect.URy));
 

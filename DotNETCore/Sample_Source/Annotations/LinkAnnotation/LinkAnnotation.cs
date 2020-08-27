@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -17,6 +15,7 @@ using Datalogics.PDFL;
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
+// ReSharper disable once CheckNamespace
 namespace LinkAnnotations
 {
     class LinkAnnotations
@@ -25,6 +24,7 @@ namespace LinkAnnotations
         {
             Console.WriteLine("LinkAnnotations Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -49,24 +49,24 @@ namespace LinkAnnotations
                 // Test some link features
                 newLink.NormalAppearance = newLink.GenerateAppearance();
 
-                Console.WriteLine("Current Link Annotation version = " + newLink.AnnotationFeatureLevel.ToString());
+                Console.WriteLine("Current Link Annotation version = " + newLink.AnnotationFeatureLevel);
                 newLink.AnnotationFeatureLevel = 1.0;
-                Console.WriteLine("New Link Annotation version = " + newLink.AnnotationFeatureLevel.ToString());
+                Console.WriteLine("New Link Annotation version = " + newLink.AnnotationFeatureLevel);
 
                 // Test the destination setting
                 ViewDestination dest = new ViewDestination(doc, 0, "XYZ", doc.GetPage(0).MediaBox, 1.5);
 
                 dest.DestRect = new Rect(0.0, 0.0, 200.0, 200.0);
-                Console.WriteLine("The new destination rectangle: " + dest.DestRect.ToString());
+                Console.WriteLine("The new destination rectangle: " + dest.DestRect);
 
                 dest.FitType = "FitV";
                 Console.WriteLine("The new fit type: " + dest.FitType);
 
                 dest.Zoom = 2.5;
-                Console.WriteLine("The new zoom level: " + dest.Zoom.ToString());
+                Console.WriteLine("The new zoom level: " + dest.Zoom);
 
                 dest.PageNumber = 1;
-                Console.WriteLine("The new page number: " + dest.PageNumber.ToString());
+                Console.WriteLine("The new page number: " + dest.PageNumber);
 
                 newLink.Destination = dest;
 

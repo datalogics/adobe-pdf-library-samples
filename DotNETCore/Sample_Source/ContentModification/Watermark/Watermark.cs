@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 
@@ -29,6 +27,7 @@ namespace Watermark
         static void Main(string[] args)
         {
             Console.WriteLine("Watermark Sample:");
+            // ReSharper disable once UnusedVariable
             using( Library lib = new Library()) {
 
                 Console.WriteLine("Initialized the library.");
@@ -68,7 +67,7 @@ namespace Watermark
 
                 watermarkTextParams.Text = "Multiline\nWatermark";
 
-                Datalogics.PDFL.Font f = new Datalogics.PDFL.Font("Courier", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                Font f = new Font("Courier", FontCreateFlags.Embedded | FontCreateFlags.Subset);
                 watermarkTextParams.Font = f;
                 watermarkTextParams.TextAlign = HorizontalAlignment.Center;
 

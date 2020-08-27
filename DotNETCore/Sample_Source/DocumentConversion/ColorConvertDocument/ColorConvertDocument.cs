@@ -33,6 +33,7 @@ namespace ColorConvertDocument
             List<string> paths = new List<string>();
             paths.Add(Library.ResourceDirectory + "Fonts/");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap/", Library.ResourceDirectory + "Unicode/", Library.ResourceDirectory + "Color", LibraryFlags.DisableMemorySuballocator))
             {
                 Console.WriteLine("Initialized the library.");
@@ -76,6 +77,7 @@ namespace ColorConvertDocument
                  */
                 ColorConvertParams parms = new ColorConvertParams(colorConvActions);
 
+                // ReSharper disable once UnusedVariable
                 bool success = doc.ColorConvertPages(parms);
 
                 doc.Save(SaveFlags.Full | SaveFlags.Compressed, sOutput);

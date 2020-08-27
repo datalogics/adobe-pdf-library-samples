@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -16,15 +14,16 @@ using Datalogics.PDFL;
  *
  */
 
-namespace ImageImportSample
+namespace ImageImport
 {
 // In this scenario the Image object is used alone to create a
 // new PDF page with the image as the content.
-    class ImageImportSample
+    class ImageImport
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Import Images Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

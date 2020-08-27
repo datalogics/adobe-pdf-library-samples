@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 
@@ -23,9 +22,10 @@ namespace InkAnnotations
 {
     class InkAnnotations
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("InkAnnotations Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

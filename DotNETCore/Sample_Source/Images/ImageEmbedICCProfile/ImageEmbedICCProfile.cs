@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Datalogics.PDFL;
 
 /*
@@ -60,7 +55,7 @@ namespace ImageEmbedICCProfile
                 PageImageParams pip = new PageImageParams();
                 pip.ImageColorSpace = csp;
 
-                Datalogics.PDFL.Image outImage = pg.GetImage(pg.CropBox, pip);
+                Image outImage = pg.GetImage(pg.CropBox, pip);
 
                 String filenamevar = "";
 
@@ -99,8 +94,23 @@ namespace ImageEmbedICCProfile
     {
         static void Main(string[] args)
         {
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
+            !File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
+                return;
+            }
+
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+            !File.Exists("/usr/lib64/libgdiplus.so"))
+            {
+                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
+                return;
+            }
+
             Console.WriteLine("Image Embed ICC Profile sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

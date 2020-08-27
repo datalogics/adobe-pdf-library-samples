@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -25,6 +24,7 @@ namespace MakeDocWithIndexedColorSpace
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sOutput = "Indexed-out.pdf";
@@ -52,7 +52,7 @@ namespace MakeDocWithIndexedColorSpace
                         return;
                     }
 
-                    throw ex;
+                    throw;
                 }
                 ColorSpace baseCS = ColorSpace.DeviceRGB;
 
@@ -75,7 +75,7 @@ namespace MakeDocWithIndexedColorSpace
                 IndexedColorSpace cs = new IndexedColorSpace(baseCS, 7, lookup);
 
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new Double[] { 4.0 });
+                gs.FillColor = new Color(cs, new[] { 4.0 });
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size

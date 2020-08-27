@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Datalogics.PDFL;
 using System.Xml;
@@ -25,6 +24,7 @@ namespace Metadata
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
 
@@ -93,6 +93,7 @@ namespace Metadata
             return GetText(titleNode.ChildNodes);
         }
 
+        // ReSharper disable once UnusedMember.Local
         static string GetCreatorTool(string xmlstring)
         {
             XmlDocument xmldoc = new XmlDocument();

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -57,7 +55,7 @@ namespace PrintPDF
                 case PrintProgressStage.PrintPage:
                     if (stagePercent < 1F)
                     {
-                        Console.WriteLine(String.Format("Printing Page {0} of {1}", page + 1 /* 0 to 1-based */, totalPages));
+                        Console.WriteLine("Printing Page {0} of {1}", page + 1, totalPages);
                     }
                     break;
             }
@@ -90,6 +88,7 @@ namespace PrintPDF
                 // To use APDFL one must always begin by initializing the library. This action
                 // is expensive (both time and resource wise) and should only be done when necessary.
                 // In a threaded product, a separate library must be instantiated on each thread.
+                // ReSharper disable once UnusedVariable
                 using (Library lib = new Library())
                 {
                     Console.WriteLine(@"Library initialized.");
@@ -175,7 +174,7 @@ namespace PrintPDF
                             // PostScript produced via the PrintToFile method is NOT equivalent
                             // to PostScript produced via the ExportAsPostScript method.
 
-                            Console.WriteLine(String.Format("Printing to File: {0}", outFileNamePrn));
+                            Console.WriteLine("Printing to File: {0}", outFileNamePrn);
                             doc.PrintToFile(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc(), outFileNamePrn);
                         }
                         #endregion
@@ -271,7 +270,7 @@ namespace PrintPDF
                             PrintParams printParams = userParams.PrintParams;
                             printParams.PageRanges = pageRanges;
 
-                            Console.WriteLine(String.Format("Exporting as PostScript to File: {0}", outFileNamePs));
+                            Console.WriteLine("Exporting as PostScript to File: {0}", outFileNamePs);
                             doc.ExportAsPostScript(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc(), outFileNamePs);
                         }
 #endregion

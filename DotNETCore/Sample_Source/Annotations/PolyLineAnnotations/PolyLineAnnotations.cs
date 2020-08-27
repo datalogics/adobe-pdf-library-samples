@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 
@@ -23,6 +22,7 @@ namespace PolyLineAnnotations
         static void Main(string[] args)
         {
             Console.WriteLine("PolyLineAnnotation Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

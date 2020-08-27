@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Datalogics.PDFL;
 
 /*
@@ -91,6 +88,7 @@ namespace CreateBookmarks
         {
             Console.WriteLine("CreateBookmarks Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
