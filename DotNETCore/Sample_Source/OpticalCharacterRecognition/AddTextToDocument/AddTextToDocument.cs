@@ -32,9 +32,9 @@ namespace AddTextToDocument
                     //PlaceTextUnder creates a form with the image and the generated text
                     //under the image. The original image in the page is then replaced by
                     //by the form.
-                    Form form = engine.PlaceTextUnder((Image)e, doc);
+                    Form form = engine.PlaceTextUnder((Image) e, doc);
                     content.RemoveElement(index);
-                    content.AddElement(form, index -1);
+                    content.AddElement(form, index - 1);
                 }
                 else if (e is Container)
                 {
@@ -81,9 +81,9 @@ namespace AddTextToDocument
                 //You could add additional languages for the OCR engine to detect by adding 
                 //more entries to the LanguageSetting list. 
 
-                 //LanguageSetting languageTwo = new LanguageSetting(Language.Japanese, false);
-                 //langList.Add(languageTwo);
-                 ocrParams.Languages = langList;
+                //LanguageSetting languageTwo = new LanguageSetting(Language.Japanese, false);
+                //langList.Add(languageTwo);
+                ocrParams.Languages = langList;
 
                 using (OCREngine ocrEngine = new OCREngine(ocrParams))
                 {
@@ -100,11 +100,11 @@ namespace AddTextToDocument
                                 page.UpdateContent();
                             }
                         }
+
                         doc.Save(SaveFlags.Full, sOutput);
                     }
                 }
             }
         }
-
     }
 }

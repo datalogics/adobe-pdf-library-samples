@@ -19,7 +19,7 @@ using Datalogics.PDFL;
 namespace AddElements
 {
     class AddElements
-    {      
+    {
         static void Main(string[] args)
         {
             Console.WriteLine("AddElements Sample:");
@@ -51,20 +51,24 @@ namespace AddElements
                 DashPattern.Add(5);
                 DashPattern.Add(6); // Set the Dash Pattern list to [5 6]
                 gs.DashPattern = DashPattern;
-                gs.StrokeColor = new Color(0, 1.0, 0);// Green Star
+                gs.StrokeColor = new Color(0, 1.0, 0); // Green Star
                 starpath.GraphicState = gs;
                 starpath.PaintOp = PathPaintOpFlags.Stroke;
                 double CenterX = 306.0; // Center of Page
                 double CenterY = 396.0;
                 double Radius = 72 * 4.0; // 4 inches with 72 dpi
-                double radians72 = 72/(45/Math.Atan(1.0)); // angles must be in radians.
-                double radians36 = 36/(45/Math.Atan(1.0));
+                double radians72 = 72 / (45 / Math.Atan(1.0)); // angles must be in radians.
+                double radians36 = 36 / (45 / Math.Atan(1.0));
                 Point CenterPoint = new Point(CenterX, CenterY);
-                Point Point0 = new Point(CenterX, CenterY+Radius);
-                Point Point1 = new Point(CenterX+Radius*Math.Sin(radians72), CenterY+Radius*Math.Cos(radians72));
-                Point Point2 = new Point(CenterX + Radius*Math.Sin(radians36), CenterY - Radius*Math.Cos(radians36));
-                Point Point3 = new Point(CenterX - Radius*Math.Sin(radians36),CenterY - Radius*Math.Cos(radians36));
-                Point Point4 = new Point (CenterX - Radius * Math.Sin(radians72), CenterY + Radius * Math.Cos(radians72));
+                Point Point0 = new Point(CenterX, CenterY + Radius);
+                Point Point1 = new Point(CenterX + Radius * Math.Sin(radians72),
+                    CenterY + Radius * Math.Cos(radians72));
+                Point Point2 = new Point(CenterX + Radius * Math.Sin(radians36),
+                    CenterY - Radius * Math.Cos(radians36));
+                Point Point3 = new Point(CenterX - Radius * Math.Sin(radians36),
+                    CenterY - Radius * Math.Cos(radians36));
+                Point Point4 = new Point(CenterX - Radius * Math.Sin(radians72),
+                    CenterY + Radius * Math.Cos(radians72));
                 starpath.MoveTo(Point0);
                 starpath.AddLine(Point2);
                 starpath.AddLine(Point4);
@@ -72,7 +76,7 @@ namespace AddElements
                 starpath.AddLine(Point3);
                 starpath.AddLine(Point0);
                 starpath.ClosePath();
-                docpage.Content.AddElement(starpath);  // Add the new element to the Content of the page.
+                docpage.Content.AddElement(starpath); // Add the new element to the Content of the page.
 
                 // Draw a pentagon around the star
                 Path pentpath = new Path();
@@ -124,7 +128,7 @@ namespace AddElements
                 List<double> diamondDashPattern = new List<double>();
                 gs.DashPattern = diamondDashPattern;
                 gs.FillColor = new Color(1.0, 1.0, 0); // Yellow
-                gs.StrokeColor = new Color(153.0/255.0, 0, 0); // kind of a deep red
+                gs.StrokeColor = new Color(153.0 / 255.0, 0, 0); // kind of a deep red
                 diamond.PaintOp = PathPaintOpFlags.EoFill | PathPaintOpFlags.Stroke;
 
                 gs.Width = 1.0;
@@ -132,9 +136,9 @@ namespace AddElements
                 diamond.GraphicState = gs;
 
                 diamond.MoveTo(new Point(306, 198));
-                diamond.AddLine( new Point(459, 396));
+                diamond.AddLine(new Point(459, 396));
                 diamond.AddLine(new Point(306, 594));
-                diamond.AddLine( new Point(153, 396));
+                diamond.AddLine(new Point(153, 396));
                 diamond.AddLine(new Point(306, 198));
                 diamond.ClosePath();
                 docpage.Content.AddElement(diamond); // Add the new element to the Content of the page.
@@ -150,7 +154,8 @@ namespace AddElements
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -159,6 +164,7 @@ namespace AddElements
 
                     throw;
                 }
+
                 gs = new GraphicState();
                 gs.FillColor = new Color(0, 0, 1.0);
                 TextState ts = new TextState();

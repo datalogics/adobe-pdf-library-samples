@@ -26,6 +26,7 @@ namespace AddElements
                 {
                     message = message.Replace("%s", replacementText);
                 }
+
                 Console.WriteLine(message);
             }
             else if (replacementText != null)

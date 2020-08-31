@@ -31,100 +31,103 @@ namespace NameTrees
             {
                 Console.WriteLine("Initialized the library.");
 
-			    // Create a new document and blank first page
-			    Document doc = new Document();
-			    Rect rect = new Rect(0, 0, 612, 792);
+                // Create a new document and blank first page
+                Document doc = new Document();
+                Rect rect = new Rect(0, 0, 612, 792);
                 doc.CreatePage(Document.BeforeFirstPage, rect);
-			    Console.WriteLine("Created new document and first page.");
+                Console.WriteLine("Created new document and first page.");
 
-			    // Create a NumberTree and put a key-value pair in it
-			    NameTree nametree = new NameTree(doc);
+                // Create a NumberTree and put a key-value pair in it
+                NameTree nametree = new NameTree(doc);
 
-			    // Use put() to put a key-value pair in it
-			    PDFString key = new PDFString("Bailout", doc, false, false);
+                // Use put() to put a key-value pair in it
+                PDFString key = new PDFString("Bailout", doc, false, false);
                 PDFString value = new PDFString("Smorgasbord", doc, false, false);
-			    nametree.Put(key, value);
-			    Console.WriteLine("\nCreated NameTree and added first key-value pair.");
+                nametree.Put(key, value);
+                Console.WriteLine("\nCreated NameTree and added first key-value pair.");
 
-			    // Put another key-value pair in it
-			    nametree.Put(new PDFString("Brandish", doc, false, false), new PDFString("Copasetic", doc, false, false));
+                // Put another key-value pair in it
+                nametree.Put(new PDFString("Brandish", doc, false, false),
+                    new PDFString("Copasetic", doc, false, false));
 
-			    // Retrieve second entry
-			    PDFString keysearchstring = new PDFString("Brandish", doc, false, false);
-			    PDFObject lookup = nametree.Get(keysearchstring);
-			    Console.WriteLine("\nRetrieving two entries:");
-			    Console.WriteLine(lookup);
+                // Retrieve second entry
+                PDFString keysearchstring = new PDFString("Brandish", doc, false, false);
+                PDFObject lookup = nametree.Get(keysearchstring);
+                Console.WriteLine("\nRetrieving two entries:");
+                Console.WriteLine(lookup);
 
-			    // Retrieve first entry
-			    lookup = nametree.Get(new PDFString("Bailout", doc, false, false));
-			    Console.WriteLine(lookup);
+                // Retrieve first entry
+                lookup = nametree.Get(new PDFString("Bailout", doc, false, false));
+                Console.WriteLine(lookup);
 
-			    // Use remove() method to remove first entry
-			    nametree.Remove(new PDFString("Bailout", doc, false, false));
+                // Use remove() method to remove first entry
+                nametree.Remove(new PDFString("Bailout", doc, false, false));
 
-			    // Get both entries, and demonstrate that first is now gone
-			    Console.WriteLine("\nAfter removing entry 1, we now have:");
-			    lookup = nametree.Get(new PDFString("Bailout", doc, false, false));
-			    Console.WriteLine(lookup);
-			    lookup = nametree.Get(new PDFString("Brandish", doc, false, false));
-			    Console.WriteLine(lookup);
+                // Get both entries, and demonstrate that first is now gone
+                Console.WriteLine("\nAfter removing entry 1, we now have:");
+                lookup = nametree.Get(new PDFString("Bailout", doc, false, false));
+                Console.WriteLine(lookup);
+                lookup = nametree.Get(new PDFString("Brandish", doc, false, false));
+                Console.WriteLine(lookup);
 
-			    // Create two new NameTrees and set each to our original numbertree
-			    NameTree abc = nametree;
-			    NameTree xyz = nametree;
+                // Create two new NameTrees and set each to our original numbertree
+                NameTree abc = nametree;
+                NameTree xyz = nametree;
 
-			    // Show they are equal
-			    if (abc.Equals(xyz))
-				    Console.WriteLine("\nThe two NameTrees abc and xyz are the same");
-			    else
-				    Console.WriteLine("\nThe two NameTrees abc and xyz are not the same");
+                // Show they are equal
+                if (abc.Equals(xyz))
+                    Console.WriteLine("\nThe two NameTrees abc and xyz are the same");
+                else
+                    Console.WriteLine("\nThe two NameTrees abc and xyz are not the same");
 
-			    // Create two new NameTrees
-			    abc = new NameTree(doc);
-			    xyz = new NameTree(doc);
+                // Create two new NameTrees
+                abc = new NameTree(doc);
+                xyz = new NameTree(doc);
 
-			    // Show they are not equal
-			    if (abc.Equals(xyz))
-				    Console.WriteLine("\nThe two NameTrees abc and xyz are the same");
-			    else
-				    Console.WriteLine("\nThe two NameTrees abc and xyz are not the same");
+                // Show they are not equal
+                if (abc.Equals(xyz))
+                    Console.WriteLine("\nThe two NameTrees abc and xyz are the same");
+                else
+                    Console.WriteLine("\nThe two NameTrees abc and xyz are not the same");
 
-			    // Get the PDFDict from the NameTree
-			    PDFDict dict = nametree.PDFDict;
-			    Console.WriteLine("\nThe PDFDict from the NameTree:");
-			    Console.WriteLine(dict);
+                // Get the PDFDict from the NameTree
+                PDFDict dict = nametree.PDFDict;
+                Console.WriteLine("\nThe PDFDict from the NameTree:");
+                Console.WriteLine(dict);
 
-			    // Kill the NameTree object
-			    nametree.Dispose();
-			    Console.WriteLine("\nDisposed the NameTree object.");
+                // Kill the NameTree object
+                nametree.Dispose();
+                Console.WriteLine("\nDisposed the NameTree object.");
 
-			    //////////////////////////////////////////////////
-			    // Now use Document methods to operate on NameTree
-			    //////////////////////////////////////////////////
-    			
-			    // Create a NameTree in the document using createNameTree() method
-			    NameTree docCreatedNameTree = doc.CreateNameTree("MyNameTree");
-			    docCreatedNameTree.Put(new PDFString("Argyle", doc, false, false), new PDFString("Seamstress", doc, false, false));
-			    Console.WriteLine("Created a NameTree object in the document.");
+                //////////////////////////////////////////////////
+                // Now use Document methods to operate on NameTree
+                //////////////////////////////////////////////////
 
-			    // Look for the NameTree in the document by using the getNameTree() method
-			    Console.WriteLine("\nTwo searches for NameTree using getNameTree() method; first fails, second succeeeds:");
-			    docCreatedNameTree = doc.GetNameTree("Garbage");
-			    Console.WriteLine(docCreatedNameTree);
-			    docCreatedNameTree = doc.GetNameTree("MyNameTree");
-			    Console.WriteLine(docCreatedNameTree);
+                // Create a NameTree in the document using createNameTree() method
+                NameTree docCreatedNameTree = doc.CreateNameTree("MyNameTree");
+                docCreatedNameTree.Put(new PDFString("Argyle", doc, false, false),
+                    new PDFString("Seamstress", doc, false, false));
+                Console.WriteLine("Created a NameTree object in the document.");
 
-			    // Remove the NameTree from the document by using the remove NameTree() method
-			    Console.WriteLine("\nRemove the NameTree from the document.");
-			    doc.RemoveNameTree("Garbage");
-			    docCreatedNameTree = doc.GetNameTree("MyNameTree");
-			    Console.WriteLine(docCreatedNameTree);
-			    doc.RemoveNameTree("MyNameTree");
-			    docCreatedNameTree = doc.GetNameTree("MyNameTree");
-			    Console.WriteLine(docCreatedNameTree);
+                // Look for the NameTree in the document by using the getNameTree() method
+                Console.WriteLine(
+                    "\nTwo searches for NameTree using getNameTree() method; first fails, second succeeeds:");
+                docCreatedNameTree = doc.GetNameTree("Garbage");
+                Console.WriteLine(docCreatedNameTree);
+                docCreatedNameTree = doc.GetNameTree("MyNameTree");
+                Console.WriteLine(docCreatedNameTree);
 
-			    // Dispose the doc object
-			    doc.Dispose();
+                // Remove the NameTree from the document by using the remove NameTree() method
+                Console.WriteLine("\nRemove the NameTree from the document.");
+                doc.RemoveNameTree("Garbage");
+                docCreatedNameTree = doc.GetNameTree("MyNameTree");
+                Console.WriteLine(docCreatedNameTree);
+                doc.RemoveNameTree("MyNameTree");
+                docCreatedNameTree = doc.GetNameTree("MyNameTree");
+                Console.WriteLine(docCreatedNameTree);
+
+                // Dispose the doc object
+                doc.Dispose();
             }
         }
     }

@@ -50,7 +50,8 @@ namespace AddGlyphs
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -89,7 +90,6 @@ namespace AddGlyphs
                 doc.EmbedFonts(EmbedFlags.None);
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-
 using Datalogics.PDFL;
 
 /*
@@ -60,7 +59,8 @@ namespace DrawToBitmap
         public override void Call(float stagePercent, string info, RenderProgressStage stage)
         {
             mSomeBoolean = ((mSomeBoolean) ? false : true);
-            Console.WriteLine("SampleRenderProgressProc Call (stage/stagePercent/info): {0} {1} {2}", stage, stagePercent, info);
+            Console.WriteLine("SampleRenderProgressProc Call (stage/stagePercent/info): {0} {1} {2}", stage,
+                stagePercent, info);
         }
 
         static private bool mSomeBoolean;
@@ -116,8 +116,8 @@ namespace DrawToBitmap
         /// <param name="layerName">the layer name. It uses for saving process.</param>
         private static void DrawLayerToBitmap(Page pg, DrawParams parms, string layerName)
         {
-            int width = (int)Math.Ceiling(parms.DestRect.Width);
-            int height = (int)Math.Ceiling(parms.DestRect.Height);
+            int width = (int) Math.Ceiling(parms.DestRect.Width);
+            int height = (int) Math.Ceiling(parms.DestRect.Height);
 
             using (Bitmap bitmap = new Bitmap(width, height))
             {
@@ -133,9 +133,10 @@ namespace DrawToBitmap
         /// <param name="parms">the DrawParams object</param>
         /// <param name="layerName">the layer name. It uses for saving process.</param>
         private static void DrawLayerToGraphics(Page pg, DrawParams parms, string layerName)
-        {   // Draw as if to a DeviceContext (DC)
-            int width = (int)Math.Ceiling(parms.DestRect.Width);
-            int height = (int)Math.Ceiling(parms.DestRect.Height);
+        {
+            // Draw as if to a DeviceContext (DC)
+            int width = (int) Math.Ceiling(parms.DestRect.Width);
+            int height = (int) Math.Ceiling(parms.DestRect.Height);
 
             using (Bitmap bitmap = new Bitmap(width, height))
             {
@@ -162,7 +163,8 @@ namespace DrawToBitmap
                     states[i] = true;
 
                     using (OptionalContentContext occ = new OptionalContentContext(doc))
-                    {   // Render and save current layer
+                    {
+                        // Render and save current layer
                         occ.SetOCGStates(ocgs, states);
                         parms.OptionalContentContext = occ;
 
@@ -194,7 +196,8 @@ namespace DrawToBitmap
                     states[i] = true;
 
                     using (OptionalContentContext occ = new OptionalContentContext(doc))
-                    {   // Render and save current layer
+                    {
+                        // Render and save current layer
                         occ.SetOCGStates(ocgs, states);
                         parms.OptionalContentContext = occ;
 
@@ -218,8 +221,8 @@ namespace DrawToBitmap
         {
             Rect boundBox = parms.DestRect;
 
-            int width = (int)Math.Ceiling(boundBox.Width);
-            int height = (int)Math.Ceiling(boundBox.Height);
+            int width = (int) Math.Ceiling(boundBox.Width);
+            int height = (int) Math.Ceiling(boundBox.Height);
 
             using (Bitmap bitmap = new Bitmap(width, height))
             {
@@ -237,8 +240,8 @@ namespace DrawToBitmap
         /// <param name="height">height of the destination Bitmap</param>
         static void DrawToBitmapWithMatrix(Page pg, Matrix matrix, double width, double height)
         {
-            int w = (int)Math.Ceiling(width);
-            int h = (int)Math.Ceiling(height);
+            int w = (int) Math.Ceiling(width);
+            int h = (int) Math.Ceiling(height);
 
             using (Bitmap bitmap = new Bitmap(w, h))
             {
@@ -257,8 +260,8 @@ namespace DrawToBitmap
         {
             Rect boundBox = parms.DestRect;
 
-            int width = (int)Math.Ceiling(boundBox.Width);
-            int height = (int)Math.Ceiling(boundBox.Height);
+            int width = (int) Math.Ceiling(boundBox.Width);
+            int height = (int) Math.Ceiling(boundBox.Height);
 
             //
             // Draw as if to a DeviceContext (DC)...
@@ -280,8 +283,8 @@ namespace DrawToBitmap
         /// <param name="height">height of the destination Bitmap</param>
         static void DrawToGraphicsWithMatrix(Page pg, Matrix matrix, double width, double height)
         {
-            int w = (int)Math.Ceiling(width);
-            int h = (int)Math.Ceiling(height);
+            int w = (int) Math.Ceiling(width);
+            int h = (int) Math.Ceiling(height);
 
             //
             // Draw as if to a DeviceContext (DC)...
@@ -333,7 +336,8 @@ namespace DrawToBitmap
             }
 
             if (rawBytes == null)
-            {   // didn't draw
+            {
+                // didn't draw
                 return;
             }
 
@@ -348,7 +352,7 @@ namespace DrawToBitmap
                 Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
                 var bitmapData =
                     bitmap.LockBits(rect, ImageLockMode.WriteOnly,
-                                    bitmap.PixelFormat);
+                        bitmap.PixelFormat);
                 Debug.Assert(stride == bitmapData.Stride);
                 Marshal.Copy(rawBytes, 0, bitmapData.Scan0, rawBytes.Length);
                 bitmap.UnlockBits(bitmapData);
@@ -359,14 +363,14 @@ namespace DrawToBitmap
         static void Main(string[] args)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
-            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) &&
-            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
@@ -414,33 +418,40 @@ namespace DrawToBitmap
                             bool enableBlackPointCompensation = true;
 
                             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                            using (DrawParams parms = ConstructDrawParams(matrix, pg.MediaBox, enableBlackPointCompensation))
+                            using (DrawParams parms =
+                                ConstructDrawParams(matrix, pg.MediaBox, enableBlackPointCompensation))
                             {
                                 // Draw to Graphics
                                 Console.WriteLine("DrawToGraphicsWithMatrix: {0} {1} {2}", matrix, width, height);
-                                DrawToGraphicsWithMatrix(pg, matrix, width, height);    // Will NOT drive SampleRenderProgress(Cancel)Proc
+                                DrawToGraphicsWithMatrix(pg, matrix, width,
+                                    height); // Will NOT drive SampleRenderProgress(Cancel)Proc
 
                                 // Draw to Graphics using DrawParams with turned on black point compensation
-                                Console.WriteLine("DrawToGraphicsWithDrawParams: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
-                                DrawToGraphicsWithDrawParams(pg, parms);    // Will drive SampleRenderProgress(Cancel)Proc
+                                Console.WriteLine("DrawToGraphicsWithDrawParams: {0} {1} {2}", parms.Matrix,
+                                    parms.UpdateRect.Width, parms.UpdateRect.Height);
+                                DrawToGraphicsWithDrawParams(pg, parms); // Will drive SampleRenderProgress(Cancel)Proc
 
                                 // Demonstrate drawing to Graphics with params and OCGs
                                 // Demonstrate drawing layers
-                                Console.WriteLine("DrawLayersToGraphics: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
-                                DrawLayersToGraphics(doc, pg, parms);   // Will NOT drive SampleRenderProgress(Cancel)Proc
+                                Console.WriteLine("DrawLayersToGraphics: {0} {1} {2}", parms.Matrix,
+                                    parms.UpdateRect.Width, parms.UpdateRect.Height);
+                                DrawLayersToGraphics(doc, pg, parms); // Will NOT drive SampleRenderProgress(Cancel)Proc
 
                                 // Demonstrate drawing to Bitmaps with params and OCGs
                                 // Demonstrate drawing layers
-                                Console.WriteLine("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
+                                Console.WriteLine("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix,
+                                    parms.UpdateRect.Width, parms.UpdateRect.Height);
                                 DrawLayersToBitmap(doc, pg, parms); // Will NOT drive SampleRenderProgressProc
 
                                 // Make a Bitmap
                                 Console.WriteLine("DrawToBitmapWithMatrix: {0} {1} {2}", matrix, width, height);
-                                DrawToBitmapWithMatrix(pg, matrix, width, height);  // Will NOT drive SampleRenderProgress(Cancel)Proc
+                                DrawToBitmapWithMatrix(pg, matrix, width,
+                                    height); // Will NOT drive SampleRenderProgress(Cancel)Proc
 
                                 // Make a Bitmap using DrawParams with black point compensation turned on
-                                Console.WriteLine("DrawToBitmapWithDrawParams: {0} {1} {2}", parms.Matrix, parms.UpdateRect.Width, parms.UpdateRect.Height);
-                                DrawToBitmapWithDrawParams(pg, parms);  // Will drive SampleRenderProgress(Cancel)Proc
+                                Console.WriteLine("DrawToBitmapWithDrawParams: {0} {1} {2}", parms.Matrix,
+                                    parms.UpdateRect.Width, parms.UpdateRect.Height);
+                                DrawToBitmapWithDrawParams(pg, parms); // Will drive SampleRenderProgress(Cancel)Proc
 
                                 // Demonstrate drawing to a byte array
                                 Console.WriteLine("DrawToByteArray: {0} {1} {2}", matrix, width, height);

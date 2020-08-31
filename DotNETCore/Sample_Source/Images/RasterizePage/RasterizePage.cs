@@ -34,15 +34,17 @@ namespace RasterizePage
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
-            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .OSX) &&
+                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Linux) &&
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
@@ -98,7 +100,7 @@ namespace RasterizePage
                 // so the image will be DeviceRGB.
                 Image inputImage = pg.GetImage(pg.CropBox, pip);
                 inputImage.Save(sOutput + "-400pixel-width.jpg", ImageType.JPEG);
-                Console.WriteLine("Created " + sOutput + "-400pixel-width.jpg...");                
+                Console.WriteLine("Created " + sOutput + "-400pixel-width.jpg...");
 
                 /////////////////////////////////////////////////////////
                 //
@@ -107,7 +109,8 @@ namespace RasterizePage
                 //  
                 ////////////////////////////////////////////////////////
 
-                CreatePageImageBasedOnPhysicalSize(pg, sOutput + "-grayscale-halfsize.jpg", ImageType.JPEG, ColorSpace.DeviceGray);
+                CreatePageImageBasedOnPhysicalSize(pg, sOutput + "-grayscale-halfsize.jpg", ImageType.JPEG,
+                    ColorSpace.DeviceGray);
 
 
                 /////////////////////////////////////////////////////////
@@ -126,11 +129,12 @@ namespace RasterizePage
 
                 // ReSharper disable once UnusedVariable
                 System.Drawing.Bitmap halfImage = CreateBitmapWithTopHalfOfPage(pg, sOutput + "-tophalf.jpg",
-                                                        System.Drawing.Imaging.ImageFormat.Jpeg, ColorSpace.DeviceRGB);
+                    System.Drawing.Imaging.ImageFormat.Jpeg, ColorSpace.DeviceRGB);
             }
         }
 
-        public static void CreatePageImageBasedOnPhysicalSize(Page pg, string filename, ImageType imgtype, ColorSpace cspace)
+        public static void CreatePageImageBasedOnPhysicalSize(Page pg, string filename, ImageType imgtype,
+            ColorSpace cspace)
         {
             // Get the dimensions, in pixels, of an image that is 
             // half the physical size of the page at a resolution of 96 DPI.
@@ -166,7 +170,7 @@ namespace RasterizePage
             // has a Rotate value of 90 or 270, the userWidth should be 
             // calculated from the y-values and the userHeight should be
             // calculated from the x-values.
-            double userWidth; 
+            double userWidth;
             double userHeight;
 
             if ((pg.Rotation == PageRotation.Rotate90) || (pg.Rotation == PageRotation.Rotate270))
@@ -194,17 +198,16 @@ namespace RasterizePage
             // to store this information.
             PageImageParams pip = new PageImageParams();
             pip.PageDrawFlags = DrawFlags.UseAnnotFaces;
-            pip.PixelWidth = (int)(physWidth * resolution);
-            pip.PixelHeight = (int)(physHeight * resolution);
+            pip.PixelWidth = (int) (physWidth * resolution);
+            pip.PixelHeight = (int) (physHeight * resolution);
             pip.HorizontalResolution = resolution;
             pip.VerticalResolution = resolution;
 
             return pip;
-
         }
 
-        public static System.Drawing.Bitmap CreateBitmapWithTopHalfOfPage(Page pg, string filename, 
-                                                        System.Drawing.Imaging.ImageFormat imgtype, ColorSpace cspace)
+        public static System.Drawing.Bitmap CreateBitmapWithTopHalfOfPage(Page pg, string filename,
+            System.Drawing.Imaging.ImageFormat imgtype, ColorSpace cspace)
         {
             // Create a PageImageParams with the default settings and set
             // the color space as appropriate.

@@ -32,36 +32,36 @@ namespace StreamIO
         /// <param name="path">The filename of the PDF document to read.</param>
         /// <param name="output">A string to receive the contents of the PDF document.</param>
         void ReadFromStream(String path, String output)
-		{
-			// Create a .NET FileStream object, opened using the path argument.
-			// A FileStream is used here for demonstration only, but the technique
-			// works just as well for MemoryStream, or other streams which support
-			// seeking.  In practice, when dealing with files it is usually more
-			// appropriate to pass the path directly to the Document constructor.
-			FileStream fs = new FileStream(path, FileMode.Open);
-			
-			// A document is then opened, using the FileStream as its data source.
-			using (Document d = new Document(fs))
-			{
-				// Add a watermark to have some visible change to the PDF
-				WatermarkParams wp = new WatermarkParams();
-				wp.TargetRange.PageSpec = PageSpec.AllPages;
-				WatermarkTextParams wtp = new WatermarkTextParams();
-				wtp.Text = "This PDF was opened\nfrom a Stream";
-				d.Watermark(wtp, wp);
+        {
+            // Create a .NET FileStream object, opened using the path argument.
+            // A FileStream is used here for demonstration only, but the technique
+            // works just as well for MemoryStream, or other streams which support
+            // seeking.  In practice, when dealing with files it is usually more
+            // appropriate to pass the path directly to the Document constructor.
+            FileStream fs = new FileStream(path, FileMode.Open);
 
-				// The document can not simply be saved at this point.
-				// d.Save(SaveFlags.Incremental);  // This will throw an exception.
+            // A document is then opened, using the FileStream as its data source.
+            using (Document d = new Document(fs))
+            {
+                // Add a watermark to have some visible change to the PDF
+                WatermarkParams wp = new WatermarkParams();
+                wp.TargetRange.PageSpec = PageSpec.AllPages;
+                WatermarkTextParams wtp = new WatermarkTextParams();
+                wtp.Text = "This PDF was opened\nfrom a Stream";
+                d.Watermark(wtp, wp);
 
-				// Instead, the document can be saved to a file. Saving the document 
-				// to a file causes the document to use the file as its data source.
-				d.Save(SaveFlags.Full, output);
+                // The document can not simply be saved at this point.
+                // d.Save(SaveFlags.Incremental);  // This will throw an exception.
 
-				// Make another minor change.
-				d.Creator = "PDFL StreamIO Sample";
+                // Instead, the document can be saved to a file. Saving the document
+                // to a file causes the document to use the file as its data source.
+                d.Save(SaveFlags.Full, output);
 
-				// Since the document is now backed by a file, an incremental save is okay.
-				d.Save(SaveFlags.Incremental);
+                // Make another minor change.
+                d.Creator = "PDFL StreamIO Sample";
+
+                // Since the document is now backed by a file, an incremental save is okay.
+                d.Save(SaveFlags.Incremental);
             }
         }
 
@@ -101,7 +101,6 @@ namespace StreamIO
             {
                 Console.WriteLine("creator: " + d.Creator);
             }
-
         }
 
         void AddContentToPage(Page p)
@@ -124,9 +123,8 @@ namespace StreamIO
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput1 =  "StreamIO-out1.pdf";
+                String sOutput1 = "StreamIO-out1.pdf";
                 String sOutput2 = "StreamIO-out2.pdf";
 
                 if (args.Length > 0)
@@ -143,9 +141,7 @@ namespace StreamIO
                 sample.ReadFromStream(sInput, sOutput1);
 
                 sample.WriteToStream(sOutput2);
-
             }
         }
     }
 }
-

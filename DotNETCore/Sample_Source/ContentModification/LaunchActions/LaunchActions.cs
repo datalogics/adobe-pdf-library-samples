@@ -22,7 +22,6 @@ namespace LaunchActions
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "LaunchActions-out.pdf";
 
@@ -69,7 +68,6 @@ namespace LaunchActions
                 newLink.Action = launch;
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

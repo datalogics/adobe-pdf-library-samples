@@ -41,7 +41,8 @@ namespace MakeDocWithCalGrayColorSpace
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -54,17 +55,17 @@ namespace MakeDocWithCalGrayColorSpace
                 // space with the CCIR XA/11-recommended D65 white point and
                 // opto-electronic transfer function.
 
-                Double[] whitePoint = { 0.9505, 1.0000, 1.0890 };
-                Double[] blackPoint = { 0.0, 0.0, 0.0 };
+                Double[] whitePoint = {0.9505, 1.0000, 1.0890};
+                Double[] blackPoint = {0.0, 0.0, 0.0};
                 double gamma = 2.2222;
 
                 ColorSpace cs = new CalGrayColorSpace(whitePoint, blackPoint, gamma);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new[] { 0.5 });
+                gs.FillColor = new Color(cs, new[] {0.5});
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
-                                         1 * 72, 2 * 72);   // x, y coordinate on page, 1" x 2"
+                    1 * 72, 2 * 72); // x, y coordinate on page, 1" x 2"
 
                 TextRun textRun = new TextRun("Hello World!", font, gs, new TextState(), textMatrix);
                 Text text = new Text();

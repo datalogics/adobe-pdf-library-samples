@@ -44,19 +44,19 @@ namespace ListWords
                 wordConfig.IgnoreCharGaps = true;
                 wordConfig.IgnoreLineGaps = false;
                 wordConfig.NoAnnots = true;
-                wordConfig.NoEncodingGuess = true;		// leave non-Roman single-byte font alone
+                wordConfig.NoEncodingGuess = true; // leave non-Roman single-byte font alone
 
                 // Std Roman treatment for custom encoding; overrides the noEncodingGuess option
                 wordConfig.UnknownToStdEnc = false;
 
-                wordConfig.DisableTaggedPDF = true;	// legacy mode WordFinder creation
+                wordConfig.DisableTaggedPDF = true; // legacy mode WordFinder creation
                 wordConfig.NoXYSort = false;
                 wordConfig.PreserveSpaces = false;
                 wordConfig.NoLigatureExp = false;
                 wordConfig.NoHyphenDetection = false;
                 wordConfig.TrustNBSpace = false;
-                wordConfig.NoExtCharOffset = false;		// text extraction efficiency
-                wordConfig.NoStyleInfo = false;			// text extraction efficiency
+                wordConfig.NoExtCharOffset = false; // text extraction efficiency
+                wordConfig.NoStyleInfo = false; // text extraction efficiency
 
                 WordFinder wordFinder = new WordFinder(doc, WordFinderVersion.Latest, wordConfig);
                 IList<Word> pageWords = null;
@@ -88,6 +88,7 @@ namespace ListWords
                         Console.WriteLine(s);
                     }
                 }
+
                 Console.WriteLine("Pages=" + nPages);
             }
         }

@@ -32,14 +32,12 @@ namespace ImageEmbedICCProfile
                 Page pg = doc.GetPage(pgno);
 
                 Export_Image(pg.Content, cs, pg, pgno);
-
             }
         }
 
         public void export_doc_images(Document doc, PDFStream profileStream)
         {
             export_doc_images_type(doc, profileStream, ImageType.TIFF);
-
         }
 
         public void Export_Image(Content content, ColorSpace csp, Page pg, int pNum)
@@ -48,7 +46,6 @@ namespace ImageEmbedICCProfile
 
             try
             {
-
                 isp = new ImageSaveParams();
                 isp.Compression = CompressionCode.LZW;
 
@@ -78,15 +75,11 @@ namespace ImageEmbedICCProfile
                 outImage = pg.GetImage(pg.CropBox, pip);
                 filenamevar = "ImageEmbedICCProfile-out_rel" + pNum + ".tif";
                 outImage.Save(filenamevar, exporttype, isp);
-
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Cannot write file: " + ex.Message);
             }
-
-
         }
     }
 
@@ -94,15 +87,17 @@ namespace ImageEmbedICCProfile
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
-            !File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .OSX) &&
+                !File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-            !File.Exists("/usr/lib64/libgdiplus.so"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Linux) &&
+                !File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;

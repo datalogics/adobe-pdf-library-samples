@@ -72,24 +72,25 @@ namespace AddTextToImage
                                 docpage.UpdateContent();
                             }
                         }
+
                         using (Page page = doc.GetPage(0))
                         {
-                                Content content = page.Content;
-                                Element elem = content.GetElement(0);
-                                Image image = (Image)elem;
-                                //PlaceTextUnder creates a form with the image and the generated text
-                                //under the image. The original image in the page is then replaced by
-                                //by the form.
-                                Form form = ocrEngine.PlaceTextUnder(image, doc);
-                                content.RemoveElement(0);
-                                content.AddElement(form, -1);
-                                page.UpdateContent();
+                            Content content = page.Content;
+                            Element elem = content.GetElement(0);
+                            Image image = (Image) elem;
+                            //PlaceTextUnder creates a form with the image and the generated text
+                            //under the image. The original image in the page is then replaced by
+                            //by the form.
+                            Form form = ocrEngine.PlaceTextUnder(image, doc);
+                            content.RemoveElement(0);
+                            content.AddElement(form, -1);
+                            page.UpdateContent();
                         }
+
                         doc.Save(SaveFlags.Full, sOutput);
                     }
                 }
             }
         }
-
     }
 }

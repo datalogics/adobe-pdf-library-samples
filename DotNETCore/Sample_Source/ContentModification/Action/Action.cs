@@ -26,7 +26,7 @@ namespace Action
                 String sOutput = "Actions-out.pdf";
 
                 Console.WriteLine("Initialized the library.");
-                
+
                 Document doc = new Document();
 
                 using (new Path())
@@ -71,7 +71,7 @@ namespace Action
                     uri.IsMap = true;
 
                     Console.WriteLine("Complete changed URI:" + doc.BaseURI + uri.URI);
- 
+
                     if (uri.IsMap)
                         Console.WriteLine("Send mouse coordinates");
                     else

@@ -18,7 +18,7 @@ using Datalogics.PDFL;
 namespace GradientShade
 {
     class GradientShade
-    {      
+    {
         static void Main(string[] args)
         {
             Console.WriteLine("GradientShade Sample:");
@@ -44,9 +44,12 @@ namespace GradientShade
                 Double[] C1 = {1.0, 0.0, 0.0};
                 ExponentialFunction f = new ExponentialFunction(domain, 3, C0, C1, 1);
 
-                Point[] coords = {new Point(72, 72),
-                                  new Point(4*72, 72) };
- 
+                Point[] coords =
+                {
+                    new Point(72, 72),
+                    new Point(4 * 72, 72)
+                };
+
                 Function[] functionList = {f};
                 AxialShadingPattern asp = new AxialShadingPattern(ColorSpace.DeviceRGB, coords, functionList);
 
@@ -55,7 +58,7 @@ namespace GradientShade
 
                 // Please note path does not create a default graphic state,
                 // so this is necessary, but for the first element only.
-                if (gs == null) 
+                if (gs == null)
                     gs = new GraphicState();
 
                 gs.FillColor = new Color(asp);
@@ -67,8 +70,8 @@ namespace GradientShade
                 path.AddLine(new Point(11 * 72 - 36, 36));
                 path.ClosePath();
                 path.PaintOp = PathPaintOpFlags.Stroke | PathPaintOpFlags.Fill;
-                   
-                docpage.Content.AddElement(path);  // Add the new element to the Content of the page.
+
+                docpage.Content.AddElement(path); // Add the new element to the Content of the page.
                 docpage.UpdateContent(); // Update the PDF page with the changed content
 
                 doc.Save(SaveFlags.Full, sOutput);

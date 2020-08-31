@@ -59,7 +59,7 @@ namespace PageLabels
                 Console.WriteLine("Added page range starting on page 5.");
 
                 // Change the properties of the third page range
-                labels = doc.PageLabels;       // Get a freshly sorted list
+                labels = doc.PageLabels; // Get a freshly sorted list
                 labels[2].Prefix = "Section 3-";
                 labels[2].FirstNumberInRange = 2;
                 doc.PageLabels = labels;
@@ -67,12 +67,12 @@ namespace PageLabels
                 Console.WriteLine("Changed the prefix for the third range.");
 
                 // Now walk the list of page labels
-                foreach( PageLabel label in doc.PageLabels )
+                foreach (PageLabel label in doc.PageLabels)
                 {
                     Console.WriteLine("Label range starts on page " + label.StartPageIndex
-                        + ", ends on page " + label.EndPageIndex);
+                                                                    + ", ends on page " + label.EndPageIndex);
                     Console.WriteLine("The prefix is '" + label.Prefix
-                        + "' and begins with number " + label.FirstNumberInRange);
+                                                        + "' and begins with number " + label.FirstNumberInRange);
                     Console.WriteLine();
                 }
             }

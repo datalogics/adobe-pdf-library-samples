@@ -57,6 +57,7 @@ namespace PrintPDF
                     {
                         Console.WriteLine("Printing Page {0} of {1}", page + 1, totalPages);
                     }
+
                     break;
             }
         }
@@ -78,7 +79,8 @@ namespace PrintPDF
             }
 
             try
-            {   // Printing may fail for reasons that have nothing to do with APDFL.
+            {
+                // Printing may fail for reasons that have nothing to do with APDFL.
                 // PDF documents may contain material that cannot be printed, etc. Given
                 // that, it's always best to expect the printing step to fail and take
                 // appropriate measures. Such care becomes critical for server-based 24/7
@@ -94,19 +96,24 @@ namespace PrintPDF
                     Console.WriteLine(@"Library initialized.");
 
                     String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                    String outFileNamePrn = "PrintPDF_out.prn";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
-                    string outFileNamePs = "PrintPDF_out.ps";    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
+
+                    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
+                    String outFileNamePrn = "PrintPDF_out.prn";
+
+                    // HINT: you'll find the file (in the working directory) next to PrintPDF.exe
+                    string outFileNamePs = "PrintPDF_out.ps";
 
                     if (args.Length > 0)
                         sInput = args[0];
 
-                    Console.WriteLine("Input file: " + sInput + ". Writing to output " + outFileNamePrn + " and " + outFileNamePs );
+                    Console.WriteLine("Input file: " + sInput + ". Writing to output " + outFileNamePrn + " and " +
+                                      outFileNamePs);
 
                     // Open a PDF document ("using" will automatically .Close and .Dispose it)...
                     using (Document doc = new Document(sInput))
                     {
-
                         #region Print To File (via Printer Driver)
+
                         // Platform print to a file...
                         //
                         // Printed output from the following method is composed by the selected
@@ -119,7 +126,8 @@ namespace PrintPDF
                         // ultimately transfer it to the target printer).
 
                         using (PrintUserParams userParams = new PrintUserParams())
-                        {   // NOTE: userParams are only valid for ONE print job...
+                        {
+                            // NOTE: userParams are only valid for ONE print job...
                             userParams.NCopies = 1;
                             userParams.PrintParams.ExpandToFit = true;
 
@@ -150,18 +158,22 @@ namespace PrintPDF
                             //
                             // The code below creates 3 page ranges...
                             // As specified (below), PDFL will emit up to 8 pages (1-4, 2, 4, 1, 3).
-                            int upToFourPages = ((doc.NumPages > 4) ? 3 : doc.NumPages - 1);  // 0-based
+                            int upToFourPages = ((doc.NumPages > 4) ? 3 : doc.NumPages - 1); // 0-based
                             if (upToFourPages == 0)
-                            {   // the end page must always be >= 1
+                            {
+                                // the end page must always be >= 1
                                 upToFourPages = 1;
                             }
+
                             IList<PageRange> pageRanges = new List<PageRange>();
-                            pageRanges.Add(new PageRange(0, upToFourPages, PageSpec.AllPages));             // p1-4
+                            pageRanges.Add(new PageRange(0, upToFourPages, PageSpec.AllPages)); // p1-4
                             if (doc.NumPages > 1)
-                            {   // you can't ask for even or odd pages from a 1 page document
-                                pageRanges.Add(new PageRange(0, upToFourPages, PageSpec.OddPagesOnly));     // p1,3
-                                pageRanges.Add(new PageRange(0, upToFourPages, PageSpec.EvenPagesOnly));    // p2,4
+                            {
+                                // you can't ask for even or odd pages from a 1 page document
+                                pageRanges.Add(new PageRange(0, upToFourPages, PageSpec.OddPagesOnly)); // p1,3
+                                pageRanges.Add(new PageRange(0, upToFourPages, PageSpec.EvenPagesOnly)); // p2,4
                             }
+
                             PrintParams printParams = userParams.PrintParams;
                             printParams.PageRanges = pageRanges;
 
@@ -175,11 +187,14 @@ namespace PrintPDF
                             // to PostScript produced via the ExportAsPostScript method.
 
                             Console.WriteLine("Printing to File: {0}", outFileNamePrn);
-                            doc.PrintToFile(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc(), outFileNamePrn);
+                            doc.PrintToFile(userParams, null /* for cancel see the PrintPDFGUI sample */,
+                                new SamplePrintProgressProc(), outFileNamePrn);
                         }
+
                         #endregion
 
                         #region Print To Printer (via Printer Driver)
+
                         // Now let's, print directly to a printer (without ui)...
                         //
                         // Printed output from the following method is composed by the selected
@@ -192,7 +207,8 @@ namespace PrintPDF
                         // ultimately transfer it to the target printer).
 
                         using (PrintUserParams userParams = new PrintUserParams())
-                        {   // NOTE: userParams are only valid for ONE print job...
+                        {
+                            // NOTE: userParams are only valid for ONE print job...
                             userParams.NCopies = 1;
                             userParams.PrintParams.ExpandToFit = true;
 
@@ -240,11 +256,14 @@ namespace PrintPDF
 #if WINDOWS
                             Console.WriteLine(String.Format("Printing (direct) to Printer: {0}", userParams.DeviceName));
 #endif
-                            doc.Print(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc());
+                            doc.Print(userParams, null /* for cancel see the PrintPDFGUI sample */,
+                                new SamplePrintProgressProc());
                         }
-#endregion
+
+                        #endregion
 
                         #region Export As PostScript (Device Independent, DSC Compliant)
+
                         // Export as (PDFL composed) PostScript...
                         //
                         // PostScript files produced via this *export* method are suitable
@@ -258,7 +277,8 @@ namespace PrintPDF
                         // https://partners.adobe.com/public/developer/en/ps/5001.DSC_Spec.pdf
 
                         using (PrintUserParams userParams = new PrintUserParams())
-                        {   // NOTE: userParams are only valid for ONE print job...
+                        {
+                            // NOTE: userParams are only valid for ONE print job...
                             userParams.NCopies = 1;
 
                             // When export as PostScript you MUST use 1+ page ranges...
@@ -266,14 +286,17 @@ namespace PrintPDF
                             //
                             // The code below exports the entire PDF document (to a PostScript file)...
                             IList<PageRange> pageRanges = new List<PageRange>();
-                            pageRanges.Add(new PageRange(0, (((doc.NumPages > 1)) ? doc.NumPages - 1 : 1), PageSpec.AllPages)); // all pages
+                            pageRanges.Add(new PageRange(0, (((doc.NumPages > 1)) ? doc.NumPages - 1 : 1),
+                                PageSpec.AllPages)); // all pages
                             PrintParams printParams = userParams.PrintParams;
                             printParams.PageRanges = pageRanges;
 
                             Console.WriteLine("Exporting as PostScript to File: {0}", outFileNamePs);
-                            doc.ExportAsPostScript(userParams, null /* for cancel see the PrintPDFGUI sample */, new SamplePrintProgressProc(), outFileNamePs);
+                            doc.ExportAsPostScript(userParams, null /* for cancel see the PrintPDFGUI sample */,
+                                new SamplePrintProgressProc(), outFileNamePs);
                         }
-#endregion
+
+                        #endregion
                     }
                 }
             }

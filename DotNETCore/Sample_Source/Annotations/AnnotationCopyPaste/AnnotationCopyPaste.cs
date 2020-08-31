@@ -49,7 +49,8 @@ namespace AnnotationCopyPaste
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Copying annotations from " + sInput1 + " into " + sInput2 + " and writing to " + sOutput);
+                Console.WriteLine("Copying annotations from " + sInput1 + " into " + sInput2 + " and writing to " +
+                                  sOutput);
 
                 Page sourcePage = sourceDoc.GetPage(0);
                 Page destinationPage = destinationDoc.GetPage(0);
@@ -81,7 +82,7 @@ namespace AnnotationCopyPaste
                             // the exception will specify which operation (copy or paste)
                             // that it could not complete.
                             // ReSharper disable once UnusedVariable
-                            LinkAnnotation copiedLink = ((LinkAnnotation)ann).CopyTo(destinationPage, linkCenter);
+                            LinkAnnotation copiedLink = ((LinkAnnotation) ann).CopyTo(destinationPage, linkCenter);
                         }
                         catch (ApplicationException ae)
                         {
@@ -91,7 +92,6 @@ namespace AnnotationCopyPaste
                 }
 
                 destinationDoc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

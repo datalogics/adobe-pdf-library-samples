@@ -25,16 +25,17 @@ namespace ImageResampling
     class ImageResampling
     {
         static int numreplaced;
-        static void ResampleImages(Content content )
+
+        static void ResampleImages(Content content)
         {
             int i = 0;
             while (i < content.NumElements)
             {
                 Element e = content.GetElement(i);
-                Console.WriteLine(i + " / "+content.NumElements+" = " + e.GetType());
+                Console.WriteLine(i + " / " + content.NumElements + " = " + e.GetType());
                 if (e is Image)
                 {
-                    Image img = (Image)e;
+                    Image img = (Image) e;
                     try
                     {
                         Image newimg = img.ChangeResolution(400);
@@ -66,6 +67,7 @@ namespace ImageResampling
                     ResampleImages(formcontent);
                     (e as Form).Content = formcontent;
                 }
+
                 i++;
             }
         }
@@ -106,6 +108,7 @@ namespace ImageResampling
                             pg.UpdateContent();
                         }
                     }
+
                     doc.Save(SaveFlags.Full | SaveFlags.CollectGarbage, sOutput);
                 }
                 catch (Exception ex)
@@ -116,4 +119,3 @@ namespace ImageResampling
         }
     }
 }
-

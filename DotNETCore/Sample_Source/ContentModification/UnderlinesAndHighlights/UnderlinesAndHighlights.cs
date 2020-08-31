@@ -59,14 +59,16 @@ namespace UnderlinesAndHighlights
                     // Store the Quads of all "Cloudy" words in a list for later use in
                     // creating the annotation.
                     if (w.Text.ToLower().Equals("cloudy") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("cloudy")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("cloudy")))
                         cloudyQuads.AddRange(w.Quads);
 
                     // Store the Quads of all "Rain" words
                     if (w.Text.ToLower().Equals("rain") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("rain")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("rain")))
                         rainQuads.AddRange(w.Quads);
                 }
 

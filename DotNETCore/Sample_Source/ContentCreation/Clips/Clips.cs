@@ -78,7 +78,8 @@ namespace Clips
                 Clip clip = new Clip();
                 clip.AddElement(clipPath);
                 path.Clip = clip;
-                Console.WriteLine("Created new clip, assigned clipping path to it, and added new clip to original path.");
+                Console.WriteLine(
+                    "Created new clip, assigned clipping path to it, and added new clip to original path.");
 
                 // Update the page's content and save the file with clipping
                 page.UpdateContent();
@@ -91,5 +92,3 @@ namespace Clips
         }
     }
 }
-
-

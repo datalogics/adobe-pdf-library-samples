@@ -45,7 +45,8 @@ namespace MakeDocWithIndexedColorSpace
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -54,11 +55,12 @@ namespace MakeDocWithIndexedColorSpace
 
                     throw;
                 }
+
                 ColorSpace baseCS = ColorSpace.DeviceRGB;
 
                 List<Int32> lookup = new List<Int32>();
 
-                int[] lowhi = { 0, 255 };
+                int[] lowhi = {0, 255};
                 foreach (int r in lowhi)
                 {
                     foreach (int g in lowhi)
@@ -75,11 +77,11 @@ namespace MakeDocWithIndexedColorSpace
                 IndexedColorSpace cs = new IndexedColorSpace(baseCS, 7, lookup);
 
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new[] { 4.0 });
+                gs.FillColor = new Color(cs, new[] {4.0});
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
-                                         1 * 72, 2 * 72);   // x, y coordinate on page, 1" x 2"
+                    1 * 72, 2 * 72); // x, y coordinate on page, 1" x 2"
 
                 TextRun textRun = new TextRun("Hello World!", font, gs, new TextState(), textMatrix);
                 Text text = new Text();

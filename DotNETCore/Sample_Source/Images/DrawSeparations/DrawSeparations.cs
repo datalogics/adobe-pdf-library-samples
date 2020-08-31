@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-
 using Datalogics.PDFL;
 
 /*
@@ -24,15 +23,17 @@ namespace DrawSeparations
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
-            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .OSX) &&
+                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Linux) &&
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
@@ -96,10 +97,10 @@ namespace DrawSeparations
 
                 for (int i = 0; i < separatedColorChannels.Count; ++i)
                 {
-                    separatedColorChannels[i].Save(sOutput + i + "-" + colorants[i].SeparationName + ".png", ImageFormat.Png);
+                    separatedColorChannels[i].Save(sOutput + i + "-" + colorants[i].SeparationName + ".png",
+                        ImageFormat.Png);
                 }
             }
-
         }
     }
 }

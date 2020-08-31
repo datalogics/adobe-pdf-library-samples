@@ -55,7 +55,6 @@ namespace ImageImport
                 }
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

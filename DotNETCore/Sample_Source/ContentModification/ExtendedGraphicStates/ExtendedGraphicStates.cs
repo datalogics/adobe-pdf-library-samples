@@ -45,7 +45,8 @@ namespace ExtendedGraphicStates
             catch (ApplicationException ex)
             {
                 if (ex.Message.Equals("The specified font could not be found.") &&
-                    System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                    System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                        .OSPlatform.Linux) &&
                     !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                 {
                     Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -54,6 +55,7 @@ namespace ExtendedGraphicStates
 
                 throw;
             }
+
             GraphicState gsText = new GraphicState();
             gsText.FillColor = new Color(0, 0, 1.0);
             TextState ts = new TextState();
@@ -170,6 +172,7 @@ namespace ExtendedGraphicStates
                     xgs.BlendMode = BlendMode.Luminosity;
                     tr = new TextRun("Luminosity", f, gsText, ts, m);
                 }
+
                 t.AddRun(tr);
                 docpage.Content.AddElement(t);
                 docpage.UpdateContent();
@@ -202,7 +205,8 @@ namespace ExtendedGraphicStates
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Input files: " + sInput1 + " and " + sInput2 + ". Saving to output file: " + sOutput);
+                Console.WriteLine("Input files: " + sInput1 + " and " + sInput2 + ". Saving to output file: " +
+                                  sOutput);
 
                 Document doc = new Document();
 
@@ -215,7 +219,6 @@ namespace ExtendedGraphicStates
 
                 doc.EmbedFonts();
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

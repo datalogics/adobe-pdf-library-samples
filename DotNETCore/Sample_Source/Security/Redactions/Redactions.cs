@@ -65,14 +65,16 @@ namespace Redactions
                     // Store the Quads of all "Cloudy" words in a list for later use in
                     // creating the redaction object.
                     if (w.Text.ToLower().Equals("cloudy") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("cloudy")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("cloudy")))
                         cloudyQuads.AddRange(w.Quads);
 
                     // Store the Quads of all "Rain" words
                     if (w.Text.ToLower().Equals("rain") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("rain")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("rain")))
                         rainQuads.AddRange(w.Quads);
                 }
 
@@ -84,7 +86,7 @@ namespace Redactions
 
                 /* fill the "normal" appearance with 20% red */
                 not_cloudy.FillNormal = true;
-                not_cloudy.SetFillColor (red, 0.25);
+                not_cloudy.SetFillColor(red, 0.25);
 
                 Console.WriteLine("Found rain instances: " + rainQuads.Count);
                 Redaction no_rain = new Redaction(docpage, rainQuads);

@@ -32,10 +32,10 @@ namespace WriteNChannelTiff
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sOutput = "WriteNChannelTiff-out.tif";
 
-                if(args.Length > 0)
+                if (args.Length > 0)
                     sInput = args[0];
 
-                if(args.Length > 1)
+                if (args.Length > 1)
                     sOutput = args[1];
 
                 Console.WriteLine("Input file: " + sInput + " writing to " + sOutput);
@@ -63,7 +63,6 @@ namespace WriteNChannelTiff
                 // Save images as multi-channeled tiff.
                 images.Save(sOutput, ImageType.TIFF);
             }
-
         }
     }
 }

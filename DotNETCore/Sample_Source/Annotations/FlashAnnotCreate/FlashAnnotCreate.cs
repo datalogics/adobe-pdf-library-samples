@@ -18,7 +18,6 @@ namespace FlashAnnotCreate
 {
     class FlashAnnotCreate
     {
-
         static void Main(string[] args)
         {
             Console.WriteLine("FlashAnnotCreate Sample:");
@@ -44,7 +43,8 @@ namespace FlashAnnotCreate
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Using flash file " + sInput1 + " and generating appearance from " + sInput2 + ", saving output file : " + sOutput);
+                Console.WriteLine("Using flash file " + sInput1 + " and generating appearance from " + sInput2 +
+                                  ", saving output file : " + sOutput);
 
                 // Create a document and a 5" x 4" page for the Flash annotation
                 using (Document doc = new Document())
@@ -116,9 +116,11 @@ namespace FlashAnnotCreate
                         // Add the permissions dictionary to the rendition
                         mediaClipObj.Put("P", permObj);
 
-                        using (System.IO.FileStream fileStream = new System.IO.FileStream(sInput1, System.IO.FileMode.Open))
+                        using (System.IO.FileStream fileStream =
+                            new System.IO.FileStream(sInput1, System.IO.FileMode.Open))
                         {
-                            using (PDFStream fileStmObj = new PDFStream(fileStream, doc, new PDFDict(doc, false), new PDFArray(doc, false)))
+                            using (PDFStream fileStmObj = new PDFStream(fileStream, doc, new PDFDict(doc, false),
+                                new PDFArray(doc, false)))
                             {
                                 // Make a new file reference
                                 PDFDict fileRefObj = new PDFDict(doc, true);
@@ -161,7 +163,8 @@ namespace FlashAnnotCreate
                                         // NOTE: the actual appearance of the page in the annotation will be scaled to fit
                                         // within the boundaries of the annotation - so, if the page being used is of drastically
                                         // different x/y proportions from the annotation, it will appear distorted. */
-                                        tempContent.AddPage(Content.BeforeFirst, doc, importPDPage, null, null, 0, null);
+                                        tempContent.AddPage(Content.BeforeFirst, doc, importPDPage, null, null, 0,
+                                            null);
 
                                         if (tempContent.NumElements == 1 && tempContent.GetElement(0) is Form)
                                         {
@@ -173,7 +176,8 @@ namespace FlashAnnotCreate
                                             cosAnnot.Put("AP", apDict);
                                         }
                                         else
-                                            Console.WriteLine("Unexpected page import result. Annotation will have no appearance.");
+                                            Console.WriteLine(
+                                                "Unexpected page import result. Annotation will have no appearance.");
                                     }
                                 }
                                 catch (ApplicationException ex)
@@ -182,7 +186,8 @@ namespace FlashAnnotCreate
                                     {
                                         Console.WriteLine("Exception %x (%s) while importing annotation appearance:");
                                         Console.WriteLine(ex.Message);
-                                        Console.WriteLine("* Annotation will not have a visible appearance but is still in PDF file");
+                                        Console.WriteLine(
+                                            "* Annotation will not have a visible appearance but is still in PDF file");
                                     }
                                     else
                                         throw;

@@ -39,6 +39,7 @@ namespace ListBookmarks
                     Console.Write(", zoom ");
                     Console.Write(v.Zoom);
                 }
+
                 Console.WriteLine();
                 EnumerateBookmarks(b.FirstChild);
                 EnumerateBookmarks(b.Next);
@@ -69,5 +70,3 @@ namespace ListBookmarks
         }
     }
 }
-	
-

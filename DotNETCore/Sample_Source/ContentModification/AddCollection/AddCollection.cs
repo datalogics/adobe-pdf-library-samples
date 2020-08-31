@@ -38,7 +38,7 @@ namespace AddCollection
 
                 Document doc = new Document(sInput);
 
-                Console.WriteLine("Input file: " + sInput + ". Writing to "  + sOutput);
+                Console.WriteLine("Input file: " + sInput + ". Writing to " + sOutput);
 
                 // Check if document already has collection
                 Collection collection = doc.Collection;
@@ -49,6 +49,7 @@ namespace AddCollection
                     doc.CreateCollection();
                     collection = doc.Collection;
                 }
+
                 // Create a couple of schema fields
                 CollectionSchemaField field = new CollectionSchemaField("Description", SchemaFieldSubtype.Description);
                 field.Name = "DescriptionField";
@@ -74,7 +75,8 @@ namespace AddCollection
                 // described in the parent collection dictionary.
                 // The array form is used to allow additional fields to contribute
                 // to the sort, where each additional field is used to break ties.
-                System.Collections.Generic.IList<CollectionSortItem> colSort = new System.Collections.Generic.List<CollectionSortItem>();
+                System.Collections.Generic.IList<CollectionSortItem> colSort =
+                    new System.Collections.Generic.List<CollectionSortItem>();
                 colSort.Add(new CollectionSortItem("Description", false));
                 colSort.Add(new CollectionSortItem("Number", true));
 

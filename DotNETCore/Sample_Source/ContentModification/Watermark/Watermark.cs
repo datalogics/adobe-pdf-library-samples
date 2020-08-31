@@ -28,8 +28,8 @@ namespace Watermark
         {
             Console.WriteLine("Watermark Sample:");
             // ReSharper disable once UnusedVariable
-            using( Library lib = new Library()) {
-
+            using (Library lib = new Library())
+            {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
@@ -45,7 +45,8 @@ namespace Watermark
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Adding watermark from " + sWatermark + " to " + sInput +" and saving to " + sOutput);
+                Console.WriteLine("Adding watermark from " + sWatermark + " to " + sInput + " and saving to " +
+                                  sOutput);
 
                 Document doc = new Document(sInput);
 
@@ -62,7 +63,7 @@ namespace Watermark
                 watermarkParams.TargetRange.PageSpec = PageSpec.OddPagesOnly;
 
                 WatermarkTextParams watermarkTextParams = new WatermarkTextParams();
-                Color color = new Color(109.0f/255.0f, 15.0f/255.0f, 161.0f/255.0f);
+                Color color = new Color(109.0f / 255.0f, 15.0f / 255.0f, 161.0f / 255.0f);
                 watermarkTextParams.Color = color;
 
                 watermarkTextParams.Text = "Multiline\nWatermark";
@@ -75,8 +76,7 @@ namespace Watermark
 
                 doc.EmbedFonts();
                 doc.Save(SaveFlags.Full | SaveFlags.Linearized, sOutput);
-
-            }            
+            }
         }
     }
 }

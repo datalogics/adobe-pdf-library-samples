@@ -42,7 +42,8 @@ namespace MakeDocWithCalRGBColorSpace
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -57,19 +58,19 @@ namespace MakeDocWithCalRGBColorSpace
                 // 
                 // Plus a dummy value for testing the black point
 
-                Double[] whitePoint = { 0.9505, 1.0000, 1.0890 };
-                Double[] blackPoint = { 0.0, 0.0, 0.0 };
-                Double[] gamma = { 1.8, 1.8, 1.8 };
-                Double[] matrix = { 0.4497, 0.2446, 0.0252, 0.3163, 0.6720, 0.1412, 0.1845, 0.0833, 0.9227 };
+                Double[] whitePoint = {0.9505, 1.0000, 1.0890};
+                Double[] blackPoint = {0.0, 0.0, 0.0};
+                Double[] gamma = {1.8, 1.8, 1.8};
+                Double[] matrix = {0.4497, 0.2446, 0.0252, 0.3163, 0.6720, 0.1412, 0.1845, 0.0833, 0.9227};
                 ColorSpace cs = new CalRGBColorSpace(whitePoint, blackPoint, gamma, matrix);
 
 
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new[] { 0.3, 0.7, 0.3 });
+                gs.FillColor = new Color(cs, new[] {0.3, 0.7, 0.3});
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
-                                         1 * 72, 2 * 72);   // x, y coordinate on page, 1" x 2"
+                    1 * 72, 2 * 72); // x, y coordinate on page, 1" x 2"
 
                 TextRun textRun = new TextRun("Hello World!", font, gs, new TextState(), textMatrix);
                 Text text = new Text();

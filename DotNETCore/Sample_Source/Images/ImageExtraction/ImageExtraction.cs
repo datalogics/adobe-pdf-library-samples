@@ -35,7 +35,7 @@ namespace ImageExtraction
                 if (e is Datalogics.PDFL.Image)
                 {
                     Console.WriteLine("Saving an image");
-                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image)e;
+                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image) e;
                     Bitmap bitmap = img.Bitmap;
                     bitmap.Save("ImageExtraction-extract-out" + (next) + ".bmp", ImageFormat.Bmp);
 
@@ -65,15 +65,17 @@ namespace ImageExtraction
 
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
-            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .OSX) &&
+                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Linux) &&
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
@@ -102,4 +104,3 @@ namespace ImageExtraction
         }
     }
 }
-

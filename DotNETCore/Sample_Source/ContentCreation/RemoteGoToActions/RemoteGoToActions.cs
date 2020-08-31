@@ -28,7 +28,6 @@ namespace RemoteGoToActions
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sFileSpec = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
                 String sOutput = "RemoteGoToActions-out.pdf";
 
@@ -71,7 +70,8 @@ namespace RemoteGoToActions
                 FileSpecification fileSpec = new FileSpecification(doc, sFileSpec);
                 Console.WriteLine("Path to remote document : " + fileSpec.Path);
 
-                RemoteDestination remoteDest = new RemoteDestination(doc, 0, "XYZ", new Rect(0, 0, 4 * 72, 4 * 72), 1.5);
+                RemoteDestination remoteDest =
+                    new RemoteDestination(doc, 0, "XYZ", new Rect(0, 0, 4 * 72, 4 * 72), 1.5);
                 Console.WriteLine("When the Link is clicked the remote document will open to : ");
                 Console.WriteLine("Page Number : " + remoteDest.PageNumber);
                 Console.WriteLine("zoom level : " + remoteDest.Zoom);
@@ -85,7 +85,6 @@ namespace RemoteGoToActions
                 newLink.Action = remoteAction;
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

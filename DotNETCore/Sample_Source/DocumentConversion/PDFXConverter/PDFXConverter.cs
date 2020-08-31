@@ -70,9 +70,9 @@ namespace PDFXConverter
                     // Note that the returned document will have its major and minor
                     // version set--this is required for PDF/X compliance.  This is only
                     // visible AFTER you save the document.
-                    Console.WriteLine(sOutput + " has version number: " + pdfxDoc.MajorVersion + "." + pdfxDoc.MinorVersion);
+                    Console.WriteLine(sOutput + " has version number: " + pdfxDoc.MajorVersion + "." +
+                                      pdfxDoc.MinorVersion);
                 }
-
             }
         }
     }

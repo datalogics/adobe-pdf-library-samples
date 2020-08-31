@@ -51,9 +51,9 @@ namespace TextExtract
                 bool docIsTagged = false;
                 PDFDict markInfoDict;
                 PDFBoolean markedEntry;
-                if ((markInfoDict = (PDFDict)doc.Root.Get("MarkInfo")) != null)
+                if ((markInfoDict = (PDFDict) doc.Root.Get("MarkInfo")) != null)
                 {
-                    if ((markedEntry = (PDFBoolean)markInfoDict.Get("Marked")) != null)
+                    if ((markedEntry = (PDFBoolean) markInfoDict.Get("Marked")) != null)
                     {
                         if (markedEntry.Value)
                             docIsTagged = true;
@@ -69,14 +69,14 @@ namespace TextExtract
                 // Std Roman treatment for custom encoding; overrides the noEncodingGuess option
                 wordConfig.UnknownToStdEnc = false;
 
-                wordConfig.DisableTaggedPDF = false;    // legacy mode WordFinder creation
+                wordConfig.DisableTaggedPDF = false; // legacy mode WordFinder creation
                 wordConfig.NoXYSort = true;
                 wordConfig.PreserveSpaces = false;
                 wordConfig.NoLigatureExp = false;
                 wordConfig.NoHyphenDetection = false;
                 wordConfig.TrustNBSpace = false;
-                wordConfig.NoExtCharOffset = false;     // text extraction efficiency
-                wordConfig.NoStyleInfo = false;         // text extraction efficiency
+                wordConfig.NoExtCharOffset = false; // text extraction efficiency
+                wordConfig.NoStyleInfo = false; // text extraction efficiency
 
                 WordFinder wordFinder = new WordFinder(doc, WordFinderVersion.Latest, wordConfig);
 
@@ -98,15 +98,15 @@ namespace TextExtract
             for (int i = 0; i < nPages; i++)
             {
                 pageWords = wordFinder.GetWordList(i);
-                
+
                 String textToExtract = "";
-                
+
                 for (int wordnum = 0; wordnum < pageWords.Count; wordnum++)
                 {
                     Word wInfo;
                     wInfo = pageWords[wordnum];
                     string s = wInfo.Text;
-                                          
+
                     // Check for hyphenated words that break across a line.  
                     if (((wInfo.Attributes & WordAttributeFlags.HasSoftHyphen) == WordAttributeFlags.HasSoftHyphen) &&
                         ((wInfo.Attributes & WordAttributeFlags.LastWordOnLine) == WordAttributeFlags.LastWordOnLine))
@@ -131,18 +131,20 @@ namespace TextExtract
                     {
                         textToExtract += " ";
                     }
+
                     // Check for a line break and add one if necessary
                     if ((wInfo.Attributes & WordAttributeFlags.LastWordOnLine) == WordAttributeFlags.LastWordOnLine)
                         textToExtract += "\n";
                 }
-                
-                logfile.WriteLine("<page " + (i+1) + ">");
+
+                logfile.WriteLine("<page " + (i + 1) + ">");
                 logfile.WriteLine(textToExtract);
 
                 // Release requested WordList
                 for (int wordnum = 0; wordnum < pageWords.Count; wordnum++)
                     pageWords[wordnum].Dispose();
             }
+
             Console.WriteLine("Extracted " + nPages + " pages.");
             logfile.Close();
         }
@@ -176,7 +178,7 @@ namespace TextExtract
                     {
                         // Remove the hyphen and combine the two parts of the word before adding to the extracted text.
                         // Note that we pass in the Unicode character for soft hyphen.
-                        string[] splitstrs = s.Split(new[] { '\u00ad' });
+                        string[] splitstrs = s.Split(new[] {'\u00ad'});
                         textToExtract += splitstrs[0] + splitstrs[1];
                     }
                     else
@@ -187,6 +189,7 @@ namespace TextExtract
                     {
                         textToExtract += " ";
                     }
+
                     // Check for a line break and add one if necessary.
                     // Normally this is accomplished using WordAttributeFlags.LastWordOnLine,
                     // but for tagged PDFs, the LastWordOnLine flag is set according to the
@@ -208,6 +211,7 @@ namespace TextExtract
                 for (int wordnum = 0; wordnum < pageWords.Count; wordnum++)
                     pageWords[wordnum].Dispose();
             }
+
             Console.WriteLine("Extracted " + nPages + " pages.");
             logfile.Close();
         }

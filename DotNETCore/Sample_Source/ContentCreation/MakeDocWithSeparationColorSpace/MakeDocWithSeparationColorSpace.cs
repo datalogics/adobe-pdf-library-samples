@@ -41,7 +41,8 @@ namespace MakeDocWithSeparationColorSpace
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -50,22 +51,23 @@ namespace MakeDocWithSeparationColorSpace
 
                     throw;
                 }
+
                 ColorSpace alternate = ColorSpace.DeviceRGB;
 
-                Double[] domain = { 0.0, 1.0 };
+                Double[] domain = {0.0, 1.0};
                 int nOutputs = 3;
-                Double[] range = { 0.0, 1.0, 0.0, 1.0, 0.0, 1.0 };
-                Double[] C0 = { 0.0, 0.0, 0.0 };
-                Double[] C1 = { 1.0, 0.0, 0.0 };
+                Double[] range = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
+                Double[] C0 = {0.0, 0.0, 0.0};
+                Double[] C1 = {1.0, 0.0, 0.0};
                 Function tintTransform = new ExponentialFunction(domain, nOutputs, C0, C1, 1.0);
                 tintTransform.Range = range;
 
                 ColorSpace cs = new SeparationColorSpace("DLColor", alternate, tintTransform);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new[] { 1.0 });
+                gs.FillColor = new Color(cs, new[] {1.0});
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
-                                         1 * 72, 2 * 72);  // x, y coordinate on page, 1" x 2"
+                    1 * 72, 2 * 72); // x, y coordinate on page, 1" x 2"
 
                 TextRun textRun = new TextRun("Hello World!", font, gs, new TextState(), textMatrix);
                 Text text = new Text();
@@ -76,7 +78,6 @@ namespace MakeDocWithSeparationColorSpace
                 doc.EmbedFonts();
                 doc.Save(SaveFlags.Full, sOutput);
             }
-
         }
     }
 }

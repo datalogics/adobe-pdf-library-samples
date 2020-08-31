@@ -36,10 +36,11 @@ namespace EPSSeparations
                 if (args.Length > 0)
                     sInput1 = args[0];
 
-                if(args.Length > 1)
+                if (args.Length > 1)
                     sInput2 = args[1];
 
-                Console.WriteLine("Will perform simple separation on " + sInput1 + " and complex separation on " + sInput2);
+                Console.WriteLine("Will perform simple separation on " + sInput1 + " and complex separation on " +
+                                  sInput2);
 
                 SimpleSeparationsExample(sInput1);
                 ComplexSeparationsExample(sInput2);
@@ -48,42 +49,43 @@ namespace EPSSeparations
 
         static void SimpleSeparationsExample(String input)
         {
-
             Document doc = new Document(input);
 
             Console.WriteLine("Opened " + input);
 
             // Loop through all pages in the document and make a set of EPS separations
             // for each page, using the default parameters.
-            for(int pgNum=0; pgNum < doc.NumPages; pgNum++)
+            for (int pgNum = 0; pgNum < doc.NumPages; pgNum++)
             {
                 Page pg = doc.GetPage(pgNum);
-    
+
                 // First, list the inks on the page and create a SeparationPlate for each ink.
                 IList<Ink> pageinks = pg.ListInks();
                 List<SeparationPlate> plates = new List<SeparationPlate>();
-    
-                foreach(Ink i in pageinks)
+
+                foreach (Ink i in pageinks)
                 {
-                    Console.WriteLine("Found color " + i.ColorantName + " on page " + (pgNum+1) + ".");
-                    SeparationPlate newplate = new SeparationPlate(i, new System.IO.FileStream("Simple-Pg" + (pgNum+1) + "-" + i.ColorantName + ".eps", System.IO.FileMode.Create));
+                    Console.WriteLine("Found color " + i.ColorantName + " on page " + (pgNum + 1) + ".");
+                    SeparationPlate newplate = new SeparationPlate(i,
+                        new System.IO.FileStream("Simple-Pg" + (pgNum + 1) + "-" + i.ColorantName + ".eps",
+                            System.IO.FileMode.Create));
                     plates.Add(newplate);
                 }
 
                 // Set up the parameters for making separations using the plates that were just created.    
                 SeparationParams parms = new SeparationParams(plates);
-    
-                Console.WriteLine("Making separations for page " + (pgNum+1) + "...");
+
+                Console.WriteLine("Making separations for page " + (pgNum + 1) + "...");
                 pg.MakeSeparations(parms);
 
                 // Close the output stream for each EPS file.    
-                foreach(SeparationPlate p in plates)
+                foreach (SeparationPlate p in plates)
                 {
                     p.EPSOutput.Close();
                 }
             }
         }
-        
+
         static void ComplexSeparationsExample(String input)
         {
             // This document has 4 pages, each with a combination of CMYK and spot colors.
@@ -113,15 +115,17 @@ namespace EPSSeparations
                 // the new density values will be preserved.  When lookups for these inks
                 // are performed on the Dictionary for subsequent pages, these plates with
                 // the new density values will be used.
-                if(i.ColorantName == "PANTONE 7442 C")
+                if (i.ColorantName == "PANTONE 7442 C")
                 {
                     i.Density = 0.75;
                 }
-                else if(i.ColorantName == "PANTONE 7467 C")
+                else if (i.ColorantName == "PANTONE 7467 C")
                 {
                     i.Density = 0.50;
                 }
-                SeparationPlate newplate = new SeparationPlate(i, new System.IO.FileStream("Complex-Pg1-" + i.ColorantName + ".eps", System.IO.FileMode.Create));
+
+                SeparationPlate newplate = new SeparationPlate(i,
+                    new System.IO.FileStream("Complex-Pg1-" + i.ColorantName + ".eps", System.IO.FileMode.Create));
                 plates.Add(newplate);
                 colors.Add(i.ColorantName, newplate);
             }
@@ -151,24 +155,28 @@ namespace EPSSeparations
                     if (colors.ContainsKey(i.ColorantName))
                     {
                         newplate = colors[i.ColorantName];
-                        newplate.EPSOutput = new System.IO.FileStream("Complex-Pg" + (pgNum+1) + "-" + i.ColorantName + ".eps", System.IO.FileMode.Create);
+                        newplate.EPSOutput = new System.IO.FileStream(
+                            "Complex-Pg" + (pgNum + 1) + "-" + i.ColorantName + ".eps", System.IO.FileMode.Create);
                     }
                     else
                     {
-                        newplate = new SeparationPlate(i, new System.IO.FileStream("Complex-Pg" + (pgNum+1) + "-" + i.ColorantName + ".eps", System.IO.FileMode.Create));
+                        newplate = new SeparationPlate(i,
+                            new System.IO.FileStream("Complex-Pg" + (pgNum + 1) + "-" + i.ColorantName + ".eps",
+                                System.IO.FileMode.Create));
                         colors.Add(i.ColorantName, newplate);
                     }
+
                     plates.Add(newplate);
                 }
 
                 parms.Plates = plates;
-                
-                Console.WriteLine("Making separations for page " + (pgNum+1) + "...");
+
+                Console.WriteLine("Making separations for page " + (pgNum + 1) + "...");
                 pg.MakeSeparations(parms);
 
                 foreach (SeparationPlate p in plates)
                 {
-                   p.EPSOutput.Close();
+                    p.EPSOutput.Close();
                 }
             }
         }

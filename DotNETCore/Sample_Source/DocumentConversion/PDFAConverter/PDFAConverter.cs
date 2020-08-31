@@ -37,7 +37,7 @@ namespace PDFAConverter
                 if (args.Length > 1)
                     sOutput = args[1];
 
-                Console.WriteLine("Converting " + sInput + ", output file is " +  sOutput);
+                Console.WriteLine("Converting " + sInput + ", output file is " + sOutput);
 
                 using (Document doc = new Document(sInput))
                 {

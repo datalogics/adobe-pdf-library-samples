@@ -41,7 +41,8 @@ namespace MakeDocWithDeviceNColorSpace
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -50,20 +51,21 @@ namespace MakeDocWithDeviceNColorSpace
 
                     throw;
                 }
+
                 ColorSpace alternate = ColorSpace.DeviceRGB;
 
-                Double[] domain = { 0.0, 1.0, 0.0, 1.0 };
-                Double[] range = { 0.0, 1.0, 0.0, 1.0, 0.0, 1.0 };
+                Double[] domain = {0.0, 1.0, 0.0, 1.0};
+                Double[] range = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
                 string code = "{ 0 exch }";
                 Function tintTransform = new PostScriptCalculatorFunction(domain, range, code);
 
-                ColorSpace cs = new DeviceNColorSpace(new[] { "DLRed", "DLBlue" }, alternate, tintTransform);
+                ColorSpace cs = new DeviceNColorSpace(new[] {"DLRed", "DLBlue"}, alternate, tintTransform);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new[] { 0.75, 0.75 });
+                gs.FillColor = new Color(cs, new[] {0.75, 0.75});
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
-                                         1 * 72, 2 * 72);   // x, y coordinate on page, 1" x 2"
+                    1 * 72, 2 * 72); // x, y coordinate on page, 1" x 2"
 
                 TextRun textRun = new TextRun("Hello World!", font, gs, new TextState(), textMatrix);
                 Text text = new Text();

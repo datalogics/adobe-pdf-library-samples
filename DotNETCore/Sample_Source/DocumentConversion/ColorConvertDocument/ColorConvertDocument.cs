@@ -34,7 +34,9 @@ namespace ColorConvertDocument
             paths.Add(Library.ResourceDirectory + "Fonts/");
 
             // ReSharper disable once UnusedVariable
-            using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap/", Library.ResourceDirectory + "Unicode/", Library.ResourceDirectory + "Color", LibraryFlags.DisableMemorySuballocator))
+            using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap/",
+                Library.ResourceDirectory + "Unicode/", Library.ResourceDirectory + "Color",
+                LibraryFlags.DisableMemorySuballocator))
             {
                 Console.WriteLine("Initialized the library.");
 
@@ -51,17 +53,17 @@ namespace ColorConvertDocument
 
                 Document doc = new Document(sInput);
 
-               /* Create the list of color conversion actions to be applied to the document. Each object in the document is compared
-                * against the selection criteria for each of the actions until a matching action is found. Actions do not chain, 
-                * except in the case of aliased ink definitions
-                */
+                /* Create the list of color conversion actions to be applied to the document. Each object in the document is compared
+                 * against the selection criteria for each of the actions until a matching action is found. Actions do not chain,
+                 * except in the case of aliased ink definitions
+                 */
                 List<ColorConvertActions> colorConvActions = new List<ColorConvertActions>();
                 ColorConvertActions action = new ColorConvertActions();
 
-              /* In this example, make any object in the document a candidate for color conversion. Also allow for any kind of Color Space. 
-               * The ColorConvertObjAttrs values can be combined together for more specific matching patterns using the | operator. 
-               * This is also true for Color Spaces.
-               */
+                /* In this example, make any object in the document a candidate for color conversion. Also allow for any kind of Color Space.
+                 * The ColorConvertObjAttrs values can be combined together for more specific matching patterns using the | operator.
+                 * This is also true for Color Spaces.
+                 */
                 action.MustMatchAnyAttrs = ColorConvertObjAttrs.ColorConvAnyObject;
                 action.MustMatchAnyCSAttrs = ColorConvertCSpaceType.ColorConvAnySpace;
                 action.IntentToMatch = RenderIntent.UseProfileIntent;

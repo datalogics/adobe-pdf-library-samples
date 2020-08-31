@@ -37,8 +37,8 @@ namespace ListLayers
 
                 Document doc = new Document(sInput);
 
-               IList<OptionalContentGroup> ocgs = doc.OptionalContentGroups;
-                foreach(OptionalContentGroup ocg in ocgs)
+                IList<OptionalContentGroup> ocgs = doc.OptionalContentGroups;
+                foreach (OptionalContentGroup ocg in ocgs)
                 {
                     Console.WriteLine(ocg.Name);
                     Console.Write("  Intent: [");
@@ -53,6 +53,7 @@ namespace ListLayers
                             Console.Write(i.Current);
                         }
                     }
+
                     Console.WriteLine("]");
                 }
 
@@ -70,6 +71,7 @@ namespace ListLayers
                         Console.Write(i.Current);
                     }
                 }
+
                 Console.WriteLine("]");
             }
         }

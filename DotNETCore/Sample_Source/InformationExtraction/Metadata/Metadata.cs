@@ -27,7 +27,6 @@ namespace Metadata
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/sample.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/Ducky_with_metadata.pdf";
                 String sOutput = "sample-metadata-out.pdf";
@@ -41,7 +40,8 @@ namespace Metadata
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Input files " + sInput1 + " and  " + sInput2 + ". Writing to output file " + sOutput);
+                Console.WriteLine("Input files " + sInput1 + " and  " + sInput2 + ". Writing to output file " +
+                                  sOutput);
 
                 DisplayDocumentMetadata(sInput1, sOutput);
                 DisplayImageMetadata(sInput2);
@@ -50,24 +50,27 @@ namespace Metadata
 
         private static void DisplayDocumentMetadata(String input, String output)
         {
-
-
             using (Document doc = new Document(input))
             {
                 // Parse some data out of the document metadata string
                 string metadata = doc.XMPMetadata;
                 Console.WriteLine("Title: {0}", GetTitle(metadata));
-                Console.WriteLine("CreatorTool: {0}", doc.GetXMPMetadataProperty("http://ns.adobe.com/xap/1.0/", "CreatorTool"));
-                Console.WriteLine("format: {0}", doc.GetXMPMetadataProperty("http://purl.org/dc/elements/1.1/", "format"));
+                Console.WriteLine("CreatorTool: {0}",
+                    doc.GetXMPMetadataProperty("http://ns.adobe.com/xap/1.0/", "CreatorTool"));
+                Console.WriteLine("format: {0}",
+                    doc.GetXMPMetadataProperty("http://purl.org/dc/elements/1.1/", "format"));
                 int numAuthors = doc.CountXMPMetadataArrayItems("http://ns.adobe.com/xap/1.0/", "Authors");
                 Console.WriteLine("Number of authors: {0}", numAuthors);
                 for (int i = 1; i <= numAuthors; i++)
                 {
-                    Console.WriteLine("Author: {0}", doc.GetXMPMetadataArrayItem("http://ns.adobe.com/xap/1.0/", "Authors", i));
+                    Console.WriteLine("Author: {0}",
+                        doc.GetXMPMetadataArrayItem("http://ns.adobe.com/xap/1.0/", "Authors", i));
                 }
+
                 // Demonstrate setting a property
-                doc.SetXMPMetadataArrayItem("http://ns.adobe.com/xap/1.0/", "tetractys", "Authors", 2, "Metadata Tester");
-                doc.Save(SaveFlags.Full,  output);
+                doc.SetXMPMetadataArrayItem("http://ns.adobe.com/xap/1.0/", "tetractys", "Authors", 2,
+                    "Metadata Tester");
+                doc.Save(SaveFlags.Full, output);
             }
         }
 
@@ -77,8 +80,8 @@ namespace Metadata
             {
                 // Demonstrate getting data from an image
                 Content content = doc.GetPage(0).Content;
-                Container container = (Container)content.GetElement(0);
-                Image image = (Image)container.Content.GetElement(0);
+                Container container = (Container) content.GetElement(0);
+                Image image = (Image) container.Content.GetElement(0);
                 String metadata = image.Stream.Dict.XMPMetadata;
                 Console.WriteLine("Ducky CreatorTool: {0}\n", GetCreatorToolAttribute(metadata));
             }
@@ -88,7 +91,7 @@ namespace Metadata
         {
             XmlDocument xmldoc = new XmlDocument();
             xmldoc.LoadXml(xmlstring);
-            XmlElement element = (XmlElement)xmldoc.GetElementsByTagName("dc:title")[0];
+            XmlElement element = (XmlElement) xmldoc.GetElementsByTagName("dc:title")[0];
             XmlNode titleNode = element.GetElementsByTagName("rdf:li")[0];
             return GetText(titleNode.ChildNodes);
         }
@@ -98,7 +101,7 @@ namespace Metadata
         {
             XmlDocument xmldoc = new XmlDocument();
             xmldoc.LoadXml(xmlstring);
-            XmlElement element = (XmlElement)xmldoc.GetElementsByTagName("xap:CreatorTool")[0];
+            XmlElement element = (XmlElement) xmldoc.GetElementsByTagName("xap:CreatorTool")[0];
             return GetText(element.ChildNodes);
         }
 
@@ -108,10 +111,11 @@ namespace Metadata
             xmldoc.LoadXml(xmlstring);
             foreach (XmlNode node in xmldoc.GetElementsByTagName("rdf:Description"))
             {
-                XmlElement e = (XmlElement)node;
+                XmlElement e = (XmlElement) node;
                 if (e.HasAttribute("xap:CreatorTool"))
                     return e.GetAttribute("xap:CreatorTool");
             }
+
             return null;
         }
 

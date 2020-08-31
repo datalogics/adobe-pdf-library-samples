@@ -29,16 +29,16 @@ namespace Annotations
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample_annotations.pdf";
 
-                if(args.Length > 0)
+                if (args.Length > 0)
                     sInput = args[0];
 
                 Console.WriteLine("Input file: " + sInput);
 
                 Document doc = new Document(sInput);
-                
+
                 Page pg = doc.GetPage(0);
                 Annotation ann = pg.GetAnnotation(0);
-                
+
                 Console.WriteLine(ann.Title);
                 Console.WriteLine(ann.GetType().Name);
             }

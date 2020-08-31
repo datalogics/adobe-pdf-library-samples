@@ -34,11 +34,10 @@ namespace FlattenTransparency
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/trans_1page.pdf";
-                String sOutput1 =  "FlattenTransparency-out1.pdf";
+                String sOutput1 = "FlattenTransparency-out1.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/trans_multipage.pdf";
-                String sOutput2 =  "FlattenTransparency-out2.pdf";
+                String sOutput2 = "FlattenTransparency-out2.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];
@@ -50,7 +49,7 @@ namespace FlattenTransparency
                     sOutput2 = args[3];
 
                 // Open a document with a single page.
-               Document doc1 = new Document(sInput1);
+                Document doc1 = new Document(sInput1);
 
                 // Verify that the page has transparency.  The parameter indicates
                 // whether to include the appearances of annotations or not when
@@ -59,7 +58,7 @@ namespace FlattenTransparency
                 bool isTransparent = pg1.HasTransparency(true);
 
                 // If there is transparency, flatten the document.
-                if(isTransparent)
+                if (isTransparent)
                 {
                     // Flattening the document will check each page for transparency.
                     // If a page has transparency, PDFL will create a new, flattened
@@ -67,24 +66,24 @@ namespace FlattenTransparency
                     // new one.  Because of this, make sure to dispose of outstanding Page objects
                     // that refer to pages in the Document before calling flattenTransparency.
                     pg1.Dispose();
-                    
+
                     doc1.FlattenTransparency();
                     Console.WriteLine("Flattened single page document " + sInput1 + " as " + sOutput1 + ".");
                     doc1.Save(SaveFlags.Full, sOutput1);
                 }
-            
+
                 // Open a document with multiple pages.
                 Document doc2 = new Document(sInput2);
-            
+
                 // Iterate over the pages of the document and find the first page that has
                 // transparency.
                 isTransparent = false;
                 int totalPages = doc2.NumPages;
                 int pageCounter = 0;
-                while(!isTransparent && pageCounter <= totalPages)
+                while (!isTransparent && pageCounter <= totalPages)
                 {
                     Page pg = doc2.GetPage(pageCounter);
-                    if(pg.HasTransparency(true))
+                    if (pg.HasTransparency(true))
                     {
                         isTransparent = true;
                         // Explicitly delete the page here, to ensure the reference is gone before we 
@@ -92,10 +91,11 @@ namespace FlattenTransparency
                         pg.Dispose();
                         break;
                     }
+
                     pageCounter++;
                 }
-            
-                if(isTransparent)
+
+                if (isTransparent)
                 {
                     // Set up some parameters for the flattening.
                     FlattenTransparencyParams ftParams = new FlattenTransparencyParams();
@@ -103,14 +103,14 @@ namespace FlattenTransparency
                     // The Quality setting indicates the percentage (0%-100%) of vector information
                     // that is preserved.  Lower values result in higher rasterization of vectors.
                     ftParams.Quality = 50;
-                    
+
                     // Flatten transparency in the document, starting from the first page
                     // that has transparency.
                     doc2.FlattenTransparency(ftParams, pageCounter, Document.LastPage);
                     Console.WriteLine("Flattened a multi-page document " + sInput2 + " as " + sOutput2 + ".");
-                    doc2.Save(SaveFlags.Full, sOutput2);                
+                    doc2.Save(SaveFlags.Full, sOutput2);
                 }
             }
-		}
+        }
     }
 }

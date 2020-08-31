@@ -42,25 +42,25 @@ namespace ChangeLinkColors
                     sOutput = args[1];
 
                 Console.WriteLine("Input file: " + sInput + ", writing to " + sOutput);
-                
+
                 Document doc = new Document(sInput);
 
                 Console.WriteLine("Opened a document.");
 
                 Page page = doc.GetPage(0);
-                
+
                 List<LinkAnnotation> linkAnnots = new List<LinkAnnotation>();
-                
+
                 // First, make a list of all the link annotations on the page.
-                for(int i=0; i < page.NumAnnotations; i++)
+                for (int i = 0; i < page.NumAnnotations; i++)
                 {
                     Annotation annot = page.GetAnnotation(i);
-                    if(annot is LinkAnnotation)
+                    if (annot is LinkAnnotation)
                     {
                         linkAnnots.Add(annot as LinkAnnotation);
                     }
                 }
-                
+
                 Content content = page.Content;
 
                 // Iterate over the page's content and process the Text objects.
@@ -81,24 +81,24 @@ namespace ChangeLinkColors
                 Element element = content.GetElement(i);
                 if (element is Container)
                 {
-                    Content nestedContent = ((Container)element).Content;
+                    Content nestedContent = ((Container) element).Content;
                     FindAndProcessText(nestedContent, linkAnnots);
                 }
                 else if (element is Form)
                 {
-                    Content nestedContent = ((Form)element).Content;
+                    Content nestedContent = ((Form) element).Content;
                     FindAndProcessText(nestedContent, linkAnnots);
                 }
                 else if (element is Group)
                 {
-                    Content nestedContent = ((Group)element).Content;
+                    Content nestedContent = ((Group) element).Content;
                     FindAndProcessText(nestedContent, linkAnnots);
                 }
                 else if (element is Text)
                 {
                     Console.WriteLine("Found a Text object.");
                     CheckCharactersInText(element as Text, linkAnnots);
-                } 
+                }
             }
         }
 
@@ -106,19 +106,19 @@ namespace ChangeLinkColors
         {
             // This function checks to see if any characters in this Text object
             // fall within the bounds of the LinkAnnotations on this page.
-            for(int i=0; i < linkAnnots.Count; i++)
-            {               
+            for (int i = 0; i < linkAnnots.Count; i++)
+            {
                 int charIndex;
 
                 // Find the index of the first character in this Text object that intersects
                 // with the LinkAnnotation rectangle, if there is one.
-                for(charIndex = 0; charIndex < txt.NumberOfCharacters; charIndex++)
-                {                   
-                    if(txt.RectIntersectsCharacter(linkAnnots[i].Rect, charIndex))
+                for (charIndex = 0; charIndex < txt.NumberOfCharacters; charIndex++)
+                {
+                    if (txt.RectIntersectsCharacter(linkAnnots[i].Rect, charIndex))
                         break;
                 }
-                
-                if(charIndex >= txt.NumberOfCharacters)
+
+                if (charIndex >= txt.NumberOfCharacters)
                 {
                     // The LinkAnnotation rect falls outside of this Text object.
                     // Try the next rect on the list.
@@ -142,16 +142,18 @@ namespace ChangeLinkColors
                 // getting false positives or false negatives, you may need to tweak the
                 // heuristic.
                 Matrix charMatrix = txt.GetTextMatrixForCharacter(charIndex);
-                bool hWithinLinkBox = (Math.Floor(linkAnnots[i].Rect.LLx) < Math.Ceiling(charMatrix.H)) && (Math.Floor(charMatrix.H) < Math.Ceiling(linkAnnots[i].Rect.URx));
-                bool vWithinLinkBox = (Math.Floor(linkAnnots[i].Rect.LLy) < Math.Ceiling(charMatrix.V)) && (Math.Floor(charMatrix.V) < Math.Ceiling(linkAnnots[i].Rect.URy));
+                bool hWithinLinkBox = (Math.Floor(linkAnnots[i].Rect.LLx) < Math.Ceiling(charMatrix.H)) &&
+                                      (Math.Floor(charMatrix.H) < Math.Ceiling(linkAnnots[i].Rect.URx));
+                bool vWithinLinkBox = (Math.Floor(linkAnnots[i].Rect.LLy) < Math.Ceiling(charMatrix.V)) &&
+                                      (Math.Floor(charMatrix.V) < Math.Ceiling(linkAnnots[i].Rect.URy));
 
                 if (hWithinLinkBox && vWithinLinkBox)
                 {
                     Console.WriteLine("Found a character that falls within the bounds of LinkAnnotation " + i);
-                    
+
                     int startRunIndex;
-                    
-                    if(charIndex == 0)
+
+                    if (charIndex == 0)
                     {
                         // This is the first character, no splitting needed.
                         startRunIndex = 0;

@@ -27,15 +27,17 @@ namespace ImageFromStream
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
-            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .OSX) &&
+                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Linux) &&
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
@@ -61,14 +63,14 @@ namespace ImageFromStream
                 if (args.Length > 2)
                     docOutput = args[2];
 
-                Console.WriteLine("using bitmap input " + bitmapInput + " and jpeg input " + jpegInput + ". Writing to output " + docOutput);
+                Console.WriteLine("using bitmap input " + bitmapInput + " and jpeg input " + jpegInput +
+                                  ". Writing to output " + docOutput);
 
                 // Create a .NET MemoryStream object.
                 // A MemoryStream is used here for demonstration only, but the technique
                 // works just as well for other streams which support seeking.
                 using (System.IO.MemoryStream BitmapStream = new System.IO.MemoryStream())
                 {
-
                     // Load a bitmap image into the MemoryStream.
                     using (System.Drawing.Bitmap BitmapImage = new System.Drawing.Bitmap(bitmapInput))
                     {
@@ -92,7 +94,6 @@ namespace ImageFromStream
                         // Create a new MemoryStream for a new image file.
                         using (System.IO.MemoryStream JpegStream = new System.IO.MemoryStream())
                         {
-
                             // Load a JPEG image into the MemoryStream.
                             using (System.Drawing.Image JpegImage = System.Drawing.Image.FromFile(jpegInput))
                             {

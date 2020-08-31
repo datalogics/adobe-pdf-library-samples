@@ -24,13 +24,13 @@ using Datalogics.PDFL;
 
 namespace ImageExport
 {
-    public class ExportDocumentImages 
+    public class ExportDocumentImages
     {
-       ImageType exporttype;
+        ImageType exporttype;
         int next;
         ImageCollection ic = new ImageCollection();
-        
-        public void export_doc_images_type( Document doc, ImageType imtype)
+
+        public void export_doc_images_type(Document doc, ImageType imtype)
         {
             exporttype = imtype;
             int pgno;
@@ -40,21 +40,21 @@ namespace ImageExport
                 Content content = pg.Content;
                 Export_Element_Images(content);
             }
-			
-            if ( ic.Count != 0 )
+
+            if (ic.Count != 0)
             {
                 try
                 {
                     ic.Save("ImageExport-page" + pgno + "-out.tif", ImageType.TIFF);
                 }
-                catch( Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Cannot write file: " + ex.Message);
                 }
             }
         }
 
-        public void export_doc_images( Document doc)
+        public void export_doc_images(Document doc)
         {
             export_doc_images_type(doc, ImageType.TIFF);
             export_doc_images_type(doc, ImageType.JPEG);
@@ -63,17 +63,17 @@ namespace ImageExport
             export_doc_images_type(doc, ImageType.BMP);
         }
 
-        public void Export_Element_Images(Content content )
-            {
+        public void Export_Element_Images(Content content)
+        {
             int i = 0;
             ImageSaveParams isp;
 
-            while (i < content.NumElements )
+            while (i < content.NumElements)
             {
                 Element e = content.GetElement(i);
                 if (e is Image)
                 {
-                    Image img = (Image)e;
+                    Image img = (Image) e;
                     // Weed out impossible on nonsensical combinations.
                     if (img.ColorSpace == ColorSpace.DeviceCMYK && exporttype != ImageType.JPEG)
                     {
@@ -81,7 +81,7 @@ namespace ImageExport
                         continue;
                     }
 
-                    if ( exporttype == ImageType.TIFF)
+                    if (exporttype == ImageType.TIFF)
                     {
                         ic.Append(img);
                         isp = new ImageSaveParams();
@@ -91,7 +91,6 @@ namespace ImageExport
 
                     try
                     {
-
                         if (exporttype == ImageType.JPEG)
                         {
                             isp = new ImageSaveParams();
@@ -118,8 +117,8 @@ namespace ImageExport
                     {
                         Console.WriteLine("Cannot write file: " + ex.Message);
                     }
-                    next++;
 
+                    next++;
                 }
                 else if (e is Container)
                 {
@@ -136,6 +135,7 @@ namespace ImageExport
                     Console.WriteLine("Recursing through a Form");
                     Export_Element_Images((e as Form).Content);
                 }
+
                 i++;
             }
         }
@@ -145,15 +145,17 @@ namespace ImageExport
     {
         static void Main(String[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) &&
-            !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .OSX) &&
+                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
-            !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Linux) &&
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
@@ -174,7 +176,7 @@ namespace ImageExport
                 Console.WriteLine("Input file: " + sInput);
 
                 Document doc = new Document(sInput);
-                ExportDocumentImages expdoc= new ExportDocumentImages();
+                ExportDocumentImages expdoc = new ExportDocumentImages();
                 expdoc.export_doc_images(doc);
             }
         }

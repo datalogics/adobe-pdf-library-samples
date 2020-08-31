@@ -25,7 +25,6 @@ namespace MergePDF
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/merge_pdf1.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/merge_pdf2.pdf";
                 String sOutput = "MergePDF-out.pdf";
@@ -49,12 +48,14 @@ namespace MergePDF
                 {
                     doc1.InsertPages(Document.LastPage, doc2, 0, Document.AllPages, PageInsertFlags.All);
                 }
-                catch(LibraryException ex)
+                catch (LibraryException ex)
                 {
-                    if (!ex.Message.Contains("An incorrect structure tree was found in the PDF file but operation continued"))
+                    if (!ex.Message.Contains(
+                        "An incorrect structure tree was found in the PDF file but operation continued"))
                     {
                         throw;
                     }
+
                     Console.Out.WriteLine(ex.Message);
                 }
 

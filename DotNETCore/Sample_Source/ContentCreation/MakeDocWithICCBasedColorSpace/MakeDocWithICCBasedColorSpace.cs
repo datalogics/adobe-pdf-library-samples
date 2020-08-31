@@ -44,7 +44,8 @@ namespace MakeDocWithICCBasedColorSpace
                 catch (ApplicationException ex)
                 {
                     if (ex.Message.Equals("The specified font could not be found.") &&
-                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux) &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
                         !Directory.Exists("/usr/share/fonts/msttcore/"))
                     {
                         Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
@@ -53,16 +54,17 @@ namespace MakeDocWithICCBasedColorSpace
 
                     throw;
                 }
+
                 FileStream stream = new FileStream(sInput, FileMode.Open);
                 PDFStream pdfStream = new PDFStream(stream, doc, null, null);
 
                 ColorSpace cs = new ICCBasedColorSpace(pdfStream, 3);
                 GraphicState gs = new GraphicState();
-                gs.FillColor = new Color(cs, new[] { 1.0, 0.0, 0.0 });
+                gs.FillColor = new Color(cs, new[] {1.0, 0.0, 0.0});
 
 
                 Matrix textMatrix = new Matrix(24, 0, 0, 24, // Set font width and height to 24 point size
-                                         1 * 72, 2 * 72);   // x, y coordinate on page, 1" x 2"
+                    1 * 72, 2 * 72); // x, y coordinate on page, 1" x 2"
 
                 TextRun textRun = new TextRun("Hello World!", font, gs, new TextState(), textMatrix);
                 Text text = new Text();
@@ -71,7 +73,7 @@ namespace MakeDocWithICCBasedColorSpace
                 page.UpdateContent();
 
                 doc.EmbedFonts();
-                doc.Save(SaveFlags.Full,  sOutput);
+                doc.Save(SaveFlags.Full, sOutput);
             }
         }
     }
