@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteGoToActions", "RemoteGoToActions.csproj", "{A6A21A2C-9A83-4C6A-8315-62E959F2418A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6A21A2C-9A83-4C6A-8315-62E959F2418A}.Debug|x64.ActiveCfg = Debug|x64
+		{A6A21A2C-9A83-4C6A-8315-62E959F2418A}.Debug|x64.Build.0 = Debug|x64
+		{A6A21A2C-9A83-4C6A-8315-62E959F2418A}.Release|x64.ActiveCfg = Release|x64
+		{A6A21A2C-9A83-4C6A-8315-62E959F2418A}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {580513F2-C242-46BD-A1BB-512BE5CA8F8D}
+	EndGlobalSection
+EndGlobal
