@@ -82,7 +82,7 @@ namespace AddTextToImage
                                 //by the form.
                                 Form form = ocrEngine.PlaceTextUnder(image, doc);
                                 content.RemoveElement(0);
-                                content.AddElement(form, -1);
+                                content.AddElement(form, Content.BeforeFirst);
                                 page.UpdateContent();
                         }
                         doc.Save(SaveFlags.Full, sOutput);

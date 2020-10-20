@@ -47,7 +47,7 @@ public class AddTextToDocument {
                 //by the form.
                 Form form = engine.placeTextUnder((Image)e, doc);
                 content.removeElement(index);
-                content.addElement(form, Document.BEFORE_FIRST_PAGE);
+                content.addElement(form, index - 1);
             } else if (e instanceof Container) {
                 addTextToImage(doc, ((Container)e).getContent(), engine);
             } else if (e instanceof Group) {

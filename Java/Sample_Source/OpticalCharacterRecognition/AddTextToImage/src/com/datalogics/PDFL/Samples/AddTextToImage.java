@@ -80,7 +80,7 @@ public class AddTextToImage {
                 //under the image. The original image in the page is then replaced by
                 //by the form.
                 Form form = ocrEngine.placeTextUnder(newImage, doc);
-                page.getContent().addElement(form, Document.BEFORE_FIRST_PAGE);
+                page.getContent().addElement(form, Content.BEFORE_FIRST);
                 page.updateContent();
             }
             finally {
