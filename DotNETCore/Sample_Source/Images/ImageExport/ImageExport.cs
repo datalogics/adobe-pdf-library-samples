@@ -146,16 +146,15 @@ namespace ImageExport
         static void Main(String[] args)
         {
             if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                    .OSX) &&
-                !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
+                .OSX) && !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
                 return;
             }
 
             if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                    .Linux) &&
-                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+                .Linux) && !System.IO.File.Exists("/usr/lib64/libgdiplus.so") &&
+                !System.IO.File.Exists("/usr/lib/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;

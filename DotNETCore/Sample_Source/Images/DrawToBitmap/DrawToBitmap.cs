@@ -370,7 +370,8 @@ namespace DrawToBitmap
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) &&
-                !System.IO.File.Exists("/usr/lib64/libgdiplus.so"))
+                !System.IO.File.Exists("/usr/lib64/libgdiplus.so") &&
+                !System.IO.File.Exists("/usr/lib/libgdiplus.so"))
             {
                 Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
                 return;
