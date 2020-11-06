@@ -23,7 +23,25 @@
 // For more detail see the description of the AlternateFileSystem sample program on our Developer’s site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#alternatefilesystem
 
+// Some notes on this file systems behaviour
+//
+//  All file reads and writes will occur as simple memory access.
+//  A file may have a "name" of the empty string (""). Such a file will exist in memory only, and never be saved or
+//   initialized from a disk file
+//  If a files name is NOT the empty string, then, at open time, if the file mode is read and not create, we will use the
+//    native file system to read the entire file into memory, in a single read. At close time, if the file is opened for write, we will copy the entire
+//    contents of the file to a disk file of the given name, using the native file system. we will free the in-memory copy of
+//    that file regardless of open mode.
+//  Any file may be reopened after closing using the ASFileReopen() interface. If the file name is the empty string, the in-memory copy of the
+//     file remains and is reused. If the file string is not empty, and the file mode is reopened for read, and not create, we will reload the file.
+//  The ASFileSysRemove will free the memory buffer and destroy the internal "directory" for any file. For files with non-empty names, it will also
+//     remove the file from the disk, using the native file system, if the open mode included ASFILE_TEMPORARY.
+//
+//  The ASPathName object used here will be an ASText with the DI Representation of the file path carried in it. This should provide complete support
+//     for unicode file names.
+
 #include "ASCalls.h"
+#include "ASExtraCalls.h"
 #include "PDFLCalls.h"
 
 #include <cstdio>
@@ -33,21 +51,25 @@ using namespace std;
 
 #ifdef WIN32
 #pragma warning(disable : 4267)
+#else
+#include <stdio.h>
+#include <wchar.h>
 #endif
 
 struct _altFSFile {
-    char *Name;            // When present, the i/o file system file name reflected here
-    unsigned char *Buffer; // Contents of this file
-    ASSize_t BufferSize;   // Maximum size of this file without expand
-    ASSize_t CurrentSize;  // Current size of this file
+    ASText Name;             // When present, the i/o file system file name reflected here
+    char *Buffer;            // Contents of this file
+    ASFilePos64 BufferSize;  // Maximum size of this file without expand
+    ASFilePos64 CurrentSize; // Current size of this file
     struct _altFSFile *Prev, *Next;
+    ASBool temp;
 };
 typedef struct _altFSFile altFSFile;
 
 // The altFSFileHandle is what is returned as an MDFile
 struct _altFSFileHandle {
     struct _altFSFile *File; // Pointer to common file info
-    ASSize_t Position;       // Last byte read or written
+    ASFilePos64 Position;    // Last byte read or written
     ASUns16 Flags;           // Open flags
 };
 typedef struct _altFSFileHandle altFSFileHandle;
@@ -57,15 +79,6 @@ static ASBool altFSRecDefined = FALSE;
 static altFSFile *altFileRoot = NULL;
 static ASFileSys nativeFileSys = NULL;
 
-const char *MFSPathToCString(ASPathName inASPath) {
-    char *inSpec = (char *)inASPath;
-
-    if ((!inSpec) || (!inSpec[0]))
-        return NULL;
-
-    return (const char *)inASPath;
-}
-
 // Increase size of buffer by a factor of two.
 static void altFSExpandBuffer(altFSFile *File, ASSize_t Size) {
     ASSize_t TargetSize;
@@ -73,14 +86,14 @@ static void altFSExpandBuffer(altFSFile *File, ASSize_t Size) {
     if ((!File) || (!Size) || (Size < File->BufferSize))
         return;
 
-    TargetSize = (Size > File->BufferSize * 2) ? Size : File->BufferSize * 2;
+    TargetSize = (Size > File->BufferSize * 2) ? Size : (size_t)(File->BufferSize * 2);
     if (TargetSize < 1024) // Absolute minimum of 1k per file expansion
         TargetSize = 1024;
 
     if (!File->Buffer)
-        File->Buffer = (unsigned char *)ASmalloc(TargetSize);
+        File->Buffer = (char *)ASmalloc(TargetSize);
     else
-        File->Buffer = (unsigned char *)ASrealloc(File->Buffer, TargetSize);
+        File->Buffer = (char *)ASrealloc(File->Buffer, TargetSize);
     File->BufferSize = TargetSize;
     if (!File->Buffer)
         ASRaise(genErrNoMemory);
@@ -92,11 +105,18 @@ static void altFSExpandBuffer(altFSFile *File, ASSize_t Size) {
 altFSFile *findAltFSFile(ASPathName Path) {
     altFSFile *altFile;
 
-    if (!MFSPathToCString(Path))
+    /* If the path name is the empty path,
+    ** then we cannot find it
+    */
+    ASText emptyPath = ASTextNew();
+    if (!ASTextCmp(emptyPath, (ASText)Path))
         return 0;
 
+    /* Locate the file in the file system that has the same name as the
+    ** requested file
+    */
     for (altFile = altFileRoot; altFile; altFile = altFile->Next) {
-        if (!strcmp(altFile->Name, MFSPathToCString(Path)))
+        if (!ASTextCmp(altFile->Name, (ASText)Path))
             break;
     }
     return altFile;
@@ -107,8 +127,15 @@ ASInt32 altFSRemove(ASPathName Path) {
     altFSFile *altFile;
 
     altFile = findAltFSFile(Path);
-    if (altFile->Name)
+    if (altFile->Name) {
+        if (altFile->temp) {
+            /* Remove the file from the native file system as well */
+            ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, Path, nativeFileSys);
+            ASFileSysRemoveFile(nativeFileSys, nativePath);
+            ASFileSysReleasePath(nativeFileSys, nativePath);
+        }
         ASfree(altFile->Name);
+    }
     ASfree(altFile->Buffer);
 
     if (altFile->Next)
@@ -128,7 +155,6 @@ ASInt32 altFSRemove(ASPathName Path) {
 ASInt32 altFSOpen(ASPathName Path, ASUns16 Flags, MDFile *File) {
     altFSFileHandle *altFileHandle;
     altFSFile *altFile;
-    const char *inCPath;
 
     // If the user asks for no file open mode, do not provide a file.
     if (Flags == 0)
@@ -158,54 +184,66 @@ ASInt32 altFSOpen(ASPathName Path, ASUns16 Flags, MDFile *File) {
     if (altFile->Next)
         altFile->Next->Prev = altFile;
 
+    if (Flags & ASFILE_TEMPORARY)
+        altFile->temp = true;
+    else
+        altFile->temp = false;
+
     altFileHandle->Flags = Flags;
     altFileHandle->File = altFile;
     altFileHandle->Position = 0;
+    altFile->Name = ASTextDup((ASText)Path);
 
-    if ((inCPath = MFSPathToCString(Path))) {
-        altFile->Name = (char *)ASmalloc(sizeof(char) * (strlen(inCPath) + 1));
-        if (!altFile->Name)
-            ASRaise(genErrNoMemory);
-        strcpy(altFile->Name, inCPath);
-    }
+    ASText emptyText = ASTextNew();
 
-    // If a file in read mode, and not to be created, with no data
+    // If a file is in read mode, and not to be created, with no data
     // currently associated with the file, the program reads the
-    // corresponding file on the disk as the initial data. If the file
+    // corresponding file on the disk as the initial data, using the native file system. If the file
     // is only opening in write mode, don't bother reading it.
-    if ((altFile->Name) && (altFile->Name[0]) && !(altFile->CurrentSize) && !(Flags & ASFILE_CREATE)) {
-        FILE *Initial;
-        size_t Position;
-        char *openPath = altFile->Name;
+    if ((altFile->Name) && (ASTextCmp(altFile->Name, emptyText)) && !(altFile->CurrentSize) &&
+        !(Flags & ASFILE_CREATE)) {
 
-        Initial = fopen(openPath, "rb");
+        ASAtom pathType;
+        ASPlatformPath platformPath;
+        const char *platformPathStr = NULL;
+        FILE *nativeFile = NULL;
+#if MAC_PLATFORM
+        pathType = ASAtomFromString("POSIXPath"); /*  For MAC, we need the POSIX path */
+#else
+        pathType = ASAtomFromString("Cstring"); /* For windows and Unix, a simple CString path (Which may be UTF-8) */
+#endif // MAC_PLATFORM
 
-        if (Initial) {
-            if (Flags & ASFILE_READ) {
-                fseek(Initial, 0, SEEK_END);
-                Position = ftell(Initial);
+        ASErrorCode errNum = ASFileSysAcquirePlatformPath(&altFSRec, Path, pathType, &platformPath);
+        if (!errNum) {
+            platformPathStr = ASPlatformPathGetCstringPtr(platformPath);
 
-                if (Position) {
-                    fseek(Initial, 0, SEEK_SET);
-                    altFile->Buffer = (unsigned char *)ASmalloc(Position);
-                    if (!altFile->Buffer) {
-                        fclose(Initial);
-                        ASfree(altFileHandle);
-                        ASRaise(genErrNoMemory);
-                    }
-                    altFile->BufferSize = (ASSize_t)Position;
-                    altFile->CurrentSize = fread(altFile->Buffer, 1, altFile->BufferSize, Initial);
+#if WIN_ENV
+            errno_t errOpen = fopen_s(&nativeFile, platformPathStr, "rb");
+            if (errOpen)
+                nativeFile = NULL;
+#else
+            nativeFile = fopen(platformPathStr, "rb");
+#endif // WIN_PLATFORM
+
+            ASFileSysReleasePlatformPath(&altFSRec, platformPath);
+
+            if (nativeFile) {
+                fseek(nativeFile, 0, SEEK_END);
+                ASFilePos64 size = ftell(nativeFile);
+                fseek(nativeFile, 0, SEEK_SET);
+                altFile->Buffer = (char *)ASmalloc((size_t)size);
+                if (!altFile->Buffer) {
+                    fclose(nativeFile);
+                    ASfree(altFileHandle);
+                    ASRaise(genErrNoMemory);
                 }
-                fclose(Initial);
+                altFile->BufferSize = (ASFilePos64)size;
+                altFile->CurrentSize = fread(altFile->Buffer, 1, (ASTArraySize)size, nativeFile);
+                fclose(nativeFile);
             }
-        }
-        // If the system is in read, no-create mode, and no physical file is provided, the file does not exist.
-        else {
-            ASfree(altFileHandle);
-            altFSRemove(Path);
-            return 1;
-        }
+        } /* If file did not exist, initialize it as an empty file */
     }
+    ASTextDestroy(emptyText);
 
     *File = (MDFile *)altFileHandle;
 
@@ -222,29 +260,68 @@ ASInt32 altFSClose(MDFile File) {
 
     altFile = altFileHandle->File;
 
-    if ((altFile->Name) && (altFile->Name[0]) && (altFileHandle->Flags & ASFILE_WRITE)) {
+    ASText emptyText = ASTextNew();
+
+    if ((altFile->Name) && (ASTextCmp(altFile->Name, emptyText)) &&
+        (altFileHandle->Flags & ASFILE_WRITE) && (altFile->CurrentSize > 0)) {
         // Write this to a real file system, if a path name is given
-        FILE *Final;
+        /* Use the platform native file system to write this file to disk */
 
-        Final = fopen(altFile->Name, "wb");
-        if (Final) {
-            if (altFile->Buffer)
-                fwrite(altFile->Buffer, altFile->CurrentSize, 1, Final);
-            else
-                fwrite(" ", 0, 0, Final);
+        ASAtom pathType;
+        ASPlatformPath platformPath;
+        const char *platformPathStr = NULL;
+        FILE *nativeFile = NULL;
+#if MAC_PLATFORM
+        pathType = ASAtomFromString("POSIXPath"); /*  For MAC, we need the POSIX path */
+#else
+        pathType = ASAtomFromString("Cstring"); /* For windows and Unix, a simple CString path (Which may be UTF-8) */
+#endif // MAC_PLATFORM
+        ASErrorCode errNum =
+            ASFileSysAcquirePlatformPath(&altFSRec, (ASPathName)altFile->Name, pathType, &platformPath);
+        if (!errNum) {
+            platformPathStr = ASPlatformPathGetCstringPtr(platformPath);
 
-            fclose(Final);
-        }
+#if WIN_ENV
+            errno_t errOpen = fopen_s(&nativeFile, platformPathStr, "wb");
+            if (errOpen)
+                nativeFile = NULL;
+#else
+            nativeFile = fopen(platformPathStr, "wb");
+#endif // WIN_PLATFORM
+            ASFileSysReleasePlatformPath(&altFSRec, platformPath);
+            if (nativeFile)
+                fwrite(altFile->Buffer, 1, (size_t)altFile->CurrentSize, nativeFile);
+            fclose(nativeFile);
+        } /* If file did not exist and cannot be created, do not save it */
     }
+
+    ASTextDestroy(emptyText);
+
     return 0;
 }
 
-ASInt32 altFSFlush(MDFile File) {
-    // There is nothing to do for a flush operation
-    return 0;
+ASMDFile altFSReopen(ASMDFile f, ASFileMode newMode, ASErrorCode *error) {
+    altFSFileHandle *altFileHandle = (altFSFileHandle *)f;
+
+    if (!f)
+    {
+        *error - 1;
+        return f;
+    }
+
+    altFileHandle->Position = 0;
+    altFileHandle->Flags |= newMode;
+
+    *error = 0;
+
+    return (f);
 }
 
-ASInt32 altFSSetPos64(MDFile File, ASFilePos64 Pos) {
+ASErrorCode altFSFlush(ASMDFile f) { return 0; }
+
+ASErrorCode altFSHardFlush(ASMDFile f) { return 0; }
+
+ASErrorCode altFSSetPos64(MDFile File, ASFilePos64 Pos) {
     altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
     altFSFile *altFile;
 
@@ -253,9 +330,9 @@ ASInt32 altFSSetPos64(MDFile File, ASFilePos64 Pos) {
 
     altFile = altFileHandle->File;
 
-    altFSExpandBuffer(altFile, Pos);
+    altFSExpandBuffer(altFile, (size_t)Pos);
     if (Pos > altFile->CurrentSize) {
-        memset(altFile->Buffer + altFile->CurrentSize, 0, Pos - altFile->CurrentSize);
+        memset(altFile->Buffer + altFile->CurrentSize, 0, (size_t)(Pos - altFile->CurrentSize));
         altFile->CurrentSize = Pos;
     }
     altFileHandle->Position = Pos;
@@ -264,7 +341,7 @@ ASInt32 altFSSetPos64(MDFile File, ASFilePos64 Pos) {
 }
 
 // Set the cursor to this file at a particular position
-ASInt32 altFSSetPos(MDFile File, ASUns32 Pos) {
+ASErrorCode altFSSetPos(MDFile File, ASUns32 Pos) {
     altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
     altFSFile *altFile;
 
@@ -275,7 +352,7 @@ ASInt32 altFSSetPos(MDFile File, ASUns32 Pos) {
 
     altFSExpandBuffer(altFile, Pos);
     if (Pos > altFile->CurrentSize) {
-        memset(altFile->Buffer + altFile->CurrentSize, 0, Pos - altFile->CurrentSize);
+        memset(altFile->Buffer + altFile->CurrentSize, 0, (size_t)(Pos - altFile->CurrentSize));
         altFile->CurrentSize = Pos;
     }
     altFileHandle->Position = Pos;
@@ -284,20 +361,55 @@ ASInt32 altFSSetPos(MDFile File, ASUns32 Pos) {
 }
 
 // Get the current position of the cursor to this file
-ASInt32 altFSGetPos(MDFile File, ASUns32 *Pos) {
+ASErrorCode altFSGetPos64(MDFile File, ASFilePos64 *Pos) {
     altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
 
     if (!File)
         return 1;
 
-    if (altFileHandle->Position >= 0)
-        *Pos = (ASInt32)altFileHandle->Position;
+    *Pos = (ASInt32)altFileHandle->Position;
+
+    return 0;
+}
+
+// Get the current position of the cursor to this file
+ASErrorCode altFSGetPos(MDFile File, ASUns32 *Pos) {
+    altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
+
+    if (!File)
+        return 1;
+
+    *Pos = (ASInt32)altFileHandle->Position;
 
     return 0;
 }
 
 // Set the EOF marker at a particular position in the file
-ASInt32 altFSSetEOF(MDFile File, ASUns32 Pos) {
+ASErrorCode altFSSetEOF64(MDFile File, ASFilePos64 Pos) {
+    altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
+    altFSFile *altFile;
+
+    if (!File)
+        return 1;
+
+    altFile = altFileHandle->File;
+
+    if (Pos > altFile->CurrentSize)
+        altFSSetPos64(File, Pos);
+    else {
+        /* Truncate file to specified size */
+        altFile->CurrentSize = Pos;
+        altFile->BufferSize = Pos;
+        altFile->Buffer = (char *)realloc(altFile->Buffer, (size_t)Pos);
+        if (altFileHandle->Position > altFile->CurrentSize)
+            altFileHandle->Position = altFile->CurrentSize;
+    }
+
+    return 0;
+}
+
+// Set the EOF marker at a particular position in the file
+ASErrorCode altFSSetEOF(MDFile File, ASUns32 Pos) {
     altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
     altFSFile *altFile;
 
@@ -308,14 +420,20 @@ ASInt32 altFSSetEOF(MDFile File, ASUns32 Pos) {
 
     if (Pos > altFile->CurrentSize)
         altFSSetPos(File, Pos);
-    else
+    else {
+        /* Truncate file to specified size */
         altFile->CurrentSize = Pos;
+        altFile->BufferSize = Pos;
+        altFile->Buffer = (char *)realloc(altFile->Buffer, Pos);
+        if (altFileHandle->Position > altFile->CurrentSize)
+            altFileHandle->Position = altFile->CurrentSize;
+    }
 
     return 0;
 }
 
-// Get the position (offset) from the beginning of the file of the EOF marker.
-ASInt32 altFSGetEOF(MDFile File, ASUns32 *Pos) {
+// Get the position (offset) from the beginning of the file to the EOF marker.
+ASErrorCode altFSGetEOF64(MDFile File, ASFilePos64 *Pos) {
     altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
     altFSFile *altFile;
 
@@ -323,8 +441,29 @@ ASInt32 altFSGetEOF(MDFile File, ASUns32 *Pos) {
         return 1;
 
     altFile = altFileHandle->File;
-    *Pos = altFile->CurrentSize;
+    *Pos = (size_t)altFile->CurrentSize;
     return 0;
+}
+
+// Get the position (offset) from the beginning of the file to the EOF marker.
+ASErrorCode altFSGetEOF(MDFile File, ASUns32 *Pos) {
+    altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
+    altFSFile *altFile;
+
+    if (!File)
+        return 1;
+
+    altFile = altFileHandle->File;
+    *Pos = (size_t)altFile->CurrentSize;
+    return 0;
+}
+
+ASBool altFSCanSetEof(ASMDFile File, ASFilePos Pos) {
+
+    if (!File)
+        return false;
+
+    return true;
 }
 
 // Similar to fRead, for the Alternate FileSystem
@@ -339,13 +478,13 @@ ASSize_t altFSRead(void *Buffer, ASSize_t Size, ASSize_t Count, MDFile File, ASI
     }
     altFile = altFileHandle->File;
 
-    if (altFileHandle->Position > altFile->CurrentSize || Count < 0 || Size < 0) {
+    if (altFileHandle->Position > altFile->CurrentSize) {
         // End of file
         *Error = 12;
         return 0;
     }
 
-    Recs = Size == 0 ? 0 : (altFile->CurrentSize - altFileHandle->Position) / Size;
+    Recs = Size == 0 ? 0 : (size_t)(altFile->CurrentSize - altFileHandle->Position) / Size;
     if (Recs > Count)
         Recs = Count;
 
@@ -374,7 +513,7 @@ ASSize_t altFSWrite(void *Buffer, ASSize_t Size, ASSize_t Count, MDFile File, AS
     altFile = altFileHandle->File;
     Write = Count * Size;
 
-    altFSExpandBuffer(altFile, altFileHandle->Position + Write);
+    altFSExpandBuffer(altFile, (size_t)(altFileHandle->Position + Write));
 
     memcpy(&altFile->Buffer[altFileHandle->Position], Buffer, Write);
     altFileHandle->Position += Write;
@@ -390,50 +529,56 @@ ASInt32 altFSRename(MDFile *File, ASPathName Old, ASPathName New) {
     altFSFileHandle *altFileHandle = (altFSFileHandle *)File;
     altFSFile *altFile;
 
-    const char *inCPath;
+    if (!ASTextCmp((ASText)Old, (ASText)New))
+        return 1;
 
     if (File)
         altFile = altFileHandle->File;
     else
         altFile = findAltFSFile(Old);
 
-    if (!altFile || !(inCPath = MFSPathToCString(New)))
-        return 1;
+    if (!altFile)
+        return (1);
 
-    altFile->Name = (char *)ASrealloc(altFile->Name, sizeof(char) * (strlen(inCPath) + 1));
-    if (!altFile->Name)
-        ASRaise(genErrNoMemory);
-
-    strcpy(altFile->Name, inCPath);
+    ASTextDestroy(altFile->Name);
+    altFile->Name = ASTextDup((ASText)New);
 
     return 0;
 }
 
+/* See if two paths name the same file */
 ASBool altFSIsSameFile(MDFile File, ASPathName P1, ASPathName P2) {
-    if (!strcmp((char *)P1, (char *)P2))
+    if (!ASTextCmp((ASText)P1, (ASText)P2))
         return TRUE;
 
     return FALSE;
 }
 
+/* Get the PDEncoded name from an ASPath Name*/
 ASInt32 altFSGetName(ASPathName Path, char *Name, ASInt32 Max) {
-    if (Name && Max > (ASInt32)strlen((char *)Path))
-        strcpy(Name, (char *)Path);
+    ASTArraySize length;
+    char *copy = ASTextGetPDTextCopy((ASText)Path, &length);
+
+    if (length < Max)
+        memmove(Name, copy, length);
     else
-        strncpy(Name, (char *)Path, Max);
-    return 0;
+        memmove(Name, copy, Max);
+
+    return length < Max ? length : Max;
 }
 
+/* Generate a temporary file name, using the user provided 
+** temporary file path name, or the user supplied sibling path
+*/
 ASPathName altFSGetTempPathName(ASPathName Path) {
     static int tmpFCounter = 0;
 
-    char workPath[2048];
+    wchar_t workPath[2048];
     workPath[0] = 0;
-#ifdef WIN32
-#define pathSep '\\'
-#else
-#define pathSep '/'
-#endif
+    workPath[1] = 0;
+    workPath[2] = 0;
+    workPath[3] = 0;
+    wchar_t pathSep = L'/'; /* Because the path we are working with is a DI path, the separator is ALWAYS a forward slash! */
 
     /* If a sibling path is defined, append the generated name to it*/
     ASPathName tempPath = NULL;
@@ -444,194 +589,285 @@ ASPathName altFSGetTempPathName(ASPathName Path) {
     ** file system, retrieve it and append the file name to it
     */
     else
-        ASPathName tempPath = ASFileSysGetDefaultTempPath(&altFSRec);
+        tempPath = ASFileSysGetDefaultTempPath(&altFSRec);
+
+    ASUnicodeFormat format = kUTF16HostEndian;
+    if (sizeof(wchar_t) == 4)
+        format = kUTF32HostEndian;
 
     if (tempPath) {
-        strcat(workPath, (char *)tempPath);
-        if (workPath[strlen(workPath) - 1] != pathSep) {
-            workPath[strlen(workPath) + 1] = 0;
-            workPath[strlen(workPath)] = pathSep;
+        wchar_t *pathString;
+        pathString = (wchar_t *)ASTextGetUnicodeCopy((ASText)tempPath, format);
+
+        wcscat(workPath, pathString);
+        if (workPath[wcslen(workPath) - 1] != pathSep) {
+            workPath[wcslen(workPath) + 1] = 0;
+            workPath[wcslen(workPath)] = pathSep;
         }
+
+        ASfree(pathString);
     }
+    wchar_t actualPath[2048];
 
-    sprintf(workPath, "%sTmpFile%d", workPath, tmpFCounter++);
+#ifdef WIN_ENV
+    _swprintf(actualPath, L"%sTmpFile%d", workPath, tmpFCounter++);
+#else
+    swprintf(actualPath, sizeof(workPath), L"%lsTmpFile%d", workPath, tmpFCounter++);
+#endif
 
-    char *outPath = (char *)ASmalloc(strlen(workPath) + 1); // Enough for the prefix + counter
-    if (!outPath)
-        ASRaise(genErrNoMemory);
-    strcpy(outPath, workPath);
+    ASText outPath = ASTextFromUnicode((ASUTF16Val *)actualPath, format);
 
     return (ASPathName)outPath;
-
-#undef pathSep
 }
 
+/* Create a copy of the ASPAthName */
 ASPathName altFSCopyPathName(ASPathName Path) {
-    char *TempPath;
 
     if (!Path)
         return NULL;
 
-    TempPath = (char *)ASmalloc(sizeof(char) * (strlen((const char *)Path) + 1));
-    if (!TempPath)
-        ASRaise(genErrNoMemory);
-
-    strcpy(TempPath, (const char *)Path);
+    ASText TempPath = ASTextDup((ASText)Path);
     return (ASPathName)(TempPath);
 }
 
-char *altFSDIPath(ASPathName Path, ASPathName Relative) {
-    char *TempPath;
+/* Create a PDDocEncoded DI Path for the ASPathName */
+char *altFSDIPathFromPath(ASPathName Path, ASPathName Relative) {
 
-    TempPath = (char *)ASmalloc(sizeof(char) * (strlen((const char *)Path) + 1));
-    if (!TempPath)
-        ASRaise(genErrNoMemory);
+    /* Use the native file system to convert the name to a DI Path,combining with the sibling path */
+    ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, Path, nativeFileSys);
+    ASPathName nativeRelative = NULL;
+    if (Relative != NULL)
+        nativeRelative = ASFileSysAcquireFileSysPath(&altFSRec, Relative, nativeFileSys);
+    char *nativeDIPath = ASFileSysDIPathFromPath(nativeFileSys, nativePath, nativeRelative);
 
-    strcpy(TempPath, (const char *)Path);
-    return (TempPath);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
+    ASFileSysReleasePath(nativeFileSys, nativeRelative);
+
+    return (nativeDIPath);
 }
 
-ASPathName altFSToDIPath(const char *Path, ASPathName Relative) {
-    char *TempPath;
+/* Create an ASText of the DIPath of the specified ASPathName*/
+ASErrorCode altFSDIPathFromPathEx(ASPathName path, ASPathName relativeToThisPath, ASText diPathText) {
 
-    TempPath = (char *)ASmalloc(sizeof(char) * (strlen(Path) + 1));
-    if (!TempPath)
-        ASRaise(genErrNoMemory);
+    /* Use the native file system to convert the name to a DI Path, combining with the sibling path */
+    ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, path, nativeFileSys);
+    ASPathName nativeRelative = ASFileSysAcquireFileSysPath(&altFSRec, relativeToThisPath, nativeFileSys);
+    ASErrorCode error = ASFileSysDIPathFromPathEx(nativeFileSys, nativePath, nativeRelative, diPathText);
 
-    strcpy(TempPath, Path);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
+    ASFileSysReleasePath(nativeFileSys, nativeRelative);
 
-    return (ASPathName)(TempPath);
+    return (error);
 }
 
-void altFSDisposePath(ASPathName Path) { ASfree(Path); }
+/* Create an ASPathName from the PDDocEncoded DI Path */
+ASPathName altFSPathFromDIPath(const char *Path, ASPathName Relative) {
 
-ASAtom altFSGetFileSysName(void) { return ASAtomFromString("altFS"); }
+    ASPathName newPath = ASFileSysCreatePathName(&altFSRec, ASAtomFromString("DIPath"), Path, Relative);
 
-ASUns32 altFSFreeSpace(ASPathName Path) { return ASUns32(-1); }
-
-ASInt32 altFSFlushVolume(ASPathName Path) { return TRUE; }
-
-ASUns32 altFSGetFlags(MDFile File) { return 0; }
-
-ASInt32 altFSReadSynch(ASIORequest ior) {
-    altFSSetPos(ior->mdFile, ior->offset);
-    ior->totalBytesCompleted = altFSRead(ior->ptr, ior->count, 1, ior->mdFile, &ior->pError);
-    (ior->IODoneProc)(ior);
-
-    return 0;
+    return (ASPathName)(newPath);
 }
 
-ASInt32 altFSWriteAsynch(ASIORequest ior) {
-    altFSSetPos(ior->mdFile, ior->offset);
-    ior->totalBytesCompleted = altFSWrite(ior->ptr, ior->count, 1, ior->mdFile, &ior->pError);
-    (ior->IODoneProc)(ior);
+/* Create an ASPathName from the ASText DI Path */
+ASPathName altFSPathFromDIPathEx(ASConstText Path, ASPathName Relative) {
 
-    return 0;
+    ASPathName newPath =
+        ASFileSysCreatePathName(&altFSRec, ASAtomFromString("DIPathWithASText"), Path, Relative);
+
+    return (newPath);
 }
 
-void altFSAbortAsynch(MDFile File) { return; }
+/* Release a path name that is no longer needed */
+void altFSDisposePathName(ASPathName Path) { ASTextDestroy((ASText)Path); }
 
-ASUns32 altFSStatus(MDFile File) {
-    if (File)
-        return kASFileOkay;
-    return kASFileIsTerminating;
-}
+/* Return the name of this file system */
+ASAtom altFSGetFileSysName(void) { return ASAtomFromString("DLSampleAltFS"); }
 
+/* Return the amount of free space in this file system */
+ASUns32 altFSGetStorageFreeSpace(ASPathName Path) { return ASUns32(-1); }
+ASUns64 altFSGetStorageFreeSpace64(ASPathName Path) { return ASUns64(-1); }
+
+/* Create a new ASPathName, using a specified type of data */
 ASPathName altFSCreatePathName(ASAtom PathType, const void *Path, const void *MustBeZero) {
-    char *TempPath;
 
     /* The path to be created is fairly complex, depending on the pathType
     ** Rather than recreating all of the complexity of the handling of various types,
-    ** use the native file system to build the path, then extract it's platform path
-    ** and use that to build this file systems ASPathName
+    ** use the native file system to build the path, then extract it's DI path and use that
+    ** as this file system's ASPathName
     */
     ASPathName nativePath = ASFileSysCreatePathName(nativeFileSys, PathType, Path, MustBeZero);
-    ASPlatformPath platformPath;
-    ASInt32 length = ASFileSysAcquirePlatformPath(nativeFileSys, nativePath,
-                                                  ASAtomFromString("Cstring"), &platformPath);
-    char *pathText = ASPlatformPathGetCstringPtr(platformPath);
+    ASText diPath = ASTextNew();
+    ASFileSysDIPathFromPathEx(nativeFileSys, nativePath, NULL, diPath);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
 
-    TempPath = (char *)ASmalloc(strlen(pathText) + 1);
-    if (!TempPath)
-        ASRaise(genErrNoMemory);
-
-    strcpy(TempPath, (const char *)pathText);
-
-    ASFileSysReleasePlatformPath(nativeFileSys, platformPath);
-
-    return ASPathName(TempPath);
+    return ASPathName(diPath);
 }
 
-ASPathName altFSAcquirePath(ASPathName Path, ASFileSys Sys) {
+/* Convert an ASPathName from this file system, into some other file system's ASPathName */
+ASPathName altFSAcquireFileSysPath(ASPathName Path, ASFileSys Sys) {
+
+    if (Path == NULL)
+        return (NULL);
+
     /* The ASPathName input does NOT belong to this file system, but rather to a second file system
-    ** Convert the name to a string, and set that string as the new path in this file system
+    ** Convert the name to a DIPath, and set that ASText as the new path in this file system
     */
-    ASPlatformPath platformPath;
-    ASInt32 length = ASFileSysAcquirePlatformPath(Sys, Path, ASAtomFromString("Cstring"), &platformPath);
-    char *pathText = ASPlatformPathGetCstringPtr(platformPath);
+    ASPathName newPath = ASFileSysCreatePathFromDIPathText(Sys, (ASText)Path, NULL);
 
-    char *TempPath = (char *)ASmalloc(strlen(pathText) + 1);
-    if (!TempPath)
-        ASRaise(genErrNoMemory);
-
-    strcpy(TempPath, (const char *)pathText);
-
-    ASFileSysReleasePlatformPath(nativeFileSys, platformPath);
-
-    return ASPathName(TempPath);
+    return (newPath);
 }
 
+/* Acquire the Platform Path Structure for this ASPathName */
 ASInt32 altFSAcquirePlatformPath(ASPathName path, ASAtom platformPathType, ASPlatformPath *platformPath) {
     /* We do not want to duplicate the complexity of the path type logic here
-    ** So again,we will use the native file system to do this conversion
+    ** So again, we will use the native file system to do this conversion
     */
     ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, path, nativeFileSys);
-    ASInt32 length =
-        ASFileSysAcquirePlatformPath(nativeFileSys, nativePath, ASAtomFromString("Cstring"), platformPath);
+    ASInt32 length = ASFileSysAcquirePlatformPath(nativeFileSys, nativePath, platformPathType, platformPath);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
     return (length);
 }
 
+/* Release the Platform Path Structure for this file name */
 void altFSReleasePlatformPath(ASPlatformPath platformPath) {
     ASFileSysReleasePlatformPath(nativeFileSys, platformPath);
 }
+
+/* Get the name of the path as an ASText object */
+ASErrorCode altFSGetNameASASText(ASPathName pathName, ASText name) {
+    name = (ASText)pathName;
+    return (0);
+}
+
+/* Get the display name of the path as an ASText object */
+ASErrorCode altFSGetNameForDisplay(ASPathName path, ASText displayText) {
+    ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, path, nativeFileSys);
+    ASErrorCode result = ASFileSysGetNameFromPathForDisplay(nativeFileSys, nativePath, displayText);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
+    return (result);
+}
+
+/* Get the URL Of the text as a simple string */
+char *altFSurlFromPath(ASPathName path) {
+    ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, path, nativeFileSys);
+    char *url = ASFileSysURLFromPath(nativeFileSys, nativePath);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
+    return (url);
+}
+
+/* Get the display name of the ASPathName as a simple string */
+char *altFSDisplayStringFromPath(ASPathName path) {
+    ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, path, nativeFileSys);
+    char *display = ASFileSysDisplayStringFromPath(nativeFileSys, nativePath);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
+
+    return (display);
+}
+
+/* Get the display name of the ASPathName as an ASText object */
+ASErrorCode altFSDisplayASTextFromPath(ASPathName path, ASText displayText) {
+    ASPathName nativePath = ASFileSysAcquireFileSysPath(&altFSRec, path, nativeFileSys);
+    ASErrorCode error = ASFileSysDisplayASTextFromPath(nativeFileSys, nativePath, displayText);
+    ASFileSysReleasePath(nativeFileSys, nativePath);
+
+    return (error);
+}
+
 
 // Set up the structure of function calls to the Alternate File System
 int defineAltFileSys() {
     if (!altFSRecDefined) {
         memset(&altFSRec, 0, sizeof(ASFileSysRec));
 
+        /* This is the complete ASFileSysRec, as of 11/3/2020
+        ** Entries set to NULL are entries that are not needed for
+        ** this specific file system.
+        **
+        ** These are re-ordered from the actual definition to show logical
+        ** groupings of interfaces
+        **
+        ** Note that new entries may be added at any time,
+        ** and should be evaluated for addition to this sample
+        ** as they occur
+        */
+
         altFSRec.size = sizeof(ASFileSysRec);
+
+        altFSRec.getFileSysName = altFSGetFileSysName;
+
         altFSRec.open = altFSOpen;
+        altFSRec.fsRec_open64 = altFSOpen;
         altFSRec.close = altFSClose;
+        altFSRec.reopen = altFSReopen;
         altFSRec.flush = altFSFlush;
+        altFSRec.hardFlush = altFSHardFlush;
         altFSRec.setpos = altFSSetPos;
         altFSRec.fsRec_setpos64 = altFSSetPos64;
         altFSRec.getpos = altFSGetPos;
+        altFSRec.fsRec_getpos64 = altFSGetPos64;
         altFSRec.seteof = altFSSetEOF;
+        altFSRec.fsRec_seteof64 = altFSSetEOF64;
         altFSRec.geteof = altFSGetEOF;
+        altFSRec.fsRec_geteof64 = altFSGetEOF64;
         altFSRec.read = altFSRead;
         altFSRec.write = altFSWrite;
+        altFSRec.setFileMode = NULL;
         altFSRec.remove = altFSRemove;
         altFSRec.rename = altFSRename;
+
         altFSRec.isSameFile = altFSIsSameFile;
         altFSRec.getName = altFSGetName;
+        altFSRec.getfileposlimit = NULL;
+
+        altFSRec.createPathName = altFSCreatePathName;
         altFSRec.getTempPathName = altFSGetTempPathName;
         altFSRec.copyPathName = altFSCopyPathName;
-        altFSRec.diPathFromPath = altFSDIPath;
-        altFSRec.pathFromDIPath = altFSToDIPath;
-        altFSRec.disposePathName = altFSDisposePath;
-        altFSRec.getFileSysName = altFSGetFileSysName;
-        altFSRec.getStorageFreeSpace = altFSFreeSpace;
-        altFSRec.flushVolume = altFSFlushVolume;
-        altFSRec.getFileFlags = altFSGetFlags;
-        altFSRec.readAsync = altFSReadSynch;
-        altFSRec.writeAsync = altFSWriteAsynch;
-        altFSRec.abortAsync = altFSAbortAsynch;
-        altFSRec.getStatus = altFSStatus;
-        altFSRec.createPathName = altFSCreatePathName;
-        altFSRec.acquireFileSysPath = altFSAcquirePath;
+        altFSRec.diPathFromPath = altFSDIPathFromPath;
+        altFSRec.pathFromDIPath = altFSPathFromDIPath;
+        altFSRec.diPathFromPathEx = altFSDIPathFromPathEx;
+        altFSRec.pathFromDIPathEx = altFSPathFromDIPathEx;
+        altFSRec.disposePathName = altFSDisposePathName;
+        altFSRec.acquireFileSysPath = altFSAcquireFileSysPath;
+        altFSRec.urlFromPath = altFSurlFromPath;
+        altFSRec.displayStringFromPath = altFSDisplayStringFromPath;
         altFSRec.acquirePlatformPath = altFSAcquirePlatformPath;
         altFSRec.releasePlatformPath = altFSReleasePlatformPath;
+        altFSRec.getNameAsASText = altFSGetNameASASText;
+        altFSRec.displayASTextFromPath = altFSDisplayASTextFromPath;
+        altFSRec.getNameForDisplay = altFSGetNameForDisplay;
+
+        altFSRec.getStorageFreeSpace = altFSGetStorageFreeSpace;
+        altFSRec.fsRec_getStorageFreeSpace64 = altFSGetStorageFreeSpace64;
+
+        altFSRec.flushVolume = NULL;
+        altFSRec.getFileFlags = NULL;
+
+        altFSRec.readAsync = NULL;
+        altFSRec.writeAsync = NULL;
+        altFSRec.abortAsync = NULL;
+        altFSRec.yield = NULL;
+        altFSRec.mreadRequest = NULL;
+        altFSRec.getStatus = NULL;
+        altFSRec.clearOutstandingMReads = NULL;
+        altFSRec.rangeArrived = NULL;
+
+        altFSRec.getItemProps = NULL;
+        altFSRec.getItemPropsAsCab = NULL;
+        altFSRec.canPerformOpOnItem = NULL;
+        altFSRec.performOpOnItem = NULL;
+        altFSRec.firstFolderItem = NULL;
+        altFSRec.nextFolderItem = NULL;
+        altFSRec.destroyFolderIterator = NULL;
+        altFSRec.getParent = NULL;
+        altFSRec.createFolder = NULL;
+        altFSRec.removeFolder = NULL;
+
+        altFSRec.setTypeAndCreator = NULL;
+        altFSRec.getTypeAndCreator = NULL;
+        altFSRec.getPlatformThing = NULL;
+
+        altFSRec.canSetEof = altFSCanSetEof;
+        altFSRec.isInUse = NULL;
 
         /* Save the orignal "native" file system */
         nativeFileSys = ASGetDefaultFileSys();
