@@ -367,7 +367,7 @@ ASErrorCode altFSGetPos64(MDFile File, ASFilePos64 *Pos) {
     if (!File)
         return 1;
 
-    *Pos = (ASInt32)altFileHandle->Position;
+    *Pos = altFileHandle->Position;
 
     return 0;
 }
@@ -379,7 +379,7 @@ ASErrorCode altFSGetPos(MDFile File, ASUns32 *Pos) {
     if (!File)
         return 1;
 
-    *Pos = (ASInt32)altFileHandle->Position;
+    *Pos = altFileHandle->Position;
 
     return 0;
 }
@@ -400,7 +400,7 @@ ASErrorCode altFSSetEOF64(MDFile File, ASFilePos64 Pos) {
         /* Truncate file to specified size */
         altFile->CurrentSize = Pos;
         altFile->BufferSize = Pos;
-        altFile->Buffer = (char *)realloc(altFile->Buffer, (size_t)Pos);
+        altFile->Buffer = (char *)ASrealloc(altFile->Buffer, (size_t)Pos);
         if (altFileHandle->Position > altFile->CurrentSize)
             altFileHandle->Position = altFile->CurrentSize;
     }
@@ -424,7 +424,7 @@ ASErrorCode altFSSetEOF(MDFile File, ASUns32 Pos) {
         /* Truncate file to specified size */
         altFile->CurrentSize = Pos;
         altFile->BufferSize = Pos;
-        altFile->Buffer = (char *)realloc(altFile->Buffer, Pos);
+        altFile->Buffer = (char *)ASrealloc(altFile->Buffer, Pos);
         if (altFileHandle->Position > altFile->CurrentSize)
             altFileHandle->Position = altFile->CurrentSize;
     }
@@ -441,7 +441,7 @@ ASErrorCode altFSGetEOF64(MDFile File, ASFilePos64 *Pos) {
         return 1;
 
     altFile = altFileHandle->File;
-    *Pos = (size_t)altFile->CurrentSize;
+    *Pos = altFile->CurrentSize;
     return 0;
 }
 
@@ -454,7 +454,7 @@ ASErrorCode altFSGetEOF(MDFile File, ASUns32 *Pos) {
         return 1;
 
     altFile = altFileHandle->File;
-    *Pos = (size_t)altFile->CurrentSize;
+    *Pos = altFile->CurrentSize;
     return 0;
 }
 
@@ -665,7 +665,7 @@ ASPathName altFSPathFromDIPath(const char *Path, ASPathName Relative) {
 
     ASPathName newPath = ASFileSysCreatePathName(&altFSRec, ASAtomFromString("DIPath"), Path, Relative);
 
-    return (ASPathName)(newPath);
+    return newPath;
 }
 
 /* Create an ASPathName from the ASText DI Path */
@@ -674,7 +674,7 @@ ASPathName altFSPathFromDIPathEx(ASConstText Path, ASPathName Relative) {
     ASPathName newPath =
         ASFileSysCreatePathName(&altFSRec, ASAtomFromString("DIPathWithASText"), Path, Relative);
 
-    return (newPath);
+    return newPath;
 }
 
 /* Release a path name that is no longer needed */
