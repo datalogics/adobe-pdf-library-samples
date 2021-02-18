@@ -5,11 +5,11 @@
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
 //
 // The SplitPDF opens a PDF input document and exports the pages to a set of separate PDF documents.
-// This sample is effectively the opposite of MergeDocuments. 
+// This sample is effectively the opposite of MergeDocuments.
 //
 //  Command-line:    <input-file>  <output-file-prefix>      (Both are optional)
 //
-// For more detail see the description of the SplitPDF sample program on our Developer’s site, 
+// For more detail see the description of the SplitPDF sample program on our Developer’s site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#splitpdf
 
 #include <string>
@@ -22,50 +22,47 @@
 #define DEF_INPUT "PDFToBeSplit.pdf"
 #define DEF_OUTPUT_PREFIX "_b_"
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
     APDFLib libInit;
     ASErrorCode errCode = 0;
-    if (libInit.isValid() == false)
-    {
+    if (libInit.isValid() == false) {
         errCode = libInit.getInitError();
         std::cout << "Initialization failed with code " << errCode << std::endl;
         return libInit.getInitError();
     }
-    
-    std::string csInputFileName ( argc > 1 ? argv[1] : DIR_LOC DEF_INPUT );
-    std::string csOutputFilePrefix ( argc > 2 ? argv[2] : DEF_OUTPUT_PREFIX );
+
+    std::string csInputFileName(argc > 1 ? argv[1] : DIR_LOC DEF_INPUT);
+    std::string csOutputFilePrefix(argc > 2 ? argv[2] : DEF_OUTPUT_PREFIX);
     std::cout << "Will split " << csInputFileName.c_str() << " into 1 PDF file per page, "
               << " with names beginning with " << csOutputFilePrefix.c_str() << std::endl;
 
-DURING
+    DURING
 
-// Step 1) Open input file
+        // Step 1) Open input file
 
-    APDFLDoc document ( csInputFileName.c_str(), true );
+        APDFLDoc document(csInputFileName.c_str(), true);
 
-// Step 2) Copy each page into a newly created empty document, and save it
+        // Step 2) Copy each page into a newly created empty document, and save it
 
-    ASUns32 numInputPages = PDDocGetNumPages ( document.getPDDoc() );
-    for ( ASUns32 page = 0; page < numInputPages; ++page )
-    {
-        // Create new empty document
-        APDFLDoc outDoc;
+        ASUns32 numInputPages = PDDocGetNumPages(document.getPDDoc());
+        for (ASUns32 page = 0; page < numInputPages; ++page) {
+            // Create new empty document
+            APDFLDoc outDoc;
 
-        // Insert the current page into the new document
-        PDDocInsertPages ( outDoc.getPDDoc(), PDBeforeFirstPage, document.getPDDoc(), page, 1, 
-                           NULL, NULL, NULL, NULL, NULL);
+            // Insert the current page into the new document
+            PDDocInsertPages(outDoc.getPDDoc(), PDBeforeFirstPage, document.getPDDoc(), page, 1,
+                             PDInsertDoNotResolveInvalidStructureParentReferences, NULL, NULL, NULL, NULL);
 
-        // Cook up the file name, and save
-        std::ostringstream ossFile;
-        ossFile << csOutputFilePrefix.c_str() << ( page + 1 ) << ".pdf";
-        outDoc.saveDoc ( ossFile.str().c_str() );
-    }
+            // Cook up the file name, and save
+            std::ostringstream ossFile;
+            ossFile << csOutputFilePrefix.c_str() << (page + 1) << ".pdf";
+            outDoc.saveDoc(ossFile.str().c_str());
+        }
 
-HANDLER
-    errCode = ERRORCODE;
-    libInit.displayError(errCode);
-END_HANDLER
+    HANDLER
+        errCode = ERRORCODE;
+        libInit.displayError(errCode);
+    END_HANDLER
 
     return errCode;
 }
