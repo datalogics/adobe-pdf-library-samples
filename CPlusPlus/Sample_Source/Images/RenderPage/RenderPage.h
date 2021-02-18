@@ -23,38 +23,36 @@
 #include "PDFLCalls.h"
 #include "DLExtrasCalls.h"
 
+class RenderPage {
+  private:
+    PDPage pdPage;
+    PDEImageAttrs attrs;
+    PDEColorSpace cs;
+    PDEFilterArray filterArray;
+    ASAtom csAtom;
+    ASInt32 nComps;
+    ASSize_t bufferSize;
+    ASInt32 bpc;
+    char *buffer;
+    char *colorSpace;
+    char *filterName;
 
-class RenderPage 
-{
-private:
-    PDPage              pdPage;
-    PDEImageAttrs       attrs;
-    PDEColorSpace       cs;
-    PDEFilterArray      filterArray;
-    ASAtom              csAtom;
-    ASInt32             nComps;
-    ASSize_t            bufferSize;
-    ASInt32             bpc;
-    char*               buffer; 
-    char*               colorSpace;
-    char*               filterName;
+    ASFixedRect imageSize; // This will carry the image size in PDF units.
 
-    ASFixedRect         imageSize;      // This will carry the image size in PDF units.
+    PDEFilterArray SetDCTFilterParams(CosDoc cosDoc);
+    ASAtom SetColorSpace(const char *colorSpace);
+    ASInt32 SetBPC(ASInt32 bitsPerComp);
 
-    PDEFilterArray      SetDCTFilterParams(CosDoc cosDoc);
-    ASAtom              SetColorSpace(const char *colorSpace);
-    ASInt32             SetBPC(ASInt32 bitsPerComp); 
+    static ASAtom sDeviceRGB_K;
+    static ASAtom sDeviceCMYK_K;
+    static ASAtom sDeviceGray_K;
 
-    static ASAtom       sDeviceRGB_K;
-    static ASAtom       sDeviceCMYK_K;
-    static ASAtom       sDeviceGray_K;
-
-public:
+  public:
     RenderPage(PDPage &pdPage, const char *colorSpace, const char *filterName, ASInt32 bpc, double resolution);
     ~RenderPage();
 
-    char*               GetImageBuffer();
-    ASSize_t            GetImageBufferSize();
-    PDEImage            GetPDEImage(PDDoc outDoc);
-    ASFixedRect         GetImageSize();
+    char *GetImageBuffer();
+    ASSize_t GetImageBufferSize();
+    PDEImage GetPDEImage(PDDoc outDoc);
+    ASFixedRect GetImageSize();
 };
