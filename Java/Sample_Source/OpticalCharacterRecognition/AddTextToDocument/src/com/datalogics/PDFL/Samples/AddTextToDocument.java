@@ -90,6 +90,12 @@ public class AddTextToDocument {
             
             ocrParams.setLanguages(langList);
 
+            // If the resolution for the images in your document are not
+            // 300 dpi, specify a default resolution here. Specifying a
+            // correct resolution gives better results for OCR, especially
+            // with automatic image preprocessing.
+            // ocrParams.setResolution(600);
+
             OCREngine ocrEngine = new OCREngine(ocrParams);
             // Open a document with a single page.
             Document doc = new Document(sInput);
