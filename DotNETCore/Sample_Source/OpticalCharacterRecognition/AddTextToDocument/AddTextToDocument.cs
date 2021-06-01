@@ -85,6 +85,12 @@ namespace AddTextToDocument
                 //langList.Add(languageTwo);
                 ocrParams.Languages = langList;
 
+                // If the resolution for the images in your document are not
+                // 300 dpi, specify a default resolution here. Specifying a
+                // correct resolution gives better results for OCR, especially
+                // with automatic image preprocessing.
+                // ocrParams.Resolution = 600;
+
                 using (OCREngine ocrEngine = new OCREngine(ocrParams))
                 {
                     //Create a document object using the input file

@@ -55,6 +55,11 @@ namespace AddTextToImage
                 //langList.Add(languageTwo);
                 ocrParams.Languages = langList;
 
+                // If your image resolution is not 300 dpi, specify it here. Specifying a
+                // correct resolution gives better results for OCR, especially with
+                // automatic image preprocessing.
+                // ocrParams.Resolution = 600;
+
                 using (OCREngine ocrEngine = new OCREngine(ocrParams))
                 {
                     //Create a document object
