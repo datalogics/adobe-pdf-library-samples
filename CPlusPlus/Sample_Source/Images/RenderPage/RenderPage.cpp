@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2007-2018, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2007-2021, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -14,7 +14,9 @@
 
 // Statics
 ASAtom RenderPage::sDeviceRGB_K;
+ASAtom RenderPage::sDeviceRGBA_K;
 ASAtom RenderPage::sDeviceCMYK_K;
+ASAtom RenderPage::sDeviceCMYKA_K;
 ASAtom RenderPage::sDeviceGray_K;
 
 // These are utility routines to convert Rects and Matrices between ASDouble and
@@ -74,7 +76,9 @@ RenderPage::RenderPage(PDPage &pdPage, const char *colorSpace, const char *filte
                        ASInt32 inBPC, double inResolution) {
     // Set up the static colorspace atoms
     sDeviceRGB_K = ASAtomFromString("DeviceRGB");
+    sDeviceRGBA_K = ASAtomFromString("DeviceRGBA");
     sDeviceCMYK_K = ASAtomFromString("DeviceCMYK");
+    sDeviceCMYKA_K = ASAtomFromString("DeviceCMYKA");
     sDeviceGray_K = ASAtomFromString("DeviceGray");
 
     // If you are using a decode filter such as FlateDecode, the filterArray values will be set here
@@ -306,10 +310,94 @@ PDEImage RenderPage::GetPDEImage(PDDoc outDoc) {
     imageMatrix.d = ASFixedToFloat(imageSize.top);
     imageMatrix.b = imageMatrix.c = imageMatrix.h = imageMatrix.v = 0;
 
-    // Create an image XObject from the bitmap buffer to embed in the output document
-    PDEImage image =
-        PDEImageCreateInCosDocEx(&attrs, sizeof(attrs), &imageMatrix, 0, cs, NULL, &filterArray, 0,
-                                 (unsigned char *)buffer, bufferSize, PDDocGetCosDoc(outDoc));
+    PDEImage image = NULL;
+
+    if (csAtom == sDeviceCMYKA_K || csAtom == sDeviceRGBA_K) {
+        // Create the Soft Mask
+        PDEImage imageMask = NULL;
+        PDEColorSpace imageColorSpace = NULL;
+        ASSize_t imageBufferSize = 0;
+
+        PDEColorSpace maskColorSpace = NULL;
+        ASSize_t maskBufferSize = 0;
+
+        maskColorSpace = PDEColorSpaceCreateFromName(sDeviceGray_K);
+
+        maskBufferSize = (bufferSize / nComps);
+
+        char *maskBuffer = new char[maskBufferSize];
+        memset(maskBuffer, 0, maskBufferSize);
+
+        // Create the RGB/CMYK image
+        if (csAtom == sDeviceCMYKA_K) {
+            imageColorSpace = PDEColorSpaceCreateFromName(sDeviceCMYK_K);
+
+            imageBufferSize = (bufferSize / nComps) * 4;
+        } else {
+            imageColorSpace = PDEColorSpaceCreateFromName(sDeviceRGB_K);
+
+            imageBufferSize = (bufferSize / nComps) * 3;
+        }
+
+        char *imageBuffer = new char[imageBufferSize];
+        memset(imageBuffer, 0, imageBufferSize);
+
+        int maskIndex = 0;
+
+        // Assign the CMYK/RGB channels of the CMYKA/RGBA data to the buffer
+        // Assign the Alpha channels of the CMYKA/RGBA data to the buffer
+        if (csAtom == sDeviceCMYKA_K) {
+            int cmykIndex = 0;
+            for (int bufferIndex = 0; bufferIndex < bufferSize && cmykIndex < imageBufferSize;
+                 bufferIndex += 5, cmykIndex += 4) {
+                imageBuffer[cmykIndex] = buffer[bufferIndex];
+                imageBuffer[cmykIndex + 1] = buffer[bufferIndex + 1];
+                imageBuffer[cmykIndex + 2] = buffer[bufferIndex + 2];
+                imageBuffer[cmykIndex + 3] = buffer[bufferIndex + 3];
+            }
+
+            for (int bufferIndex = 0; bufferIndex < bufferSize && maskIndex < maskBufferSize;
+                 bufferIndex += 5, maskIndex++) {
+                maskBuffer[maskIndex] = buffer[bufferIndex + 4];
+            }
+        } else {
+            int rgbIndex = 0;
+
+            for (int bufferIndex = 0; bufferIndex < bufferSize && rgbIndex < imageBufferSize;
+                 bufferIndex += 4, rgbIndex += 3) {
+                imageBuffer[rgbIndex] = buffer[bufferIndex];
+                imageBuffer[rgbIndex + 1] = buffer[bufferIndex + 1];
+                imageBuffer[rgbIndex + 2] = buffer[bufferIndex + 2];
+            }
+
+            for (int bufferIndex = 0; bufferIndex < bufferSize && maskIndex < maskBufferSize;
+                 bufferIndex += 4, maskIndex++) {
+                maskBuffer[maskIndex] = buffer[bufferIndex + 3];
+            }
+        }
+
+        image = PDEImageCreateInCosDocEx(&attrs, sizeof(attrs), &imageMatrix, 0, imageColorSpace,
+                                         NULL, &filterArray, 0, (unsigned char *)imageBuffer,
+                                         imageBufferSize, PDDocGetCosDoc(outDoc));
+
+        imageMask = PDEImageCreateInCosDocEx(&attrs, sizeof(attrs), &imageMatrix, 0, maskColorSpace,
+                                             NULL, &filterArray, 0, (unsigned char *)maskBuffer,
+                                             maskBufferSize, PDDocGetCosDoc(outDoc));
+
+        // Set the Soft Mask for the CMYK/RGB Image
+        PDEImageSetSMask(image, imageMask);
+
+        PDERelease((PDEObject)maskColorSpace);
+        PDERelease((PDEObject)imageColorSpace);
+
+        PDERelease((PDEObject)imageMask);
+        delete imageBuffer;
+        delete maskBuffer;
+    } else {
+        // Create an image XObject from the bitmap buffer to embed in the output document
+        image = PDEImageCreateInCosDocEx(&attrs, sizeof(attrs), &imageMatrix, 0, cs, NULL, &filterArray,
+                                         0, (unsigned char *)buffer, bufferSize, PDDocGetCosDoc(outDoc));
+    }
 
     return image;
 }
@@ -338,8 +426,10 @@ ASAtom RenderPage::SetColorSpace(const char *colorSpace) {
         nComps = 1;
     } else if (csAtom == sDeviceRGB_K) {
         nComps = 3;
-    } else if (csAtom == sDeviceCMYK_K) {
+    } else if (csAtom == sDeviceCMYK_K || csAtom == sDeviceRGBA_K) {
         nComps = 4;
+    } else if (csAtom == sDeviceCMYKA_K) {
+        nComps = 5;
     } else {
         // Not a valid colorspace
         ASRaise(genErrBadParm);
