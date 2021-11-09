@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2004-2017, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2004-2021, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, see:
 // http://dev.datalogics.com/adobe-pdf-library/adobe-pdf-library-c-language-interface/license-for-downloaded-pdf-samples/
@@ -55,7 +55,7 @@
 // This is a structure used to carry information between functions, so as to lower the requirements
 // for obtaining this info in each function. It carries information about the page currently being
 // rendered, as well as information used in rendering
-typedef struct pageInfo {
+typedef struct PageInfo {
     PDPage page;
     ASUns8 numberOfColorants;
     CosDoc cosDoc;
@@ -84,6 +84,25 @@ typedef struct pageInfo {
     PDETextState textTState;
     ASDoubleMatrix textMatrix;
     ASDoubleMatrix secondaryTextMatrix;
+
+    PageInfo()
+    {
+        page = NULL;
+        numberOfColorants = 0;
+        cosDoc = NULL;
+        rows = 0;
+        cols = 0;
+        rowWidth = 0;
+        memset(&drawWindow, 0, sizeof(ASRealRect));
+        memset(&drawMatrix, 0, sizeof(ASRealMatrix));
+        memset(&drawParams, 0, sizeof(PDPageDrawMParamsRec));
+        deviceNspace = NULL;
+        textFont = NULL;
+        memset(&textGState, 0, sizeof(PDEGraphicState));
+        memset(&textTState, 0, sizeof(PDETextState));
+        memset(&textMatrix, 0, sizeof(ASDoubleMatrix));
+        memset(&secondaryTextMatrix, 0, sizeof(ASDoubleMatrix));
+    };
 } PageInfo;
 
 void FillPageInfo(PageInfo *pageInfo, PDPage page);
@@ -131,7 +150,6 @@ int main(int argc, char *argv[]) {
         // Create a page Info Structure, and populate it with page
         // independent information
         PageInfo pageInfo;
-        memset((char *)&pageInfo, 0, sizeof(PageInfo));
 
         // We create here the structures needed to add text to output pages
         PDEFontAttrs FontAttrs;
