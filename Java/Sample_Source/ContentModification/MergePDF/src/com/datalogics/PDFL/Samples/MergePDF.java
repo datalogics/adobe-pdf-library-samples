@@ -13,7 +13,7 @@ import com.datalogics.PDFL.*;
  * takes the content from the second PDF input document and inserts it in the first
  * input document, and saves the result to the output PDF document.
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2021, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -45,7 +45,9 @@ public class MergePDF {
 
         try
         {
-            doc1.insertPages(Document.LAST_PAGE, doc2, 0, Document.ALL_PAGES, EnumSet.of(PageInsertFlags.ALL));
+            doc1.insertPages(Document.LAST_PAGE, doc2, 0, Document.ALL_PAGES, EnumSet.of(PageInsertFlags.BOOKMARKS, PageInsertFlags.THREADS,
+                                             // For best performance processing large documents, set the following flags.
+                                             PageInsertFlags.DO_NOT_MERGE_FONTS, PageInsertFlags.DO_NOT_RESOLVE_INVALID_STRUCTURE_PARENT_REFERENCES, PageInsertFlags.DO_NOT_REMOVE_PAGE_INHERITANCE));
         }
         catch(LibraryException ex)
         {
@@ -57,7 +59,8 @@ public class MergePDF {
             System.out.println(ex.getMessage());
         }
 
-        doc1.save(EnumSet.of(SaveFlags.FULL, SaveFlags.LINEARIZED), sOutput);
+        // For best performance processing large documents, set the following flags.
+        doc1.save(EnumSet.of(SaveFlags.FULL, SaveFlags.SAVE_LINEARIZED_NO_OPTIMIZE_FONTS, SaveFlags.COMPRESSED), sOutput);
 
         doc1.close();
         doc2.close();
