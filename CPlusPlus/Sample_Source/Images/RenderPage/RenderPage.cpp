@@ -301,8 +301,12 @@ PDEImage RenderPage::GetPDEImage(PDDoc outDoc) {
     // width of the image in pixels, and the document we will be
     // writing the PDE Image into. This is not known before now,
     // so we will do it just before creating the image.
-    if (filterArray.spec[0].name == ASAtomFromString("DCTDecode"))
+    if (filterArray.spec[0].name == ASAtomFromString("DCTDecode")) {
         SetDCTFilterParams(PDDocGetCosDoc(outDoc));
+    }
+    else if (filterArray.spec[0].name == ASAtomFromString("CCITTFaxDecode")) {
+        SetCCITTFaxFilterParams(PDDocGetCosDoc(outDoc));
+    }
 
     // Create the image matrix using the height/width attributes and apply the resolution.
     ASDoubleMatrix imageMatrix;
@@ -415,6 +419,19 @@ PDEFilterArray RenderPage::SetDCTFilterParams(CosDoc cosDoc) {
     filterArray.numFilters = 1;
     filterArray.spec[0].encodeParms = dictParams;
     filterArray.spec[0].decodeParms = CosNewNull();
+
+    return filterArray;
+}
+
+PDEFilterArray RenderPage::SetCCITTFaxFilterParams(CosDoc cosDoc) {
+    // Create a new Cos dictionary
+    CosObj dictParams = CosNewDict(cosDoc, false, 4);
+
+    CosDictPut(dictParams, ASAtomFromString("Columns"), CosNewInteger(cosDoc, false, attrs.width));
+    CosDictPut(dictParams, ASAtomFromString("Rows"), CosNewInteger(cosDoc, false, attrs.height));
+
+    filterArray.numFilters = 1;
+    filterArray.spec[0].encodeParms = filterArray.spec[0].decodeParms = dictParams;
 
     return filterArray;
 }
