@@ -1,12 +1,16 @@
 //
-// Copyright (c) 2017, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2017-2022, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
 //
-// This sample program demonstrates the use of the PDFOptimizer feature offered with the
-// Adobe PDF Library. This effectively compresses a PDF document to make it smaller and
-// thus faster and easier to download and open.
+// This sample program demonstrates the use of PDFOptimizer. This compresses a PDF document
+// to make it smaller so it's easier to process and download.
+//
+// NOTE: Some documents can't be compressed because they're already well-compressed or contain
+// content that can't be assumed is safe to be removed.  However you can fine tune the optimization
+// to suit your applications needs and drop such content to achieve better compression if you already
+// know it's unnecessary.
 //
 // Command-line:  <input-file>   <output-file>    (Both optional)
 //
@@ -37,29 +41,24 @@ int main(int argc, char **argv) {
               << csOutputFileName.c_str() << std::endl;
 
     DURING
-
         // Step 1) Open the input PDF
-
         APDFLDoc inAPDoc(csInputFileName.c_str(), true);
         PDDoc inDoc = inAPDoc.getPDDoc();
 
-        // Set defaults
+        // Set optimization defaults.
         PDFOptimizationParams optParams = PDDocOptimizeDefaultParams();
-
-        // Step 2: Optimize and save the document and release resources.
 
         ASPathName outPathName = APDFLDoc::makePath(csOutputFileName.c_str());
 
+        // Step 2: Optimize the document.
         PDDocumentOptimize(inDoc, outPathName, NULL, optParams, NULL, NULL, NULL, NULL);
 
-        // Step 3) Release all objects that are still in use.
-
+        // Step 3) Release resources.
         ASFileSysReleasePath(NULL, outPathName);
 
         PDDocOptimizeReleaseParams(optParams);
 
         PDDocClose(inDoc);
-
     HANDLER
         errCode = ERRORCODE;
         libInit.displayError(errCode);
