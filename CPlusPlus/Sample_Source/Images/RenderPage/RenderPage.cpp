@@ -395,8 +395,8 @@ PDEImage RenderPage::GetPDEImage(PDDoc outDoc) {
         PDERelease((PDEObject)imageColorSpace);
 
         PDERelease((PDEObject)imageMask);
-        delete imageBuffer;
-        delete maskBuffer;
+        delete[] imageBuffer;
+        delete[] maskBuffer;
     } else {
         // Create an image XObject from the bitmap buffer to embed in the output document
         image = PDEImageCreateInCosDocEx(&attrs, sizeof(attrs), &imageMatrix, 0, cs, NULL, &filterArray,
