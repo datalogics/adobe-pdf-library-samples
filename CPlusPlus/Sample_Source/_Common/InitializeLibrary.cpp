@@ -90,19 +90,22 @@ HINSTANCE APDFLib::loadDFL180PDFL(wchar_t *relativeDir) {
     SetDllDirectoryW(pathBuffer); // Add the path to the DLL directory.
 
     // Ensure we have read and write access to it.
-    int access = _waccess(pathBuffer, 06);
-    if (EACCES == access) {
+    if (_waccess(pathBuffer, 06) == -1) {
+      int errNumber = errno;
+
+      if (EACCES == errNumber) {
         std::wcout << L"DL180PDFL.dll : ACCESS DENIED" << std::endl;
         return 0;
-    }
-    if (ENOENT == access) {
+      }
+      if (ENOENT == errNumber) {
         std::wcout << L"DL180PDFL.dll : COULD NOT LOCATE FILE" << std::endl;
         return 0;
-    }
+      }
 
-    if (EINVAL == access) {
+      if (EINVAL == errNumber) {
         std::wcout << L"DL180PDFL.dll : INVALID PARAMETER" << std::endl;
         return 0;
+      }
     }
 
     return (LoadLibrary(L"DL180PDFL.dll"));

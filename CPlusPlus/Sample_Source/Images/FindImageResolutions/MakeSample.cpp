@@ -305,7 +305,8 @@ void CompleteImageTable(CosDoc doc) {
     base = &ImageTable[DPI300sMask];
     memmove(&current->m_attrs, &base->m_attrs, sizeof(PDEImageAttrs));
     PDEColorSpace rgbSpace = PDEColorSpaceCreateFromName(ASAtomFromString("DeviceRGB"));
-    ASDoubleMatrix unity = {base->m_attrs.width, 0, 0, base->m_attrs.height, 0, 0};
+    ASDoubleMatrix unity = {static_cast<ASDouble>(base->m_attrs.width),  0, 0,
+                            static_cast<ASDouble>(base->m_attrs.height), 0, 0};
     PDEImage smImage = PDEImageCreateFromCosObjEx(&base->m_cosImage, &unity, rgbSpace, NULL);
     PDEContent smContent = PDEContentCreate();
     PDEContentAddElem(smContent, kPDEAfterLast, (PDEElement)smImage);
