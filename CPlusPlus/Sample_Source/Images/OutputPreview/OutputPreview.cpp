@@ -110,7 +110,7 @@ void WriteCMYKImage(PageInfo *pageInfo, PDDoc outputDoc);
 void WriteDeviceNImage(PageInfo *pageInfo, PDDoc outputDoc);
 void WriteSeparationImage(PageInfo *pageInfo, PDDoc outputDoc, int separationNumber);
 void AddImageToDoc(PageInfo *pageInfo, PDDoc outputDoc, PDEColorSpace color, char *buffer,
-                   size_t bufferSize, ASInt16 channels, char *Name, char *Info = NULL);
+                   size_t bufferSize, ASInt16 channels, const char *Name, const char *Info = NULL);
 ASBool CollectInkInfo(PDPageInk ink, void *clientData);
 PDEColorSpace CreateProcessColorSpace(PageInfo *pageInfo, PDPageInk ink);
 PDEColorSpace CreateSpotColorSpace(PageInfo *pageInfo, PDPageInk ink);
@@ -502,7 +502,7 @@ void WriteSeparationImage(PageInfo *pageInfo, PDDoc outputDoc, int separationNum
 
 // Add a bitmap to the output document, as a single page, the size of the image, in that document.
 void AddImageToDoc(PageInfo *pageInfo, PDDoc outputDoc, PDEColorSpace space, char *buffer,
-                   size_t bufferSize, ASInt16 channels, char *Name, char *Info) {
+                   size_t bufferSize, ASInt16 channels, const char *Name, const char *Info) {
     // If the image row size is greater than the packed row size,
     // pack the image here.
     // Since it will always be smaller than the original image, we can pack it in place

@@ -96,7 +96,7 @@ typedef struct colormodel {
         name = ASAtomFromString(nameStr.c_str());
     }
 
-    colormodel() : name(NULL), neverColored(false), additive(false) {}
+    colormodel() : name(0u), neverColored(false), additive(false) {}
 } ColorModel;
 
 struct MyComp {

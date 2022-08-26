@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2010-2019, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2010-2017, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, see:
 // http://dev.datalogics.com/adobe-pdf-library/adobe-pdf-library-c-language-interface/license-for-downloaded-pdf-samples/
@@ -17,10 +17,9 @@
 // subsets the characters of that font that are used in the document into that document, and
 // renames this newly subset font to show that it was embedded and subset.
 //
-// For more detail see the description of the EmbedFonts sample program on our Developer’s site, 
+// For more detail see the description of the EmbedFonts sample program on our Developer’s site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#embedfonts
 
-#include "CosCalls.h"
 #include "PSFCalls.h"
 #include "PERCalls.h"
 #include "PEWCalls.h"
@@ -32,270 +31,170 @@
 #include "EmbedFonts.h"
 
 #define INPUT_DIR "../../../../Resources/Sample_Input/"
-#define INPUT_NAME  "EmbedFonts-in.pdf"
-#define OUTPUT_NAME  "EmbedFonts-out.pdf"
-    
-int main ( int argc, char **argv)
-{
-    APDFLib libInit;       // Initialize the library
-    if (libInit.isValid() == false)
-    {
+#define INPUT_NAME "EmbedFonts-in.pdf"
+#define OUTPUT_NAME "EmbedFonts-out.pdf"
+
+int main(int argc, char **argv) {
+    APDFLib libInit; // Initialize the library
+    if (libInit.isValid() == false) {
         ASErrorCode errCode = libInit.getInitError();
         APDFLib::displayError(errCode);
         return errCode;
     }
 
-    std::string csInputFileName(argc>1 ? argv[1] : INPUT_DIR INPUT_NAME);
-    std::string csOutputFileName(argc>2 ? argv[2] : OUTPUT_NAME);
+    std::string csInputFileName(argc > 1 ? argv[1] : INPUT_DIR INPUT_NAME);
+    std::string csOutputFileName(argc > 2 ? argv[2] : OUTPUT_NAME);
     std::cout << "Will embed fonts into " << csInputFileName.c_str() << " and rewrite file as "
               << csOutputFileName.c_str() << std::endl;
 
-    VectorOfFonts vFontsInUse;
+    ContainerOfFonts vFontsInUse;
 
-DURING
-    // Open the input document
-    APDFLDoc apdflDoc ( csInputFileName.c_str(), true );
-    PDDoc pdDoc = apdflDoc.getPDDoc();
+    DURING
 
-    // Enumerate the fonts used in the document, and save those currently unembedded
-    PDDocEnumFonts(pdDoc, 0, PDDocGetNumPages(pdDoc) - 1, GetFontInfoProc, &vFontsInUse, 0, 0);
+        // Open the input document
+        APDFLDoc apdflDoc(csInputFileName.c_str(), true);
+        PDDoc pdDoc = apdflDoc.getPDDoc();
 
-    // Embed a suitable system font for each font in the to-embed list
-    VectorOfFonts::iterator it, itE = vFontsInUse.end();
-    for ( it = vFontsInUse.begin(); it != itE; ++it )
-    {
-        EmbedSysFontForFontEntry ( *it, pdDoc);
-    
-        // Perform clean up while we're here
-        delete *it;
-    }
-   
-    // Save the PDF to a new file
-    apdflDoc.saveDoc ( csOutputFileName.c_str(), PDSaveFull | PDSaveCollectGarbage );
-HANDLER
-    APDFLib::displayError(ERRORCODE);
-    return ERRORCODE;
-END_HANDLER
- 
+        // Enumerate the fonts used in the document, and save those currently unembedded
+        PDDocEnumFonts(pdDoc, 0, PDDocGetNumPages(pdDoc) - 1, GetFontInfoProc, &vFontsInUse, 0, 0);
+
+        // Embed a suitable system font for each font in the to-embed list
+        ContainerOfFonts::iterator it, itE = vFontsInUse.end();
+        for (it = vFontsInUse.begin(); it != itE; ++it) {
+            EmbedSysFontForFontEntry(*it, pdDoc);
+
+            // Perform clean up while we're here
+            delete *it;
+        }
+
+        // Save the PDF to a new file
+        apdflDoc.saveDoc(csOutputFileName.c_str(), PDSaveFull | PDSaveCollectGarbage);
+
+    HANDLER
+        APDFLib::displayError(ERRORCODE);
+        return ERRORCODE;
+    END_HANDLER
+
     return 0;
 }
 
-//Collect any /Differences entries from the /Encoding dictionary if any are present.
-std::vector<const char*> CollectEncodingDifferencesIfPresent(CosObj fontObj)
-{
-    std::vector<const char*> differencesEncoding;
+void EmbedSysFontForFontEntry(struct _t_pdfUsedFont *fontEntry, PDDoc pdDoc) {
+    DURING
+        fontEntry->pdeFont = PDEFontCreateFromCosObj(&(fontEntry->fontCosObj));
 
-    if (CosObjGetType(fontObj) == CosDict && CosDictKnown(fontObj, ASAtomFromString("Encoding")))
-    {
-        CosObj encodingObj = CosDictGet(fontObj, ASAtomFromString("Encoding"));
+        // If there is a Cmap, acquire it
+        PDEFontAttrs attrs;
+        memset(&attrs, 0, sizeof(attrs));
+        PDEFontGetAttrs(fontEntry->pdeFont, &attrs, sizeof(attrs));
 
-        if (CosObjGetType(encodingObj) == CosDict && CosDictKnown(encodingObj, ASAtomFromString("Differences")))
-        {
-            CosObj differencesObj = CosDictGet(encodingObj, ASAtomFromString("Differences"));
+        PDSysEncoding sysEnc = NULL;
+        if (attrs.type == ASAtomFromString("Type0")) {
+            sysEnc = PDSysEncodingCreateFromCMapName(attrs.encoding);
+        } else {
+            sysEnc = PDSysEncodingCreateFromBaseName(attrs.encoding, NULL);
+        }
 
-            if (CosObjGetType(differencesObj) == CosArray)
-            {
-                //For a simple font there will only be 256 entries at most.
-                differencesEncoding.resize(256);
+        fontEntry->pdSysFont = PDFindSysFontForPDEFont(fontEntry->pdeFont, kPDSysFontMatchNameAndCharSet);
 
-                ASInt32 differencesLength = CosArrayLength(differencesObj);
+        // If the font is not found on the system, sysFont will be 0.
+        if (0 == fontEntry->pdSysFont) {
+            std::cout << "Could not find a pdSysFont " << std::endl;
+            return;
+        }
 
-                ASInt32 codeValue = 0;
+        PDEFontSetSysFont(fontEntry->pdeFont, fontEntry->pdSysFont);
 
-                //Walk through each array entry looking for an Integer that represents the Code Value, the Name that follows
-                //corresponds to that Code Value.  Subsequent Names correspond to the next Code Value, and then the next Code Value,
-                //etc. until an Integer is found which represents a new Code Value for the following Name, etc.
-                for (int index = 0; index < differencesLength; index++)
-                {
-                    CosObj differencesEntry = CosArrayGet(differencesObj, index);
-                    ASInt32 differencesType = CosObjGetType(differencesEntry);
+        // If there was a Cmap, set it as the sysencoding
+        if (sysEnc)
+            PDEFontSetSysEncoding(fontEntry->pdeFont, sysEnc);
 
-                    if (differencesType == CosInteger)
-                    {
-                        codeValue = CosIntegerValue(differencesEntry);
-                    }
-                    else if (differencesType == CosName)
-                    {
-                        differencesEncoding[codeValue] = ASAtomGetString(CosNameValue(differencesEntry));
-                        codeValue++;
-                    }
-                }
+        if (attrs.cantEmbed != 0) {
+            std::cout << "Font " << ASAtomGetString(attrs.name) << " cannot be embedded" << std::endl;
+        } else {
+            if (PDEFontIsMultiByte(fontEntry->pdeFont)) {
+                // Subset embed font
+                PDEFont pdeFont;
+                if (sysEnc)
+                    pdeFont = PDEFontCreateFromSysFontAndEncoding(
+                        fontEntry->pdSysFont, sysEnc, attrs.name, kPDEFontCreateEmbedded | kPDEFontCreateSubset);
+                else
+                    pdeFont = PDEFontCreateFromSysFont(fontEntry->pdSysFont,
+                                                       kPDEFontCreateEmbedded | kPDEFontCreateSubset);
+                PDEFontSubsetNow(fontEntry->pdeFont, PDDocGetCosDoc(pdDoc));
+
+                PDERelease((PDEObject)pdeFont);
+            } else {
+                // Fully embed font
+                PDEFont pdeFont = PDEFontCreateFromSysFont(fontEntry->pdSysFont, kPDEFontCreateEmbedded);
+                PDEFontEmbedNow(fontEntry->pdeFont, PDDocGetCosDoc(pdDoc));
+
+                PDERelease((PDEObject)pdeFont);
             }
         }
-    }
 
-    return differencesEncoding;
+        if (sysEnc)
+            PDERelease((PDEObject)sysEnc);
+
+    HANDLER
+        APDFLib::displayError(ERRORCODE);
+    END_HANDLER
 }
 
-void EmbedSysFontForFontEntry(struct _t_pdfUsedFont *fontEntry, PDDoc pdDoc)
-{
-DURING
-    fontEntry->pdeFont = PDEFontCreateFromCosObj(&(fontEntry->fontCosObj) );
-
-    // If there is a Cmap, acquire it
-    PDEFontAttrs attrs;
-    memset (&attrs, 0, sizeof (attrs));
-    PDEFontGetAttrs (fontEntry->pdeFont, &attrs, sizeof (attrs));
-
-    PDSysEncoding sysEnc = NULL;
-    if (attrs.type == ASAtomFromString("Type0"))
-    {
-        sysEnc = PDSysEncodingCreateFromCMapName(attrs.encoding);
-    }
-    else
-    {
-        //Collect the /Differences from the /BaseEncoding if present for a simple font.
-        std::vector<const char*> differencesEncoding = CollectEncodingDifferencesIfPresent(fontEntry->fontCosObj);
-
-        sysEnc = PDSysEncodingCreateFromBaseName(attrs.encoding, differencesEncoding.size() > 0 ? &(*differencesEncoding.begin()) : NULL);
-    }
-
-    fontEntry->pdSysFont = PDFindSysFontForPDEFont(fontEntry->pdeFont, kPDSysFontMatchNameAndCharSet);
-
-    // If the font is not found on the system, sysFont will be 0.
-    if ( 0 == fontEntry->pdSysFont )
-    {
-        std::cout << "Could not find a pdSysFont " << std::endl;
-        return;
-    }
-     
-    PDEFontSetSysFont(fontEntry->pdeFont, fontEntry->pdSysFont);
-
-    // If there was a Cmap, set it as the sysencoding
-    if (sysEnc)
-        PDEFontSetSysEncoding (fontEntry->pdeFont, sysEnc);
-
-    if (attrs.cantEmbed != 0)
-    {
-        std::cout << "Font " <<  ASAtomGetString(attrs.name) << " cannot be embedded" << std::endl;
-    }
-    else
-    {
-        if (PDEFontIsMultiByte(fontEntry->pdeFont))
-        {
-            // Subset embed font
-            PDEFont pdeFont;
-            if (sysEnc)
-                pdeFont = PDEFontCreateFromSysFontAndEncoding (fontEntry->pdSysFont, sysEnc, attrs.name, kPDEFontCreateEmbedded | kPDEFontCreateSubset);
-            else
-                pdeFont = PDEFontCreateFromSysFont(fontEntry->pdSysFont, kPDEFontCreateEmbedded | kPDEFontCreateSubset);
-            PDEFontSubsetNow(fontEntry->pdeFont, PDDocGetCosDoc(pdDoc));
-
-            PDERelease((PDEObject)pdeFont);
-        }
-        else
-        {
-            // Fully embed font
-            PDEFont pdeFont = PDEFontCreateFromSysFont(fontEntry->pdSysFont, kPDEFontCreateEmbedded);
-            PDEFontEmbedNow(fontEntry->pdeFont, PDDocGetCosDoc(pdDoc));
-
-            PDERelease((PDEObject)pdeFont);
-        }
-    }
-
-    if (sysEnc)
-        PDERelease ((PDEObject)sysEnc);
-    
-HANDLER
-    APDFLib::displayError(ERRORCODE);
-END_HANDLER
-}
-
-ACCB1 ASBool ACCB2 GetFontInfoProc(PDFont pdFont, PDFontFlags *pdFontFlagsPtr, void *clientData)
-{
+ACCB1 ASBool ACCB2 GetFontInfoProc(PDFont pdFont, PDFontFlags *pdFontFlagsPtr, void *clientData) {
     CosObj cosFont;
     PDEFontAttrs attrs;
     PDSysFont sysFont;
     char fontNameBuf[PSNAMESIZE];
-    const char  *fontSubtypeP;
-    char        *fontNameStart = 0;
-    ASBool      fontEmbedded = false,
-                fontSubset = false,
-                fontIsSysFont = false;
-DURING
-    pVectorOfFonts pcf = (pVectorOfFonts)clientData;
+    const char *fontSubtypeP;
+    char *fontNameStart = 0;
+    ASBool fontEmbedded = false, fontSubset = false, fontIsSysFont = false;
+    DURING
+        memset(&attrs, 0, sizeof(attrs));
 
-    CosObj fontObj = PDFontGetCosObj(pdFont);
+        PDFontGetName(pdFont, fontNameBuf, PSNAMESIZE);
+        attrs.name = ASAtomFromString(fontNameBuf);
+        attrs.type = PDFontGetSubtype(pdFont);
+        fontSubtypeP = ASAtomGetString(attrs.type);
 
-    //Check if we already have this font in our list and if we do, skip it.
-    for (std::vector<_t_pdfUsedFont*>::const_iterator usedFontIterator = pcf->begin(); usedFontIterator != pcf->end(); usedFontIterator++)
-    {
-        if (CosDictKnown(fontObj, ASAtomFromString("FontDescriptor")))
-        {
-            CosObj fontDescriptorObj = CosDictGet(fontObj, ASAtomFromString("FontDescriptor"));
-
-            if (CosObjGetType(fontDescriptorObj) == CosDict && CosObjEqual((*usedFontIterator)->fontDescriptorObj, fontDescriptorObj))
-            {
-                return true;
-            }
+        fontEmbedded = PDFontIsEmbedded(pdFont);
+        // Subset test: a font was subset if the 7th character is '+' (a plus-sign), according
+        // to Acrobat/Reader and industry norms.
+        if (fontEmbedded) {
+            if ((strlen(fontNameBuf)) > 7 && (fontNameBuf[6] == '+'))
+                fontSubset = true;
         }
-    }
+        if (fontSubset)
+            fontNameStart = fontNameBuf + 7; // skip the "ABCDEF+"
+        else
+            fontNameStart = fontNameBuf;
 
-    memset(&attrs, 0, sizeof(attrs));
+        // If the font is not found on the system, sysFont will be 0.
+        sysFont = PDFindSysFont(&attrs, sizeof(PDEFontAttrs), 0);
+        if (sysFont)
+            fontIsSysFont = true;
 
-    PDFontGetName(pdFont, fontNameBuf, PSNAMESIZE);
-    attrs.name = ASAtomFromString(fontNameBuf);
-    attrs.type = PDFontGetSubtype(pdFont);
-    fontSubtypeP = ASAtomGetString(attrs.type);
-
-    fontEmbedded = PDFontIsEmbedded(pdFont);
-    // Subset test: a font was subset if the 7th character is '+' (a plus-sign), according
-    // to Acrobat/Reader and industry norms.
-    if (fontEmbedded)
-    {
-        if ((strlen(fontNameBuf)) > 7 && (fontNameBuf[6] == '+') )
-            fontSubset = true;
-    }
-    if (fontSubset)
-        fontNameStart = fontNameBuf + 7;    // skip the "ABCDEF+"
-    else
-        fontNameStart = fontNameBuf;
-
-    // If the font is not found on the system, sysFont will be 0.
-    sysFont = PDFindSysFont(&attrs, sizeof(PDEFontAttrs), 0);
-    if (sysFont)
-        fontIsSysFont = true;
-
-    // Print font information
-    std::cout << "Font " << fontNameStart << ", Subtype " << fontSubtypeP << " (" <<
-                 ( fontIsSysFont ? "" : "Not a " ) << "System Font, ";
-    if ( fontEmbedded )
-    {
-        std::cout << "embedded" << ( fontSubset ? " subset" : "" );
-    }
-    else
-    {
-        std::cout << "unembedded";
-    }
-    std::cout << ")" << std::endl;
-
-    // Add font to the list of fonts to be subset. This example only subsets System
-    // fonts that are not embedded in this PDF document. The sample will not subset fonts
-    // that are fully embedded in the PDF file.
-    if (fontIsSysFont && !fontEmbedded)
-    {
-        cosFont = PDFontGetCosObj(pdFont);
-
-        _t_pdfUsedFont* usedFont = new _t_pdfUsedFont(cosFont);
-
-        if (CosDictKnown(cosFont, ASAtomFromString("FontDescriptor")))
-        {
-            CosObj cosFontDescriptor = CosDictGet(cosFont, ASAtomFromString("FontDescriptor"));
-
-            if (CosObjGetType(cosFontDescriptor) == CosDict)
-            {
-                usedFont->fontDescriptorObj = cosFontDescriptor;
-            }
+        // Print font information
+        std::cout << "Font " << fontNameStart << ", Subtype " << fontSubtypeP << " ("
+                  << (fontIsSysFont ? "" : "Not a ") << "System Font, ";
+        if (fontEmbedded) {
+            std::cout << "embedded" << (fontSubset ? " subset" : "");
+        } else {
+            std::cout << "unembedded";
         }
+        std::cout << ")" << std::endl;
 
-        pcf->push_back(usedFont);
-    }
-HANDLER
-    std::cout << "Exception raised in GetFontInfoProc(): "; 
-    APDFLib::displayError(ERRORCODE);
-END_HANDLER
+        // Add font to the list of fonts to be subset. This example only subsets System
+        // fonts that are not embedded in this PDF document. The sample will not subset fonts
+        // that are fully embedded in the PDF file.
+        if (fontIsSysFont && !fontEmbedded) {
+            pContainerOfFonts pcf = (pContainerOfFonts)clientData;
+            cosFont = PDFontGetCosObj(pdFont);
+            pcf->push_back(new _t_pdfUsedFont(cosFont));
+        }
+    HANDLER
+        std::cout << "Exception raised in GetFontInfoProc(): ";
+        APDFLib::displayError(ERRORCODE);
+    END_HANDLER
 
     return true;
 }
-
-

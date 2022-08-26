@@ -8,12 +8,12 @@
 
 #include <cstdio>
 
-#include "ScopeGuard.h"         // for ON_BLOCK_EXIT
+#include "ScopeGuard.h" // for ON_BLOCK_EXIT
 
 #include "PDFLCalls.h"
 #include "PDCalls.h"
 #include "ASCalls.h"
-#include "ASExtraCalls.h"       // for ASTextFromUnicode
+#include "ASExtraCalls.h" // for ASTextFromUnicode
 
 #include "SampleCustomExceptions.h"
 #include "SampleFileUtils.h"
@@ -25,8 +25,7 @@
 // functionality in support of opening and saving file(s) and similar activities.
 //
 
-PDDoc SelectPDFDocument()
-{
+PDDoc SelectPDFDocument() {
     ASErrorCode err = 0;
 
     //
@@ -35,40 +34,35 @@ PDDoc SelectPDFDocument()
 
     std::wstring pdfFilePath;
     SelectPDFPath(pdfFilePath);
-    if (pdfFilePath.empty())
-    {   // User canceled or similar
+    if (pdfFilePath.empty()) { // User canceled or similar
         return NULL;
     }
 
     PDDoc pDoc = NULL;
     DURING
-    {
-        //
-        // Attempt to convert pdfFilePath to the correct composition for use with PDFL...
-        //
+        {
+            //
+            // Attempt to convert pdfFilePath to the correct composition for use with PDFL...
+            //
 
-        ASFileSys fileSys = ASGetDefaultFileSys();
-        ASAtom pathSpecType = ASAtomFromString("DIPathWithASText");
-        ASText pathSpec = ASTextFromUnicode(((ASUTF16Val*)pdfFilePath.c_str()), kUTF16HostEndian);
-        ASPathName path = ASFileSysCreatePathName(NULL, pathSpecType, pathSpec, NULL);
-        ON_BLOCK_EXIT(ASFileSysReleasePath, fileSys, path);
+            ASFileSys fileSys = ASGetDefaultFileSys();
+            ASAtom pathSpecType = ASAtomFromString("DIPathWithASText");
+            ASText pathSpec = ASTextFromUnicode(((ASUTF16Val *)pdfFilePath.c_str()), kUTF16HostEndian);
+            ASPathName path = ASFileSysCreatePathName(NULL, pathSpecType, pathSpec, NULL);
+            ON_BLOCK_EXIT(ASFileSysReleasePath, fileSys, path);
 
-        //
-        // Attempt to open the (pdf) document...
-        //
+            //
+            // Attempt to open the (pdf) document...
+            //
 
-        pDoc = PDDocOpen(path, fileSys, NULL, TRUE);
-    }
+            pDoc = PDDocOpen(path, fileSys, NULL, TRUE);
+        }
     HANDLER
-    {
-        err = ERRORCODE;
-    }
+        { err = ERRORCODE; }
     END_HANDLER
 
-    if (err)
-    {   // Something bad happened while trying to open the document (maybe the selected file *is not actually a valid* PDF?)
-        if (pDoc)
-        {   // Open pdfs are *locked*. NEVER forget to close them!
+    if (err) { // Something bad happened while trying to open the document (maybe the selected file *is not actually a valid* PDF?)
+        if (pDoc) { // Open pdfs are *locked*. NEVER forget to close them!
             DURING
                 PDDocClose(pDoc);
             HANDLER
@@ -95,8 +89,7 @@ PDDoc SelectPDFDocument()
 //
 // See also: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646927%28v=vs.85%29.aspx
 //
-void SelectPDFPath(std::wstring &pdfFilePath /* OUT */)
-{
+void SelectPDFPath(std::wstring &pdfFilePath /* OUT */) {
     OPENFILENAMEW ofn;
     memset(&ofn, 0, sizeof(OPENFILENAMEW));
     ofn.lStructSize = sizeof(OPENFILENAMEW);
@@ -114,11 +107,9 @@ void SelectPDFPath(std::wstring &pdfFilePath /* OUT */)
 
     SetLastError(0);
     BOOL result = GetOpenFileNameW(&ofn);
-    if (!result)
-    {
+    if (!result) {
         DWORD err = CommDlgExtendedError();
-        if (err == 0)
-        {   // Dialog canceled
+        if (err == 0) { // Dialog canceled
             return;
         }
 
@@ -126,13 +117,12 @@ void SelectPDFPath(std::wstring &pdfFilePath /* OUT */)
         // Convert the error to an easy to review and nest, custom exception exception and throw *that*
         //
 
-        char msg[64] = { 0 };
+        char msg[64] = {0};
         sprintf_s(msg, sizeof(msg), "Error: %d\r\n", err);
         throw new GeneralException(msg);
     }
 
-    if (ofn.lpstrFile && ofn.lpstrFile[0] != 0 /* not empty */)
-    {   // Now (and ONLY now) that we have a known good result, use it...
+    if (ofn.lpstrFile && ofn.lpstrFile[0] != 0 /* not empty */) { // Now (and ONLY now) that we have a known good result, use it...
         pdfFilePath = ofn.lpstrFile;
     }
 }
@@ -144,8 +134,7 @@ void SelectPDFPath(std::wstring &pdfFilePath /* OUT */)
 //
 // See also: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646928%28v=vs.85%29.aspx
 //
-void GetSaveAsFilePath(std::wstring &pdfFilePath /* OUT */)
-{
+void GetSaveAsFilePath(std::wstring &pdfFilePath /* OUT */) {
     OPENFILENAMEW ofn;
     memset(&ofn, 0, sizeof(OPENFILENAMEW));
     ofn.lStructSize = sizeof(OPENFILENAMEW);
@@ -157,17 +146,16 @@ void GetSaveAsFilePath(std::wstring &pdfFilePath /* OUT */)
     ofn.nFilterIndex = 1;
     ofn.Flags = OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON | OFN_OVERWRITEPROMPT;
 
-    WCHAR pathBuf[0x1000] = { 0 };
+    WCHAR pathBuf[0x1000] = {0};
 
     ofn.lpstrFile = pathBuf;
     ofn.nMaxFile = sizeof(pathBuf) / sizeof(WCHAR);
 
     SetLastError(0);
     BOOL result = GetSaveFileNameW(&ofn);
-    if (!result)
-    {
+    if (!result) {
         DWORD err = CommDlgExtendedError();
-        {   // dialog canceled
+        { // dialog canceled
             return;
         }
 
@@ -175,21 +163,19 @@ void GetSaveAsFilePath(std::wstring &pdfFilePath /* OUT */)
         // Convert the error to an easy to review and nest, custom exception exception and throw *that*
         //
 
-        char msg[64] = { 0 };
+        char msg[64] = {0};
         sprintf_s(msg, sizeof(msg), "Error: %d\r\n", err);
         throw new GeneralException(msg);
     }
 
-    if (ofn.lpstrFile && ofn.lpstrFile[0] != 0 /* not empty */)
-    {
+    if (ofn.lpstrFile && ofn.lpstrFile[0] != 0 /* not empty */) {
         size_t len = wcslen(ofn.lpstrFile);
         LPWSTR newFilePath = new WCHAR[len + 1];
 
         memcpy(newFilePath, ofn.lpstrFile, len * sizeof(WCHAR));
         newFilePath[len] = 0;
 
-        if (ofn.nFileExtension > 0 && ofn.nFileExtension < len)
-        {   // Remove the extension (we'll add one later when we know what type of file to make)
+        if (ofn.nFileExtension > 0 && ofn.nFileExtension < len) { // Remove the extension (we'll add one later when we know what type of file to make)
             newFilePath[ofn.nFileExtension - 1 /* account for the '.' */] = 0;
         }
 
@@ -204,8 +190,7 @@ void GetSaveAsFilePath(std::wstring &pdfFilePath /* OUT */)
 //
 // See also: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646927%28v=vs.85%29.aspx
 //
-void SelectICCProfile(std::wstring &iccFilePath /* OUT */)
-{
+void SelectICCProfile(std::wstring &iccFilePath /* OUT */) {
     OPENFILENAMEW ofn;
     memset(&ofn, 0, sizeof(OPENFILENAMEW));
     ofn.lStructSize = sizeof(OPENFILENAMEW);
@@ -216,18 +201,16 @@ void SelectICCProfile(std::wstring &iccFilePath /* OUT */)
     ofn.nFilterIndex = 1;
     ofn.Flags = OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-    WCHAR pathBuf[0x1000] = { 0 };
+    WCHAR pathBuf[0x1000] = {0};
 
     ofn.lpstrFile = pathBuf;
     ofn.nMaxFile = sizeof(pathBuf) / sizeof(WCHAR);
 
     SetLastError(0);
     BOOL result = GetOpenFileNameW(&ofn);
-    if (!result)
-    {
+    if (!result) {
         DWORD err = CommDlgExtendedError();
-        if (err == 0)
-        {   // Dialog canceled
+        if (err == 0) { // Dialog canceled
             return;
         }
 
@@ -235,13 +218,12 @@ void SelectICCProfile(std::wstring &iccFilePath /* OUT */)
         // Convert the error to an easy to review and nest, custom exception exception and throw *that*
         //
 
-        char msg[64] = { 0 };
+        char msg[64] = {0};
         sprintf_s(msg, sizeof(msg), "Error: %d\r\n", err);
         throw new GeneralException(msg);
     }
 
-    if (ofn.lpstrFile && ofn.lpstrFile[0] != 0 /* not empty */)
-    {   // Now (and ONLY now) that we have a known good result, use it...
+    if (ofn.lpstrFile && ofn.lpstrFile[0] != 0 /* not empty */) { // Now (and ONLY now) that we have a known good result, use it...
         iccFilePath = ofn.lpstrFile;
     }
 }

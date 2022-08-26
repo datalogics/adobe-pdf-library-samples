@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
             redactParams->size = sizeof(PDRedactParamsRec);
             redactParams->pageNum = 0; // The page that the redaction will be applied to.
             redactParams->redactQuads = &quadVector.front(); // The vector or array holding the quads.
-            redactParams->numQuads = quadVector.size(); // The number of entries in the vector or array.
+            redactParams->numQuads = static_cast<ASInt32>(quadVector.size()); // The number of entries in the vector or array.
             redactParams->colorVal = &cvRec;
             redactParams->colorVal->space = PDDeviceRGB;            // Set device color space to RGB
             redactParams->colorVal->value[0] = FloatToASFixed(0.0); // The redaction box will be set to black.
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
             redactParams->textColor = &textCVRec;
             redactParams->textColor->space = PDDeviceGray; // Draw the overlay text in white
             redactParams->textColor->value[0] = fixedOne;
-            redactParams->textFontName = "CourierStd";     // Draw the overlay text using CourierStd font
+            redactParams->textFontName = const_cast<char*>("CourierStd");     // Draw the overlay text using CourierStd font
             redactParams->textSize = FloatToASFixed(10.0); // Draw the text size as 10 point (nominally, may
                                                            // be reduced is ScaleToFit is true).
             redactParams->repeat = true; // Draw the text in each quad, repeating to fill the quad

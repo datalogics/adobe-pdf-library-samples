@@ -33,8 +33,8 @@ namespace AnnotationCopyPaste
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput1 = "../../Resources/Sample_Input/sample_annotations.pdf";
-                String sInput2 = "../../Resources/Sample_Input/Layers.pdf";
+                String sInput1 = Library.ResourceDirectory + "Sample_Input/sample_annotations.pdf";
+                String sInput2 = Library.ResourceDirectory + "Sample_Input/Layers.pdf";
                 String sOutput = "../AnnotationCopyPaste-out.pdf";
 
                 if (args.Length > 0)

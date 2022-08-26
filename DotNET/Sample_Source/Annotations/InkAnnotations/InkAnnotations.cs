@@ -116,7 +116,7 @@ namespace InkAnnotations
 
                 // Update the page's content and save the file with clipping
                 page.UpdateContent();
-                doc.Save(SaveFlags.Full, "InkAnnotations-out1.pdf");
+                doc.Save(SaveFlags.Full, "../InkAnnotations-out1.pdf");
                 Console.WriteLine("Saved InkAnnotations-out1.pdf");
 
                 // Remove 0th scribble
@@ -129,7 +129,7 @@ namespace InkAnnotations
 
                 // Update the page's content and save the file with clipping
                 page.UpdateContent();
-                doc.Save(SaveFlags.Full, "InkAnnotations-out2.pdf");
+                doc.Save(SaveFlags.Full, "../InkAnnotations-out2.pdf");
 
                 // Kill the doc object
                 doc.Dispose();

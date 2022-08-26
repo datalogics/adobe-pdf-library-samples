@@ -72,8 +72,37 @@ namespace DotNETViewerComponent
 			public IntPtr hSetupTemplate;
 		}
 
+        [StructLayout(LayoutKind.Sequential, Pack = 8, CharSet = CharSet.Auto)]
+		private struct PRINTDLG_64
+		{
+			public Int32 lStructSize;
+			public IntPtr hwndOwner;
+			public IntPtr hDevMode;
+			public IntPtr hDevNames;
+			public IntPtr hDC;
+			public Int32 Flags;
+			public UInt16 nFromPage;
+			public UInt16 nToPage;
+			public UInt16 nMinPage;
+			public UInt16 nMaxPage;
+			public UInt16 nCopies;
+			public IntPtr hInstance;
+			public Int32 lCustData;
+			public PrintHookProc lpfnPrintHook;
+			public IntPtr lpfnSetupHook;
+			public string lpPrintTemplateName;
+			public string lpSetupTemplateName;
+			public IntPtr hPrintTemplate;
+			public IntPtr hSetupTemplate;
+		}
+
+#if X64
         [DllImport("comdlg32.dll", CharSet = CharSet.Auto)]
-		private static extern bool PrintDlg(ref PRINTDLG pdlg);
+        private static extern bool PrintDlg(ref PRINTDLG_64 pdlg);
+#else
+        [DllImport("comdlg32.dll", CharSet = CharSet.Auto)]
+        private static extern bool PrintDlg(ref PRINTDLG pdlg);
+#endif
 
 		[DllImport("comdlg32.dll", CharSet = CharSet.Auto)]
 		private static extern Int32 CommDlgExtendedError();
@@ -128,7 +157,12 @@ namespace DotNETViewerComponent
         private bool fShrinkToFit;
         private bool allowShrinkToFit = false;
 
+#if X64
+        private PRINTDLG_64 pdlg;
+#else
         private PRINTDLG pdlg;
+#endif
+
         private PrintDocument pDoc = null;
         private PrinterSettings pSettings = null;
         private CheckBox shrinkToFitCheckBox = new CheckBox();
@@ -198,7 +232,11 @@ namespace DotNETViewerComponent
 
         public override void  Reset()
         {
+#if X64
+ 	        pdlg = new PRINTDLG_64();
+#else
  	        pdlg = new PRINTDLG();
+#endif
             pdlg.lStructSize = Marshal.SizeOf(pdlg);
             pDoc = null;
             pSettings = new PrinterSettings();

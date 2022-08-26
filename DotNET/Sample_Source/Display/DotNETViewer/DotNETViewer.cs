@@ -27,7 +27,11 @@ namespace DotNETViewer
         static void Main(String[] args)
         {
             commandLineArgs = args;
-            using (Library lib = new Library())
+            List<string> paths = new List<string>();
+            paths.Add(Library.ResourceDirectory + "Fonts");
+            paths.Add(Library.ResourceDirectory + "CMaps");
+
+            using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap", Library.ResourceDirectory + "Unicode", Library.ResourceDirectory + "Color", LibraryFlags.NoFlags))
             {
                 // Set visual styles
                 // Set default thread exceptions

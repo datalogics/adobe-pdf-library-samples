@@ -121,7 +121,8 @@ namespace TextExtract
                         //
                         // For the purposes of this sample, we'll remove all hyphens.  In practice, you may need to check 
                         // words against a dictionary to determine if the hyphenated word is actually one word or two.
-                        string[] splitstrs = s.Split(new Char[] {'-', '\u00ad'});
+                        // Note we remove ascii hyphen, Unicode soft hyphen(\u00ad) and Unicode hyphen(0x2010).
+                        string[] splitstrs = s.Split(new char[] {'-', '\u00ad', '\x2010'});
                         textToExtract += splitstrs[0] + splitstrs[1];
                     }
                     else
@@ -176,8 +177,8 @@ namespace TextExtract
                     if (((wInfo.Attributes & WordAttributeFlags.HasSoftHyphen) == WordAttributeFlags.HasSoftHyphen))
                     {
                         // Remove the hyphen and combine the two parts of the word before adding to the extracted text.
-                        // Note that we pass in the Unicode character for soft hyphen.
-                        string[] splitstrs = s.Split(new Char[] { '\u00ad' });
+                        // Note that we pass in the Unicode character for soft hyphen(\u00ad) and hyphen(0x2010).
+                        string[] splitstrs = s.Split(new char[] { '\u00ad', '\x2010' });
                         textToExtract += splitstrs[0] + splitstrs[1];
                     }
                     else

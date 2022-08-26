@@ -91,6 +91,13 @@ namespace DotNETViewerComponent
             // create the config for the wordfinder
             WordFinderConfig config = new WordFinderConfig();
             config.IgnoreCharGaps = true;
+            config.NoAnnots = true;
+            config.NoEncodingGuess = true;
+            config.NoSkewedQuads = false;
+            config.NoStyleInfo = false;
+            config.PreserveSpaces = false;
+            config.PreserveRedundantChars = false;
+            config.DisableTaggedPDF = true;
 
             // create a wordfinder for the current page 
             using (WordFinder wordFinder = new WordFinder(dleController.Document, WordFinderVersion.Latest, config))
