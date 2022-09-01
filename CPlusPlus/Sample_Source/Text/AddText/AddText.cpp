@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
                      kPDETextRun, // kPDETextRun/kPDETextChar specify whether a string/character will be inserted.
                      0, // The index after which to add the character or text run.
                      (Uns8 *)csText.c_str(), // The string that will be added should be type-cast as a pointer to Uns8.
-                     csText.length(), // Length of the string.
+                     static_cast<ASInt32>(csText.length()), // Length of the string.
                      pdeFont,         // The PDEFont we created above
                      &gState, 0, // PDEGraphicState and its size. ontains graphical attributes of the text object.
                      &tState, 0, // Text state and its size. Contains textual attributes of the text object.

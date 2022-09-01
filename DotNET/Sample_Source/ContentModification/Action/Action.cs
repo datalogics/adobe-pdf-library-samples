@@ -43,7 +43,7 @@ namespace Actions
                     Console.WriteLine(newLink.ToString());
 
                     doc.BaseURI = "http://www.datalogics.com";
-                    URIAction uri = new URIAction("/products/pdfl/pdflibrary.asp", false);
+                    URIAction uri = new URIAction("/products/pdf/pdflibrary/", false);
                     Console.WriteLine("Action data: " + uri.ToString());
 
                     newLink.Action = uri;
@@ -69,7 +69,7 @@ namespace Actions
 
                     // Change the URI properties
                     doc.BaseURI = "http://www.datalogics.com";
-                    uri.URI = "/products/pdfl/pdflibrary.asp";
+                    uri.URI = "/products/pdf/pdflibrary/";
 
                     uri.IsMap = true;
 

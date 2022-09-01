@@ -47,7 +47,7 @@ namespace UnderlinesAndHighlights
                 // Highlight occurrences of the word "cloudy" on the page.
                 // Underline occurrences of the word "rain" on the page.
                 //
-                // For a more in-depth example of using the WordFinder, see the TextExtraction sample.
+                // For a more in-depth example of using the WordFinder, see the TextExtract sample.
                 //
                 List<Quad> cloudyQuads = new List<Quad>();
                 List<Quad> rainQuads = new List<Quad>();

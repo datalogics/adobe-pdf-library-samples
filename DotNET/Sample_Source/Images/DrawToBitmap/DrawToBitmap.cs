@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -11,7 +12,7 @@ using Datalogics.PDFL;
  *
  * This program sample converts a PDF file to a series of bitmap image files.
  * 
- * For more detail see the description of the DrawtoBitmap sample program on our Developer’s site, 
+ * For more detail see the description of the DrawtoBitmap sample program on our Developer's site,
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/converting-pdf-pages-to-images/#drawtobitmap
  * 
  * 
@@ -310,6 +311,7 @@ namespace DrawToBitmap
         {
             Byte[] rawBytes = null;
 
+            Rect roundedDestRect;
             using (DrawParams parms = new DrawParams())
             {
                 parms.ColorSpace = ColorSpace.DeviceRGB;
@@ -317,7 +319,19 @@ namespace DrawToBitmap
                 parms.Matrix = matrix;
                 parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces | DrawFlags.SwapComponents;
                 parms.SmoothFlags = SmoothFlags.Image | SmoothFlags.Text;
-                parms.DestRect = parms.UpdateRect.Transform(matrix);
+                var destRect = parms.UpdateRect.Transform(matrix);
+
+                // Round the corners of the destRect so that it's a whole number of pixels.
+                // This removes any ambiguity about how DrawContents treats a rectangle that has
+                // a width or height that contains a fraction. It ensures that our assumptions about
+                // the data in the returned Byte array are the same as those made by DrawContents.
+                roundedDestRect = new Rect(
+                    Math.Round(destRect.LLx),
+                    Math.Round(destRect.LLy),
+                    Math.Round(destRect.URx),
+                    Math.Round(destRect.URy));
+
+                parms.DestRect = roundedDestRect;
 
                 parms.CancelProc = new SampleCancelProc();
                 parms.ProgressProc = new SampleRenderProgressProc();
@@ -330,29 +344,22 @@ namespace DrawToBitmap
                 return;
             }
 
-            //
-            // Get an (unsafe) pointer to the beginning of the array
-            //
+            // Make a Bitmap. Get the dimensions from the same rectangle specified
+            // as the DestRect in the DrawParams.
+            int w = (int) roundedDestRect.Width;
+            int h = (int) roundedDestRect.Height;
+            int stride = (w * 3 /* components */ + 3 /* padding */) & ~3;
 
-            GCHandle arrayHandle = GCHandle.Alloc(rawBytes, GCHandleType.Pinned);
-            try
+            using (Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format24bppRgb))
             {
-                IntPtr p = Marshal.UnsafeAddrOfPinnedArrayElement(rawBytes, 0);
-                if (p != null)
-                {   // Make a Bitmap...
-                    int w = (int)width;
-                    int h = (int)height;
-                    int stride = (w * 3 /* components */ + 3 /* padding */) & ~3;
-
-                    using (Bitmap bitmap = new Bitmap(w, h, stride, PixelFormat.Format24bppRgb, p))
-                    {
-                        bitmap.Save("DrawToByteArray.png", ImageFormat.Png);
-                    }
-                }
-            }
-            finally
-            {   // Must unpin the byte array or it'll hang around forever
-                arrayHandle.Free();
+                Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                var bitmapData =
+                    bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                                    bitmap.PixelFormat);
+                Debug.Assert(stride == bitmapData.Stride);
+                Marshal.Copy(rawBytes, 0, bitmapData.Scan0, rawBytes.Length);
+                bitmap.UnlockBits(bitmapData);
+                bitmap.Save("DrawToByteArray.png", ImageFormat.Png);
             }
         }
 

@@ -305,7 +305,6 @@ ASMDFile altFSReopen(ASMDFile f, ASFileMode newMode, ASErrorCode *error) {
 
     if (!f)
     {
-        *error - 1;
         return f;
     }
 

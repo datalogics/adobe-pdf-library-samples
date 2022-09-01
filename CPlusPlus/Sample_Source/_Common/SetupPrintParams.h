@@ -25,4 +25,4 @@ void SetupPDFLPrintUserParams(PDFLPrintUserParams userParams);
 // Cleanup the PDFL user print parameters
 void DisposePDFLPrintUserParams(PDFLPrintUserParams userParams);
 
-#endif  /* _SETUPPRINTPARAMS_H_ */
+#endif /* _SETUPPRINTPARAMS_H_ */

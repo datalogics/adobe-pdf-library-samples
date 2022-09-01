@@ -898,6 +898,7 @@ namespace DotNETViewerComponent
             config.NoStyleInfo = true;
             config.PreserveSpaces = false;
             config.PreserveRedundantChars = false;
+            config.DisableTaggedPDF = true;
 
             using (WordFinder wordFinder = new WordFinder(document, WordFinderVersion.Latest, config))
             {
@@ -1947,6 +1948,7 @@ namespace DotNETViewerComponent
                 config.NoStyleInfo = true;
                 config.PreserveSpaces = false;
                 config.PreserveRedundantChars = false;
+                config.DisableTaggedPDF = true;
 
                 using (WordFinder wordFinder = new WordFinder(document, WordFinderVersion.Latest, config))
                 {

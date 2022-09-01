@@ -103,7 +103,7 @@ namespace DisplayPDF
 #endregion
 
         private Button OkButton;
-        private Button CancelButton;
+        private new Button CancelButton;
         private TextBox passwordtext;
         private Label PasswordLabel;
     }

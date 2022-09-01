@@ -3,7 +3,7 @@
 //
 // For complete copyright information, see:
 // http://dev.datalogics.com/adobe-pdf-library/adobe-pdf-library-c-language-interface/license-for-downloaded-pdf-samples/
-// 
+//
 // This program makes the Optional Content Groups within a PDF document visible within a viewing application,
 // like Adobe Reader or Adobe Acrobat. The program finds any of these Optional Content Groups within the input
 // PDF document and writes them to an output file.
@@ -27,12 +27,10 @@
 
 ACCB1 ASBool ACCB2 showFirstThree(PDOCG ocgGroup, void *ctrVoidPtr);
 
-int main (int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     APDFLib libInit;
 
-    if (libInit.isValid() == false)
-    {
+    if (libInit.isValid() == false) {
         ASErrorCode errCode = libInit.getInitError();
         std::cout << "Initialization failed with code " << errCode << std::endl;
         return errCode;
@@ -47,92 +45,80 @@ int main (int argc, char *argv[])
     // could also copy the pages to a temporary document, and process the page copies
     // on a second pass.
 
-DURING
-    APDFLDoc apdflDoc ( csInputFile.c_str(), true );
-    PDDoc pdDoc = apdflDoc.getPDDoc();
+    DURING
+        APDFLDoc apdflDoc(csInputFile.c_str(), true);
+        PDDoc pdDoc = apdflDoc.getPDDoc();
 
-    PDPage pdPage = PDDocAcquirePage(pdDoc, 0);
+        PDPage pdPage = PDDocAcquirePage(pdDoc, 0);
 
-    if (PDDocHasOC(pdDoc))
-    {
-        ASUns32    ocgCounter = 1;
+        if (PDDocHasOC(pdDoc)) {
+            ASUns32 ocgCounter = 1;
 
-        // Enumerate the optional content, making the first three elements
-        // visible and the rest invisible
-        PDPageEnumOCGs(pdPage, showFirstThree, (void *) &ocgCounter);
+            // Enumerate the optional content, making the first three elements
+            // visible and the rest invisible
+            PDPageEnumOCGs(pdPage, showFirstThree, (void *)&ocgCounter);
 
-        // "Flatten" the PDPage's optional content, so that the PDPage has its visible
-        // content layers visible, and the invisible content is not on the page
-        PDPageFlattenOC(pdPage, PDDocGetOCContext(pdDoc));
+            // "Flatten" the PDPage's optional content, so that the PDPage has its visible
+            // content layers visible, and the invisible content is not on the page
+            PDPageFlattenOC(pdPage, PDDocGetOCContext(pdDoc));
 
-        // The above call does not remove the actual Optional Content structure. That is completed below.
-        CosDoc cosDoc = PDDocGetCosDoc(pdDoc);
-        CosObj cosCatalog = CosDocGetRoot(cosDoc);
-        if (CosDictKnown(cosCatalog, ASAtomFromString("OCProperties")))
-        {
-            CosDictRemove(cosCatalog, ASAtomFromString("OCProperties"));
+            // The above call does not remove the actual Optional Content structure. That is completed below.
+            CosDoc cosDoc = PDDocGetCosDoc(pdDoc);
+            CosObj cosCatalog = CosDocGetRoot(cosDoc);
+            if (CosDictKnown(cosCatalog, ASAtomFromString("OCProperties"))) {
+                CosDictRemove(cosCatalog, ASAtomFromString("OCProperties"));
+            }
+        } else {
+            std::cout << "Document does not have any OC\n";
         }
-    }
-    else
-    {
-        std::cout << "Document does not have any OC\n";
-    }
 
-    PDPageRelease(pdPage);
-    apdflDoc.saveDoc ( csOutputFile.c_str() );
-HANDLER
-    APDFLib::displayError(ERRORCODE);
-    return ERRORCODE;
-END_HANDLER
+        PDPageRelease(pdPage);
+        apdflDoc.saveDoc(csOutputFile.c_str());
+    HANDLER
+        APDFLib::displayError(ERRORCODE);
+        return ERRORCODE;
+    END_HANDLER
 
     return 0;
-
 }
 
 // Switch the first three OCG groups passed in to the visible state,
 // and switch all subsequent OCG groups to the invisible state.
-ACCB1 ASBool ACCB2 showFirstThree(PDOCG ocgGroup, void *ctrVoidPtr)
-{
-    ASUns32* ctrPtr = (ASUns32*)ctrVoidPtr;
+ACCB1 ASBool ACCB2 showFirstThree(PDOCG ocgGroup, void *ctrVoidPtr) {
+    ASUns32 *ctrPtr = (ASUns32 *)ctrVoidPtr;
 
-    if (!ocgGroup || !ctrVoidPtr)
-    {
-        return TRUE;    // This result would rarely appear
+    if (!ocgGroup || !ctrVoidPtr) {
+        return TRUE; // This result would rarely appear
     }
 
-DURING
-    PDDoc curPDDoc = PDOCGGetPDDoc(ocgGroup);
-    PDOCConfig curOCconfig = PDDocGetOCConfig(curPDDoc);
-    PDOCContext curOCcontext = PDDocGetOCContext(curPDDoc);
+    DURING
+        PDDoc curPDDoc = PDOCGGetPDDoc(ocgGroup);
+        PDOCConfig curOCconfig = PDDocGetOCConfig(curPDDoc);
+        PDOCContext curOCcontext = PDDocGetOCContext(curPDDoc);
 
-    // Get the name of this layer, and convert to a Roman character set
-    ASText groupASName = PDOCGGetName(ocgGroup);
-    if (groupASName)
-    {
-        std::cout << "Found group \"" << ASTextGetScriptText(groupASName, kASRomanScript) << "\", ";
-        ASTextDestroy(groupASName);
-    }
+        // Get the name of this layer, and convert to a Roman character set
+        ASText groupASName = PDOCGGetName(ocgGroup);
+        if (groupASName) {
+            std::cout << "Found group \"" << ASTextGetScriptText(groupASName, kASRomanScript) << "\", ";
+            ASTextDestroy(groupASName);
+        }
 
-    if (*ctrPtr)
-    {
-        std::cout << "Setting group on...\n";
-        PDOCGSetInitialState(ocgGroup, curOCconfig, TRUE);
-        PDOCGSetCurrentState(ocgGroup, curOCcontext, TRUE);
-    }
-    else
-    {
-        std::cout << "Setting group off...\n";
-        PDOCGSetInitialState(ocgGroup, curOCconfig, FALSE);
-        PDOCGSetCurrentState(ocgGroup, curOCcontext, FALSE);
-    }
+        if (*ctrPtr) {
+            std::cout << "Setting group on...\n";
+            PDOCGSetInitialState(ocgGroup, curOCconfig, TRUE);
+            PDOCGSetCurrentState(ocgGroup, curOCcontext, TRUE);
+        } else {
+            std::cout << "Setting group off...\n";
+            PDOCGSetInitialState(ocgGroup, curOCconfig, FALSE);
+            PDOCGSetCurrentState(ocgGroup, curOCcontext, FALSE);
+        }
 
-HANDLER
-    std::cout << "Exception " << ERRORCODE << " in function \"showFirstThree\"\n";
-END_HANDLER
+    HANDLER
+        std::cout << "Exception " << ERRORCODE << " in function \"showFirstThree\"\n";
+    END_HANDLER
 
     // Verify the number of layers processed. This sample completes only the first three.
-    if (*ctrPtr > 0)
-    {
+    if (*ctrPtr > 0) {
         *ctrPtr = *ctrPtr + 1;
         if (*ctrPtr >= 4)
             *ctrPtr = 0;

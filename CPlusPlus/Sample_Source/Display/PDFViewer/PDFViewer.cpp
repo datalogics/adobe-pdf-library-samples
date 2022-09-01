@@ -1567,7 +1567,7 @@ void CPDFViewerView::PageToScreen() {
     */
     switch (PageRotate) {
     case 0:
-        ASDoubleMatrixTranslate(&RotateMatrix, &RotateMatrix, 0, -PageSize.top);
+        ASDoubleMatrixTranslate(&RotateMatrix, &RotateMatrix, -PageSize.left, -PageSize.top);
         break;
 
     case 90:

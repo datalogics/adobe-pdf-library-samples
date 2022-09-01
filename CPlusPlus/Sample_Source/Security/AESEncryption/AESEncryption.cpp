@@ -1,14 +1,11 @@
 //
-// Copyright(c) 2010 - 2017, Datalogics, Inc.All rights reserved.
+// Copyright(c) 2010 - 2022, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information see:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
 //
 // This sample demonstrates how to add an encryption key and a password to a
-// PDF document. The program uses the Advanced Encryption Standard (AES) algorithm,
-// introduced by the United States National Institute of Standards and Technology
-// in 2001. The program uses version 3 of AES, which uses a three or four byte
-// random initialization vector.
+// PDF document.
 //
 
 #include "InitializeLibrary.h"
@@ -39,9 +36,11 @@ int main(int argc, char *argv[]) {
         APDFLDoc apdflDoc(csInputFile.c_str(), true);
         PDDoc pdDoc = apdflDoc.getPDDoc();
 
-        // Prepare the security data structure
+        // Create the security data structure
         StdSecurityData securityData = NULL;
+
         PDDocSetNewCryptHandler(pdDoc, ASAtomFromString("Standard"));
+
         securityData = (StdSecurityData)PDDocNewSecurityData(pdDoc);
         securityData->size = sizeof(StdSecurityDataRec);
         securityData->newUserPW = true;
@@ -50,6 +49,8 @@ int main(int argc, char *argv[]) {
         securityData->perms = pdPrivPermFillandSign | pdPrivPermAccessible;
         securityData->keyLength = STDSEC_KEYLENGTH_AES256;
         securityData->encryptMethod = STDSEC_METHOD_AES_V3;
+        securityData->revision = STDSEC_CryptRevision6;
+        securityData->version = STDSEC_CryptVersionV5;
 
         // Apply security settings
         PDDocSetNewSecurityData(pdDoc, (void *)securityData);

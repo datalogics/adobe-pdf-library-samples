@@ -24,4 +24,4 @@ void GetSaveAsFilePath(std::wstring &pdfFilePath /* OUT */);
 /* Pops UI for selection of an ICC profile and fills in a path to it. */
 void SelectICCProfile(std::wstring &iccFilePath /* OUT */);
 
-#endif  /* _SAMPLE_FILE_UTILS_H_ */
+#endif /* _SAMPLE_FILE_UTILS_H_ */

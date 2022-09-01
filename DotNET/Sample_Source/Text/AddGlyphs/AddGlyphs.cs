@@ -42,7 +42,7 @@ namespace AddGlyphs
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
                 Console.WriteLine("Created page.");
 
-                Font font = new Font("Arial");
+                Font font = new Font("Times-Roman");
 
                 List<Char> glyphIDs = new List<Char>();
                 glyphIDs.Add('\u002b');

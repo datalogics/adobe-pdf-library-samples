@@ -14,6 +14,7 @@
 #include "APDFLDoc.h"
 #include <cstring>
 #include <cstdlib>
+#include <iostream>
 
 //==============================================================================================================================
 // Default Constructor - This creates a new PDDoc object. This object will be automatically freed in the APDFLDoc's destructor.
@@ -261,8 +262,7 @@ ASErrorCode APDFLDoc::insertPage(const ASFixed &width, const ASFixed &height, AS
 
     DURING
 
-        PDPage pdPage;
-
+        PDPage pdPage = NULL;
         // Set the page dimensions before creating the PDPage.
         ASFixedRect mediaBox;
         mediaBox.left = fixedZero;
@@ -273,7 +273,6 @@ ASErrorCode APDFLDoc::insertPage(const ASFixed &width, const ASFixed &height, AS
         pdPage = PDDocCreatePage(pdDoc, afterPageNum, mediaBox); // Create and insert a page into the PDDoc.
 
         PDPageRelease(pdPage); // Release the PDPage object.
-        pdPage = NULL;
 
     HANDLER
 
@@ -333,7 +332,7 @@ ASErrorCode APDFLDoc::printErrorHandlerMessage() {
 // ~APDFLDoc() - Releases resources if they haven't already been freed.
 //==============================================================================================================================
 
-APDFLDoc::~APDFLDoc() {
+APDFLDoc::~APDFLDoc() noexcept(false) {
     DURING
 
         if (pdDoc != NULL) // Close the PDDoc

@@ -17,77 +17,61 @@
 #include "DisplayPDEContent.h"
 #include "dpcOutput.h"
 
-static ASBool PdeClipenumProc(PDEElement Element, void * clientData)
-{
-    ASFixedMatrix    fm1;
-    ASFixedMatrix    m1, matrix;
-    PDEType          Type;
-    ASBool           HasGState;
+static ASBool PdeClipenumProc(PDEElement Element, void *clientData) {
+    PDEGraphicState GState;
+    ASBool HasGState = PDEElementHasGState(Element, &GState, sizeof(PDEGraphicState));
 
-    PDEGraphicState  GState;
-    HasGState = PDEElementHasGState(Element, &GState, sizeof(PDEGraphicState));
-
+    ASFixedMatrix fm1;
+    ASFixedMatrix matrix;
     PDEElementGetMatrix(Element, &fm1);
-    if ( ( fixedZero == fm1.a ) &&
-         ( fixedZero == fm1.b ) &&
-         ( fixedZero == fm1.c ) &&
-         ( fixedZero == fm1.d ) &&
-         ( fixedZero == fm1.h ) &&
-         ( fixedZero == fm1.v ) )
-    {
+    if ((fixedZero == fm1.a) && (fixedZero == fm1.b) && (fixedZero == fm1.c) &&
+        (fixedZero == fm1.d) && (fixedZero == fm1.h) && (fixedZero == fm1.v)) {
         // Invert zero matrix --> identity matrix
         ASFixedMatrixInvert(&matrix, &fm1);
-    }
-    else
-    {
+    } else {
         PDEElementGetMatrix(Element, &matrix);
     }
 
-    Type = (PDEType)PDEObjectGetType((PDEObject)Element);
-    switch (Type)
-    {
-        case kPDEText:
-            // Display a complete text object
-            DisplayText((PDEText)Element, &matrix, &GState, HasGState);
-            break;
+    PDEType Type = (PDEType)PDEObjectGetType((PDEObject)Element);
+    switch (Type) {
+    case kPDEText:
+        // Display a complete text object
+        DisplayText((PDEText)Element, &matrix, &GState, HasGState);
+        break;
 
-        case kPDEPath:
-            // Display a complete path
-            DisplayPath((PDEPath)Element, &matrix, &GState, HasGState);
-            break;
-        default:
-            Outputter::Inst()->GetOfs() << "******* Unknown Clip Element. Type " << Type << std::endl;
-            break;
+    case kPDEPath:
+        // Display a complete path
+        DisplayPath((PDEPath)Element, &matrix, &GState, HasGState);
+        break;
+    default:
+        Outputter::Inst()->GetOfs() << "******* Unknown Clip Element. Type " << Type << std::endl;
+        break;
     }
 
     return true;
 }
 
-static void DisplayClip(PDEClip Clip)
-{
+static void DisplayClip(PDEClip Clip) {
     ASInt32 nElems = PDEClipGetNumElems(Clip);
-    if (nElems)
-    {
+    if (nElems) {
         Outputter::Inst()->GetOfs() << "Begin Clip:\n";
         Outputter::Inst()->GetOfs() << "{\n";
         Outputter::Inst()->Indent();
-        PDEClipFlattenedEnumElems(Clip, (PDEClipEnumProc)PdeClipenumProc, NULL );
+        PDEClipFlattenedEnumElems(Clip, (PDEClipEnumProc)PdeClipenumProc, NULL);
         Outputter::Inst()->Outdent();
         Outputter::Inst()->GetOfs() << "} End of Clip\n";
     }
 }
 
-void DisplayShading(PDEShading Shading, ASFixedMatrix *Matrix, PDEGraphicState *GState, ASBool HasGState)
-{
-    Outputter::Inst()->GetOfs() << "Shading op: At " << DisplayMatrix ( Matrix ).c_str() << std::endl;
+void DisplayShading(PDEShading Shading, ASFixedMatrix *Matrix, PDEGraphicState *GState, ASBool HasGState) {
+    Outputter::Inst()->GetOfs() << "Shading op: At " << DisplayMatrix(Matrix).c_str() << std::endl;
     Outputter::Inst()->Indent();
 
-    CosObj   cobj;
+    CosObj cobj;
     PDEShadingGetCosObj(Shading, &cobj);
 
-    if (CosObjGetType(cobj) == CosDict)
-    {
-        Outputter::Inst()->GetOfs() << "Shading Dictionary: " << DisplayCosDict ( cobj ) << std::endl;
+    if (CosObjGetType(cobj) == CosDict) {
+        Outputter::Inst()->GetOfs() << "Shading Dictionary: " << DisplayCosDict(cobj) << std::endl;
     }
 
     if (HasGState)
@@ -99,4 +83,3 @@ void DisplayShading(PDEShading Shading, ASFixedMatrix *Matrix, PDEGraphicState *
 
     Outputter::Inst()->Indent();
 }
-
