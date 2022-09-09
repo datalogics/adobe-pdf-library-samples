@@ -52,7 +52,7 @@ namespace ImageEmbedICCProfile
                 PageImageParams pip = new PageImageParams();
                 pip.ImageColorSpace = csp;
 
-                Image outImage = pg.GetImage(pg.CropBox, pip);
+                Datalogics.PDFL.Image outImage = pg.GetImage(pg.CropBox, pip);
 
                 String filenamevar = "";
 

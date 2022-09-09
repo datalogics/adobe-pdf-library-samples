@@ -65,7 +65,7 @@ namespace AddTextToImage
                     //Create a document object
                     using (Document doc = new Document())
                     {
-                        using (Image newimage = new Image(sInput, doc))
+                        using (Datalogics.PDFL.Image newimage = new Datalogics.PDFL.Image(sInput, doc))
                         {
                             // Create a PDF page which is the size of the image.
                             // Matrix.A and Matrix.D fields, respectively.
@@ -82,7 +82,7 @@ namespace AddTextToImage
                         {
                             Content content = page.Content;
                             Element elem = content.GetElement(0);
-                            Image image = (Image) elem;
+                            Datalogics.PDFL.Image image = (Datalogics.PDFL.Image) elem;
                             //PlaceTextUnder creates a form with the image and the generated text
                             //under the image. The original image in the page is then replaced by
                             //by the form.

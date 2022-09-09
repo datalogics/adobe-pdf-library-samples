@@ -27,12 +27,12 @@ namespace AddTextToDocument
             for (int index = 0; index < content.NumElements; index++)
             {
                 Element e = content.GetElement(index);
-                if (e is Image)
+                if (e is Datalogics.PDFL.Image)
                 {
                     //PlaceTextUnder creates a form with the image and the generated text
                     //under the image. The original image in the page is then replaced by
                     //by the form.
-                    Form form = engine.PlaceTextUnder((Image) e, doc);
+                    Form form = engine.PlaceTextUnder((Datalogics.PDFL.Image) e, doc);
                     content.RemoveElement(index);
                     content.AddElement(form, index - 1);
                 }

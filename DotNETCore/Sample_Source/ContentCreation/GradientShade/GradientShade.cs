@@ -53,7 +53,7 @@ namespace GradientShade
                 Function[] functionList = {f};
                 AxialShadingPattern asp = new AxialShadingPattern(ColorSpace.DeviceRGB, coords, functionList);
 
-                Path path = new Path();
+                Datalogics.PDFL.Path path = new Datalogics.PDFL.Path();
                 GraphicState gs = path.GraphicState;
 
                 // Please note path does not create a default graphic state,

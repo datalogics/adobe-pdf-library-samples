@@ -71,9 +71,9 @@ namespace ImageExport
             while (i < content.NumElements)
             {
                 Element e = content.GetElement(i);
-                if (e is Image)
+                if (e is Datalogics.PDFL.Image)
                 {
-                    Image img = (Image) e;
+                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image) e;
                     // Weed out impossible on nonsensical combinations.
                     if (img.ColorSpace == ColorSpace.DeviceCMYK && exporttype != ImageType.JPEG)
                     {

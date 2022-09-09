@@ -43,7 +43,7 @@ namespace Clips
                 Console.WriteLine("Created new document and first page.");
 
                 // Create a new path, set up its graphic state and PaintOp
-                Path path = new Path();
+                Datalogics.PDFL.Path path = new Datalogics.PDFL.Path();
                 GraphicState gs = new GraphicState();
                 Color color = new Color(0.0, 0.0, 0.0);
                 gs.FillColor = color;
@@ -68,7 +68,7 @@ namespace Clips
                 Console.WriteLine("Added path to page in document.");
 
                 // Create a new path and add a rectangle to it
-                Path clipPath = new Path();
+                Datalogics.PDFL.Path clipPath = new Datalogics.PDFL.Path();
                 point = new Point(50, 300);
                 clipPath.AddRect(point, 300, 250);
                 Console.WriteLine("Created clipping path and added rectangle to it.");

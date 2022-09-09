@@ -33,12 +33,12 @@ namespace ImageResampling
             {
                 Element e = content.GetElement(i);
                 Console.WriteLine(i + " / " + content.NumElements + " = " + e.GetType());
-                if (e is Image)
+                if (e is Datalogics.PDFL.Image)
                 {
-                    Image img = (Image) e;
+                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image) e;
                     try
                     {
-                        Image newimg = img.ChangeResolution(400);
+                        Datalogics.PDFL.Image newimg = img.ChangeResolution(400);
                         Console.WriteLine("Replacing an image...");
                         content.AddElement(newimg, i);
                         content.RemoveElement(i);

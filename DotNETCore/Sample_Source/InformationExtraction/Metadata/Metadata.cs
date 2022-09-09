@@ -81,7 +81,7 @@ namespace Metadata
                 // Demonstrate getting data from an image
                 Content content = doc.GetPage(0).Content;
                 Container container = (Container) content.GetElement(0);
-                Image image = (Image) container.Content.GetElement(0);
+                Datalogics.PDFL.Image image = (Datalogics.PDFL.Image) container.Content.GetElement(0);
                 String metadata = image.Stream.Dict.XMPMetadata;
                 Console.WriteLine("Ducky CreatorTool: {0}\n", GetCreatorToolAttribute(metadata));
             }
