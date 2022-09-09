@@ -89,9 +89,6 @@ namespace DrawToBitmap
 
             parms.EnableBlackPointCompensation = blackPointCompensation;
 
-            parms.CancelProc = new SampleCancelProc();
-            parms.ProgressProc = new SampleRenderProgressProc();
-
             return parms;
         }
 
@@ -226,6 +223,8 @@ namespace DrawToBitmap
 
             using (Bitmap bitmap = new Bitmap(width, height))
             {
+                parms.CancelProc = new SampleCancelProc();
+                parms.ProgressProc = new SampleRenderProgressProc();
                 pg.DrawContents(bitmap, parms);
                 SaveBitmap(bitmap, "Bitmap");
             }
@@ -269,6 +268,8 @@ namespace DrawToBitmap
 
             using (Bitmap bitmap = new Bitmap(width, height))
             {
+                parms.CancelProc = new SampleCancelProc();
+                parms.ProgressProc = new SampleRenderProgressProc();
                 pg.DrawContents(bitmap, parms);
                 SaveBitmap(bitmap, "Graphics");
             }
