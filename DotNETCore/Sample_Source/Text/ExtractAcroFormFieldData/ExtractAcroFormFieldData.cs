@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Datalogics.PDFL;
 using ExtractTextNameSpace;
 /*
@@ -34,7 +32,7 @@ namespace ExtractAcroFormFieldData
         {
             Console.WriteLine("ExtractAcroFormFieldData Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
                 using (Document doc = new Document(sInput))
@@ -51,7 +49,7 @@ namespace ExtractAcroFormFieldData
                         // Save the output to a JSON file.
                         Console.WriteLine("Writing JSON to " + sOutput);
                         JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
-                        string json = JsonSerializer.Serialize<List<AcroFormTextFieldObject>>(result, options);
+                        string json = JsonSerializer.Serialize(result, options);
                         System.IO.File.WriteAllText(sOutput, json);
                     }
                 }
