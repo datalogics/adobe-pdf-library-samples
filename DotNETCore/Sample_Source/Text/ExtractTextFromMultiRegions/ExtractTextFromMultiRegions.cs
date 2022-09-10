@@ -44,7 +44,7 @@ namespace ExtractTextFromMultiRegions
         {
             Console.WriteLine("ExtractTextFromMultiRegions Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
                 using (System.IO.StreamWriter outfile = new System.IO.StreamWriter(sOutput))

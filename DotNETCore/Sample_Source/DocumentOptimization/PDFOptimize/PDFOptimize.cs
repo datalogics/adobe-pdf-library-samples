@@ -29,7 +29,7 @@ namespace PDFOptimize
         {
             Console.WriteLine("PDF Optimizer:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 

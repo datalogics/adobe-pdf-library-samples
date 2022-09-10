@@ -34,7 +34,7 @@ namespace ExtractTextFromAnnotations
         {
             Console.WriteLine("Annotations Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
@@ -54,7 +54,7 @@ namespace ExtractTextFromAnnotations
                         // Save the output to a JSON file.
                         Console.WriteLine("Writing JSON to " + sOutput);
                         JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
-                        string json = JsonSerializer.Serialize<List<AnnotationTextObject>>(result, options);
+                        string json = JsonSerializer.Serialize(result, options);
                         System.IO.File.WriteAllText(sOutput, json);
                     }
                 }

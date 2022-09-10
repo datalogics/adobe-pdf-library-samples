@@ -41,7 +41,7 @@ namespace AddElements
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
 
                 // Draw a five pointed star.
-                Path starpath = new Path();
+                Datalogics.PDFL.Path starpath = new Datalogics.PDFL.Path();
                 GraphicState gs = starpath.GraphicState;
 
                 starpath.PaintOp = PathPaintOpFlags.Stroke;
@@ -79,7 +79,7 @@ namespace AddElements
                 docpage.Content.AddElement(starpath); // Add the new element to the Content of the page.
 
                 // Draw a pentagon around the star
-                Path pentpath = new Path();
+                Datalogics.PDFL.Path pentpath = new Datalogics.PDFL.Path();
                 pentpath.PaintOp = PathPaintOpFlags.Stroke;
                 gs.Width = 2.0;
                 List<double> PentDashPattern = new List<double>();
@@ -99,7 +99,7 @@ namespace AddElements
                 docpage.Content.AddElement(pentpath); // Add the new element to the Content of the page.
 
                 // Add a single line star in the middle of the big star
-                Path newstar = new Path();
+                Datalogics.PDFL.Path newstar = new Datalogics.PDFL.Path();
                 newstar.PaintOp = PathPaintOpFlags.EoFill;
                 gs.Width = 1.0;
                 List<double> starDashPattern = new List<double>();
@@ -124,7 +124,7 @@ namespace AddElements
 /* Second page: a diamond with text inside */
                 docpage = doc.CreatePage(0, pageRect);
 
-                Path diamond = new Path();
+                Datalogics.PDFL.Path diamond = new Datalogics.PDFL.Path();
                 List<double> diamondDashPattern = new List<double>();
                 gs.DashPattern = diamondDashPattern;
                 gs.FillColor = new Color(1.0, 1.0, 0); // Yellow
@@ -193,7 +193,7 @@ namespace AddElements
 
                 /* Third page: a stroked path that uses all the segment types */
                 docpage = doc.CreatePage(1, pageRect);
-                Path path = new Path();
+                Datalogics.PDFL.Path path = new Datalogics.PDFL.Path();
 
                 path.PaintOp = PathPaintOpFlags.Stroke;
                 gs = path.GraphicState;

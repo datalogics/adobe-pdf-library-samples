@@ -28,7 +28,7 @@ namespace ExtractTextPreservingStyleAndPositionInfo
         {
             Console.WriteLine("ExtractTextPreservingStyleAndPositionInfo Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 

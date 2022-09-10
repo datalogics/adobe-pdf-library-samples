@@ -49,12 +49,12 @@ namespace ImageSoftMask
                 Rect pageRect = new Rect(0, 0, 612, 792);
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
 
-                Image baseImage;
-                baseImage = new Image(sInput);
+                Datalogics.PDFL.Image baseImage;
+                baseImage = new Datalogics.PDFL.Image(sInput);
                 Console.WriteLine("Created the image to mask.");
 
-                Image maskImage;
-                maskImage = new Image(sMask);
+                Datalogics.PDFL.Image maskImage;
+                maskImage = new Datalogics.PDFL.Image(sMask);
                 Console.WriteLine("Created the image to use as mask.");
 
                 baseImage.SoftMask = maskImage;

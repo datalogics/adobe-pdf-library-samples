@@ -57,9 +57,9 @@ namespace ListPaths
             {
                 Element e = content.GetElement(i);
 
-                if (e is Path)
+                if (e is Datalogics.PDFL.Path)
                 {
-                    ListPath(e as Path, pgno);
+                    ListPath(e as Datalogics.PDFL.Path, pgno);
                 }
                 else if (e is Container)
                 {
@@ -79,7 +79,7 @@ namespace ListPaths
             }
         }
 
-        private static void ListPath(Path path, int pgno)
+        private static void ListPath(Datalogics.PDFL.Path path, int pgno)
         {
             IList<Segment> segments = path.Segments;
             Console.WriteLine("Path on page {0}:", pgno);

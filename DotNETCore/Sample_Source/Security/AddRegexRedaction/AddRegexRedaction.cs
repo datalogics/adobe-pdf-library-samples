@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -23,7 +21,7 @@ namespace AddRegexRedaction
         {
             Console.WriteLine("AddRegexRedaction Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 

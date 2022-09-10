@@ -59,9 +59,9 @@ namespace WriteNChannelTiff
                 pip.HorizontalResolution = 300;
                 pip.VerticalResolution = 300;
 
-                Image images = pg.GetImage(pg.CropBox, pip, colorants);
+                Datalogics.PDFL.Image images = pg.GetImage(pg.CropBox, pip, colorants);
                 // Save images as multi-channeled tiff.
-                images.Save(sOutput, ImageType.TIFF);
+                images.Save(sOutput, Datalogics.PDFL.ImageType.TIFF);
             }
         }
     }

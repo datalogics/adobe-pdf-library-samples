@@ -29,7 +29,7 @@ namespace Action
 
                 Document doc = new Document();
 
-                using (new Path())
+                using (new Datalogics.PDFL.Path())
                 {
                     // Create a PDF page which is the same size of the image.
                     Rect pageRect = new Rect(0, 0, 100, 100);
