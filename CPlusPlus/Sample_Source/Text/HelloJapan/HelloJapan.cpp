@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 #else
     size_t stringLen = 11;
     // "Hello [Nihon]." in Shift-JIS
-    ASUns8 *HelloWorldStr = (ASUns8 *)"Hello “ú–{.";
+    ASUns8 *HelloWorldStr = (ASUns8 *)"Hello \x93\xfa\x96\x7b.";
 #endif
 
     // The first page of the PDF document uses a CIDType0 font (Character ID-based font)
