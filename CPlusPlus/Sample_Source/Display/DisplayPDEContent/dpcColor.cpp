@@ -165,9 +165,9 @@ std::string DisplayColor(PDEColorSpec *Color) {
         break;
 
     case CColorSpaces::Index_cs: {
-        ASUns32 IndexRange = PDEColorSpaceGetHiVal(Space);
+        ASInt32 IndexRange = PDEColorSpaceGetHiVal(Space);
         ASUns8 *ColorTable;
-        ASUns8 Comps = PDEColorSpaceGetBaseNumComps(Space);
+        ASInt32 Comps = PDEColorSpaceGetBaseNumComps(Space);
         ASUns8 *ColorBase;
         ASUns8 Index;
 
@@ -177,7 +177,7 @@ std::string DisplayColor(PDEColorSpec *Color) {
 
         ColorTable = (ASUns8 *)ASmalloc(Comps * (IndexRange + 1));
         PDEColorSpaceGetCTable(Space, ColorTable);
-        ColorBase = &ColorTable[Color->value.color[0] * Comps];
+        ColorBase = &ColorTable[static_cast<int>(ASFixedToFloat(Color->value.color[0])) * Comps];
         for (Index = 0; Index < Comps; Index++) {
             oss << ColorBase[Index];
             if (Index + 1 < Comps)
