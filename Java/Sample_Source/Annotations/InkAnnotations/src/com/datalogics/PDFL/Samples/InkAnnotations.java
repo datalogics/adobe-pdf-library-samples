@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Annotations.InkAnnotations;
 
 
 import java.util.EnumSet;

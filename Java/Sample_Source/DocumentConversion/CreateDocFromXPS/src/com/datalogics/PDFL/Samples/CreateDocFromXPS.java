@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.DocumentConversion.CreateDocFromXPS;
 
 import java.util.EnumSet;
 
@@ -45,7 +45,7 @@ public class CreateDocFromXPS {
             
             // Create the document.
             System.out.println("Creating a document from an XPS file...");
-	        Document doc = new Document("../../Resources/Sample_Input/brownfox.xps", xpsparams);
+	        Document doc = new Document(Library.getResourceDirectory() + "Sample_Input/brownfox.xps", xpsparams);
 	        
             // Save the document.
             System.out.println("Saving the document...");

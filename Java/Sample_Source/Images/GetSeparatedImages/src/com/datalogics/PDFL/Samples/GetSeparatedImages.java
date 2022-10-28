@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.GetSeparatedImages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GetSeparatedImages {
     public static void main(String[] args) {
         System.out.println("GetSeparatedImages Sample:");
 
-        String sInput = "../../Resources/Sample_Input/ducky.pdf";
+        String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
         String sOutput = "GetSeparatedImages-out.tiff";
         if (args.length > 0)
             sInput = args[0];

@@ -8,7 +8,7 @@
  * This filter is used with the file dialog to limit displayed files to those
  * with a .pdf extension (and directories).
  */
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.PDFObjectExplorer;
 
 import java.io.File;
 import java.io.FilenameFilter;

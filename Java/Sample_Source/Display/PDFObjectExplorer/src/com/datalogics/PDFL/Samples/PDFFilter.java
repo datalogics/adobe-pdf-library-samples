@@ -11,7 +11,7 @@
  * http://java.sun.com/docs/books/tutorial/uiswing/examples/components/FileChooserDemo2Project/src/components/ImageFilter.java
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.PDFObjectExplorer;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;

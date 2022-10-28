@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Annotations.LinkAnnotations;
 
 import java.util.EnumSet;
 
@@ -34,7 +34,7 @@ public class LinkAnnotations {
         Library lib = new Library();
 
         try {
-            String sInput = "../../Resources/Sample_Input/sample.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
             String sOutput = "LinkAnnotations-out.pdf";
             
             if (args.length > 0) 

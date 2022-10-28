@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.InformationExtraction.ListInfo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,7 +15,7 @@ import com.datalogics.PDFL.*;
  * 
  * The results are exported to a PDF output document.
  * 
- * For more detail see the description of the List sample programs, and ListInfo, on our Developer’s site, 
+ * For more detail see the description of the List sample programs, and ListInfo, on our Developerâ€™s site,
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/java-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
  *
@@ -34,7 +34,7 @@ public class ListInfo {
     	Library lib = new Library();
 
 		try {
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
+                String sInput = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
                 String sOutput = "ListInfo-out.pdf";
                 if (args.length > 0)
                     sInput = args[0];

@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithSeparationColorSpace;
 
 import com.datalogics.PDFL.*;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class MakeDocWithSeparationColorSpace {
     public static void main(String[] args) {
         Library lib = new Library();
         try {
-            String sOutput = "SeparationColorSpace-out";
+            String sOutput = "SeparationColorSpace-out.pdf";
             if ( args.length > 0 )
                 sOutput = args[0];
             System.out.println("MakeDocWithSeparationColorSpace: will write " + sOutput ); 

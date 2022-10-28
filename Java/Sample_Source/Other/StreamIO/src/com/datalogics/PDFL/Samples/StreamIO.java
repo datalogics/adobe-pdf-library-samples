@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Other.StreamIO;
 
 import java.util.EnumSet;
 import java.io.*;
@@ -40,7 +40,7 @@ public class StreamIO {
     	Library lib = new Library();
 
 		try {
-            String filename = "../../Resources/Sample_Input/sample.pdf";
+            String filename = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
             String sOutput1 = "StreamIO-out1.pdf";
             String sOutput2 = "StreamIO-out2.pdf";
             if (args.length > 0)

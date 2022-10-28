@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageDisplayByteArray;
 
 /*
  * 
@@ -26,6 +26,8 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import com.datalogics.PDFL.*;
+
 public class ImageDisplayByteArray
 {
     public static void main(String[] args) throws Exception
@@ -33,7 +35,7 @@ public class ImageDisplayByteArray
         // Do OS specific setup.
         platformSetup();
 
-        String inputFileName = "../../Resources/Sample_Input/ducky.pdf";
+        String inputFileName = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
         if (args.length > 0)
         {
             inputFileName = args[0];

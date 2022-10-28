@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Annotations.Annotations;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -32,7 +32,7 @@ public class Annotations {
         Library lib = new Library();
         try {
 
-        	String filename = "../../Resources/Sample_Input/sample_annotations.pdf";
+		String filename = Library.getResourceDirectory() + "Sample_Input/sample_annotations.pdf";
         	if (args.length > 0) {
         		filename = args[0];
                 }

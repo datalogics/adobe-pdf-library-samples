@@ -1,5 +1,6 @@
 using System;
 using Datalogics.PDFL;
+using SkiaSharp;
 
 /*
  * 
@@ -15,7 +16,7 @@ using Datalogics.PDFL;
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/exporting-images-from-pdf-files/#imagefromstream
  * 
  * 
- * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -27,20 +28,6 @@ namespace ImageFromStream
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                .OSX) &&!System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
-            {
-                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
-                return;
-            }
-
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                .Linux) && !System.IO.File.Exists("/usr/lib64/libgdiplus.so") &&
-                !System.IO.File.Exists("/usr/lib/libgdiplus.so"))
-            {
-                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
-                return;
-            }
 
             Console.WriteLine("ImageFromStream Sample:");
 
@@ -71,16 +58,17 @@ namespace ImageFromStream
                 using (System.IO.MemoryStream BitmapStream = new System.IO.MemoryStream())
                 {
                     // Load a bitmap image into the MemoryStream.
-                    using (System.Drawing.Bitmap BitmapImage = new System.Drawing.Bitmap(bitmapInput))
+                    using (SKBitmap BitmapImage = SKBitmap.FromImage(SKImage.FromEncodedData(bitmapInput)))
                     {
-                        BitmapImage.Save(BitmapStream, System.Drawing.Imaging.ImageFormat.Bmp);
+
+                        BitmapImage.Encode(SKEncodedImageFormat.Png, 100).SaveTo(BitmapStream);
 
                         // Reset the MemoryStream's seek position before handing it to the PDFL API, 
                         // which expects the seek position to be at the beginning of the stream.
                         BitmapStream.Seek(0, System.IO.SeekOrigin.Begin);
 
                         // Create the PDFL Image object.
-                        Image PDFLBitmapImage = new Image(BitmapStream);
+                        Datalogics.PDFL.Image PDFLBitmapImage = new Datalogics.PDFL.Image(BitmapStream);
 
                         // Save the image to a PNG file.
                         PDFLBitmapImage.Save("ImageFromStream-out.png", ImageType.PNG);
@@ -94,9 +82,9 @@ namespace ImageFromStream
                         using (System.IO.MemoryStream JpegStream = new System.IO.MemoryStream())
                         {
                             // Load a JPEG image into the MemoryStream.
-                            using (System.Drawing.Image JpegImage = System.Drawing.Image.FromFile(jpegInput))
+                            using (SKImage JpegImage = SKImage.FromEncodedData(jpegInput))
                             {
-                                JpegImage.Save(JpegStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                JpegImage.Encode(SKEncodedImageFormat.Jpeg, 100).SaveTo(JpegStream);
 
                                 // An alternative method for resetting the MemoryStream's seek position.
                                 JpegStream.Position = 0;
@@ -104,7 +92,7 @@ namespace ImageFromStream
                                 // Create the PDFL Image object and put it in the Document.
                                 // Since the image will be placed in a Document, use the constructor with the optional 
                                 // Document parameter to optimize data usage for this image within the Document.
-                                Image PDFLJpegImage = new Image(JpegStream, doc);
+                                Datalogics.PDFL.Image PDFLJpegImage = new Datalogics.PDFL.Image(JpegStream, doc);
                                 Page pg = doc.GetPage(0);
                                 pg.Content.AddElement(PDFLJpegImage);
                                 pg.UpdateContent();

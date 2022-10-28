@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.RemoteGoToActions;
 
 
 import java.util.EnumSet;
@@ -71,7 +71,7 @@ public class RemoteGoToActions {
             
             // FileSpecifications can take either a relative or an absolute path. It is best to specify
             // a relative path if the document is intended to work a cross multiple platforms (Windows, Linux, Mac)
-            FileSpecification fileSpec = new FileSpecification(doc, "../../Resources/Sample_Input/ducky.pdf");
+            FileSpecification fileSpec = new FileSpecification(doc, Library.getResourceDirectory() + "Sample_Input/ducky.pdf");
             System.out.println("Path to remote document : " + fileSpec.getPath());
 
             RemoteDestination remoteDest = new RemoteDestination(doc, 0, "XYZ", new Rect(0, 0, 4 * 72, 4 * 72), 1.5);

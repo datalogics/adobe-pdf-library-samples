@@ -9,7 +9,7 @@
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.DisplayPDF;
 
 import apple.dts.samplecode.osxadapter.OSXAdapter;
 import java.awt.FileDialog;

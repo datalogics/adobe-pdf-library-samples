@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Security.Redactions;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class Redactions {
             
             System.out.println("Initialized the library.");
             
-            String sInput = "../../Resources/Sample_Input/sample.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
             String sOutput =  "Redactions-out-applied.pdf";
 
             if (args.length > 0)
@@ -85,13 +85,26 @@ public class Redactions {
                 }
             Color red = new Color(1.0, 0.0, 0.0);
             Color green = new Color(0.0, 1.0, 0.0);
+            Color white = new Color (1.0);
 
             System.out.println("\nFound "+ cloudyQuads.size() +" \"cloudy\" instances.");
             Redaction not_cloudy = new Redaction(currentPage, cloudyQuads, red);
 
+            // Fill the "normal" appearance of text with 25% opaque red;
+            not_cloudy.setFillNormal(true);
+            not_cloudy.setFillColor(red, 0.25);
+
             System.out.println("\nFound "+ rainQuads.size() +" \"rain\" instances.");
             Redaction annot = new Redaction(currentPage, rainQuads);
             annot.setInternalColor(green);
+            annot.setTextColor(white);
+            annot.setFontFace("CourierStd");
+            annot.setFontSize(8.0);
+
+            // Fill the redaction with the word "rain", drawn in white 
+            annot.setOverlayText("rain");
+            annot.setRepeat(true);
+            annot.setScaleToFit(true);
 
             // Update the page's content and save the file with clipping
             currentPage.updateContent();

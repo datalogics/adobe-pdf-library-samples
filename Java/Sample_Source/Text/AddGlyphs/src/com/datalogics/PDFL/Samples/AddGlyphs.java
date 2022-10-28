@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Text.AddGlyphs;
 
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class AddGlyphs {
         System.out.println("AddGlyphs sample:");
 
         Library lib = new Library();
-        String fontName = "Arial";
+        String fontName = "Times-Roman";
         String sOutput = "AddGlyphs-out.pdf";
         
         try {

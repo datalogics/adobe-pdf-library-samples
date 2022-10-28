@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.PageLabels;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class PageLabels {
     	
         System.out.println("Page Labels Sample:");
 
-        String filename = "../../Resources/Sample_Input/pagelabels.pdf";
+        String filename = Library.getResourceDirectory() + "Sample_Input/pagelabels.pdf";
         if ( args.length > 0 )
             filename = args[0];
 

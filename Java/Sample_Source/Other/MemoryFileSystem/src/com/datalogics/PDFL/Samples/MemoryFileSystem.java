@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Other.MemoryFileSystem;
 
 
 import java.util.EnumSet;

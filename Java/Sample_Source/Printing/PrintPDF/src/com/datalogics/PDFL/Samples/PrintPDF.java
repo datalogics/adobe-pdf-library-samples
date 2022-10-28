@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Printing.PrintPDF;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,7 +31,7 @@ public class PrintPDF {
 
         Library lib = new Library();
 
-        String filename = "../../Resources/Sample_Input/sample.pdf";
+        String filename = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
         if (args.length > 0) 
             filename = args[0];
 

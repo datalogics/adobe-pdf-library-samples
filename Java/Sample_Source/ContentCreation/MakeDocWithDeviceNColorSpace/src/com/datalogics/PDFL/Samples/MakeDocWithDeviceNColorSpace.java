@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithDeviceNColorSpace;
 
 import com.datalogics.PDFL.*;
 import java.util.Arrays;

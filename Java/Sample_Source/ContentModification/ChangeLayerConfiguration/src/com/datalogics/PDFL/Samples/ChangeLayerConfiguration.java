@@ -16,7 +16,7 @@
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.ChangeLayerConfiguration;
 
 import com.datalogics.PDFL.*;
 import java.util.List;
@@ -81,7 +81,7 @@ public class ChangeLayerConfiguration {
 			 * For our demonstration, we will use method one.
 			 */
 
-                        String sInput = "../../Resources/Sample_Input/Layers.pdf";
+                        String sInput = Library.getResourceDirectory() + "Sample_Input/Layers.pdf";
                         String sOutput = "ChangeLayerConfiguration-out.pdf";
 
                         if (args.length > 0)

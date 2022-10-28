@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Annotations.PolygonAnnotations;
 
 import java.util.EnumSet;
 import java.util.ArrayList;

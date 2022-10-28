@@ -12,7 +12,7 @@
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithCalRGBColorSpace;
 
 import com.datalogics.PDFL.CalRGBColorSpace;
 import com.datalogics.PDFL.Color;

@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithIndexedColorSpace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import com.datalogics.PDFL.TextState;
  * to reduce the amount of system memory used for processing images when a limited
  * number of colors are needed.
  *
- * For more detail see the description of the ColorSpace sample programs on our Developer’s site, 
+ * For more detail see the description of the ColorSpace sample programs on our Developerâ€™s site,
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/java-sample-programs/getting-pdf-documents-using-color-spaces
  *
  * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.

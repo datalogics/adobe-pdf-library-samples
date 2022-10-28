@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.AddElements;
 
 /*
  * The AddElements sample program creates a new PDF file with two pages and several graphics

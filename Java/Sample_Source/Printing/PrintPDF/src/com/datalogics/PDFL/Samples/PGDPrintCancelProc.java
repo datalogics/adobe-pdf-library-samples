@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Printing.PrintPDF;
 /*
  * 
  * A sample which demonstrates the use of a cancel callback in a print job.

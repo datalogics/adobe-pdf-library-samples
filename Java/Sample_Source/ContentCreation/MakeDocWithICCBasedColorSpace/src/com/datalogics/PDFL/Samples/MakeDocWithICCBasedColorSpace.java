@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithICCBasedColorSpace;
 
 import com.datalogics.PDFL.*;
 import java.io.FileInputStream;
@@ -27,7 +27,7 @@ public class MakeDocWithICCBasedColorSpace {
         Library lib = new Library();
         try {
             
-            String sInput = "../../Resources/Sample_Input/sRGB_IEC61966-2-1_noBPC.icc";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/sRGB_IEC61966-2-1_noBPC.icc";
             String sOutput = "ICCBased-out.pdf";
             
             if ( args.length > 0 )

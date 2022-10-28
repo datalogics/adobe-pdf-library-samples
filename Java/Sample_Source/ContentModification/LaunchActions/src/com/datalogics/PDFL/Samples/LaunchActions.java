@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.LaunchActions;
 
 
 import java.util.EnumSet;
@@ -37,7 +37,7 @@ public class LaunchActions {
         try {
             Document doc = new Document();
 
-            String sInput = "../../Resources/Sample_Input/ducky.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
             String sOutput = "LaunchActions-out.pdf";
             
             if (args.length > 0)

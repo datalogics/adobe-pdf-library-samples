@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.PDFObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -36,7 +36,7 @@ public class PDFObjectSample {
         Library lib = new Library();
         try {
 
-        	String sInput = "../../Resources/Sample_Input/sample_annotations.pdf";
+		String sInput = Library.getResourceDirectory() + "Sample_Input/sample_links.pdf";
                 String sOutput = "PDFObject-out.pdf";
         	if (args.length > 0) 
         		sInput = args[0];

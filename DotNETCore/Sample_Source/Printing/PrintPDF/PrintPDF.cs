@@ -69,6 +69,12 @@ namespace PrintPDF
     {
         static void Main(string[] args)
         {
+            if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                Console.WriteLine("For .Net 6, System.Drawing.Printing.PrinterSettings is only supported on Windows.");
+                return;
+            }
+
             Console.WriteLine("PrintPDF Sample:");
 
             System.Drawing.Printing.PrinterSettings settings = new System.Drawing.Printing.PrinterSettings();

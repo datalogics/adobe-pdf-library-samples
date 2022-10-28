@@ -10,7 +10,7 @@
  * tree.  These icons are type specific and add polish to the code.
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.PDFObjectExplorer;
 
 import java.awt.Component;
 import javax.swing.tree.DefaultTreeCellRenderer;
