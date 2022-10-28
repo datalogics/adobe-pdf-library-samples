@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.ChangeLinkColors;
 
 import java.util.*;
 import java.lang.Math;
@@ -13,7 +13,7 @@ import com.datalogics.PDFL.*;
  * rectangles, and then finds the text that lines up within these rectangles and changes the
  * color of each character that is a part of the hyperlink.  
  * 
- * For more detail see the description of the ChangeLinkColors sample program on our Developer’s site, 
+ * For more detail see the description of the ChangeLinkColors sample program on our Developerâ€™s site,
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/java-sample-programs/working-with-annotations#changelinkcolors
  * 
  * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
@@ -33,7 +33,7 @@ public class ChangeLinkColors {
         Library lib = new Library();
 
         try {
-            String sInput = "../../Resources/Sample_Input/sample_links.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/sample_links.pdf";
             String sOutput = "ChangeLinkColors-out.pdf";
             if (args.length > 0)
                 sInput = args[0];

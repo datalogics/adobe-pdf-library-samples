@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithLabColorSpace;
 
 import com.datalogics.PDFL.Color;
 import com.datalogics.PDFL.ColorSpace;

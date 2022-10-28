@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using Datalogics.PDFL;
+using SkiaSharp;
 
 /*
  * 
@@ -22,7 +24,7 @@ using Datalogics.PDFL;
  * 3. An output image file with content drawn from an unrotated PDF page, but that contains only the top half of
  *    the original page.
  *
- * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -34,20 +36,6 @@ namespace RasterizePage
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                .OSX) && !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
-            {
-                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
-                return;
-            }
-
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                .Linux) && !System.IO.File.Exists("/usr/lib64/libgdiplus.so") &&
-                !System.IO.File.Exists("/usr/lib/libgdiplus.so"))
-            {
-                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
-                return;
-            }
 
             Console.WriteLine("RasterizePage Sample:");
 
@@ -97,7 +85,7 @@ namespace RasterizePage
                 // Again, we'll create an image of the entire page using the page's
                 // CropBox as the exportRect.  The default ColorSpace is DeviceRGB, 
                 // so the image will be DeviceRGB.
-                Image inputImage = pg.GetImage(pg.CropBox, pip);
+                Datalogics.PDFL.Image inputImage = pg.GetImage(pg.CropBox, pip);
                 inputImage.Save(sOutput + "-400pixel-width.jpg", ImageType.JPEG);
                 Console.WriteLine("Created " + sOutput + "-400pixel-width.jpg...");
 
@@ -116,19 +104,12 @@ namespace RasterizePage
                 //
                 //  Next, we'll make an image that contains just the
                 //  top half of the page at a resolution of 300 DPI.
-                //  
-                //  We'll also use GetBitmap intead of GetImage.  If the
-                //  final result is to be a System.Drawing.Bitmap, use
-                //  GetBitmap instead of GetImage.  GetBitmap is faster
-                //  because it draws directly into a new System.Drawing.Bitmap
-                //  object and does not incur the time and memory overhead
-                //  of creating a PDF Image object.
                 //
                 ////////////////////////////////////////////////////////
 
                 // ReSharper disable once UnusedVariable
-                System.Drawing.Bitmap halfImage = CreateBitmapWithTopHalfOfPage(pg, sOutput + "-tophalf.jpg",
-                    System.Drawing.Imaging.ImageFormat.Jpeg, ColorSpace.DeviceRGB);
+                SKBitmap halfImage = CreateBitmapWithTopHalfOfPage(pg, sOutput + "-tophalf.jpg",
+                    SKEncodedImageFormat.Jpeg, ColorSpace.DeviceRGBA);
             }
         }
 
@@ -148,7 +129,7 @@ namespace RasterizePage
             // Create the image and save it to a file.
             // We want to create an image of the entire page, so we'll use the
             // page's CropBox as the exportRect.
-            Image img = pg.GetImage(pg.CropBox, pip);
+            Datalogics.PDFL.Image img = pg.GetImage(pg.CropBox, pip);
             img.Save(filename, imgtype);
             Console.WriteLine("Created " + filename + "...");
         }
@@ -197,16 +178,16 @@ namespace RasterizePage
             // to store this information.
             PageImageParams pip = new PageImageParams();
             pip.PageDrawFlags = DrawFlags.UseAnnotFaces;
-            pip.PixelWidth = (int) (physWidth * resolution);
-            pip.PixelHeight = (int) (physHeight * resolution);
+            pip.PixelWidth = (int)(physWidth * resolution);
+            pip.PixelHeight = (int)(physHeight * resolution);
             pip.HorizontalResolution = resolution;
             pip.VerticalResolution = resolution;
 
             return pip;
         }
 
-        public static System.Drawing.Bitmap CreateBitmapWithTopHalfOfPage(Page pg, string filename,
-            System.Drawing.Imaging.ImageFormat imgtype, ColorSpace cspace)
+        public static SKBitmap CreateBitmapWithTopHalfOfPage(Page pg, string filename,
+            SKEncodedImageFormat imgtype, ColorSpace cspace)
         {
             // Create a PageImageParams with the default settings and set
             // the color space as appropriate.
@@ -255,8 +236,9 @@ namespace RasterizePage
             }
 
             // Create the bitmap.
-            System.Drawing.Bitmap img = pg.GetBitmap(topHalfOfRotatedPage, pip);
-            img.Save(filename, imgtype);
+            SKBitmap img = pg.GetBitmap(topHalfOfRotatedPage, pip);
+            using (FileStream f = File.OpenWrite(filename))
+                img.Encode(imgtype, 100).SaveTo(f);
             Console.WriteLine("Created " + filename + "...");
 
             return img;

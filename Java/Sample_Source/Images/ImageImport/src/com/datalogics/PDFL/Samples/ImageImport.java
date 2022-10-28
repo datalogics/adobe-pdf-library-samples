@@ -14,7 +14,7 @@
  *
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageImport;
 
 import java.util.EnumSet;
 
@@ -24,14 +24,15 @@ public class ImageImport {
 
     public static void main(String [] args) throws Exception {
         System.out.println("ImageImport sample:");
-        System.out.println("Reading image files from ../../Resources/Sample_Input/ and writing ImageExport-out*.pdf");
+        System.out.println("Reading image files from " + Library.getResourceDirectory() +
+                           " and writing ImageExport-out*.pdf");
 
         Library lib = new Library(); 
         try {
             Document doc = new Document();
             Image newimage;
             
-            String sInput = "../../Resources/Sample_Input/ducky.jpg";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.jpg";
             String sOutput = "ImageImport-out1.pdf";
 
             if (args.length > 0)

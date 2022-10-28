@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Annotations.AnnotationCopyPaste;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -43,8 +43,8 @@ public class AnnotationCopyPaste {
         Library lib = new Library();
         
         try {
-            String sInput1 = "../../Resources/Sample_Input/sample_annotations.pdf";
-            String sInput2 = "../../Resources/Sample_Input/Layers.pdf";
+            String sInput1 = Library.getResourceDirectory() + "Sample_Input/sample_annotations.pdf";
+            String sInput2 = Library.getResourceDirectory() + "Sample_Input/Layers.pdf";
             String sOutput = "AnnotationCopyPaste-out.pdf";
             
             if (args.length > 0) {

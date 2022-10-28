@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageExport;
 
 /*
  *  
@@ -35,7 +35,7 @@ public class ImageExport
         Library lib = new Library();
         try {
             System.out.println("Initialized the library.");
-            String filename = "../../Resources/Sample_Input/ducky.pdf";
+            String filename = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
             if (args.length > 0) {
                 filename = args[0];
             }

@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.Watermark;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,8 +34,8 @@ public class Watermark {
 		Library lib = new Library();
 
 		try {
-			String sInput = "../../Resources/Sample_Input/sample.pdf";
-                        String sWatermark = "../../Resources/Sample_Input/ducky.pdf";
+			String sInput = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
+                        String sWatermark = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
                         String sOutput = "Watermark-out.pdf";
 			if (args.length > 0) 
                             sInput = args[0];

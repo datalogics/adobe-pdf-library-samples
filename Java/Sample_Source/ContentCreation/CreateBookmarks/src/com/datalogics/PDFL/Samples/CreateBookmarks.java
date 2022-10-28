@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.CreateBookmarks;
 
 
 import java.util.EnumSet;
@@ -65,7 +65,7 @@ public class CreateBookmarks
 
                 Library lib = new Library();
 		System.out.println("Initialized the library.");
-                String sInput = "../../Resources/Sample_Input/sample.pdf";
+                String sInput = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
                 String sOutput = "CreateBookmarks-out.pdf";
                 if (args.length > 0)
                     sInput = args[0];

@@ -18,7 +18,7 @@
  * depending on which procedure is called.
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.PDFObjectExplorer;
 
 import javax.swing.table.DefaultTableModel;
 

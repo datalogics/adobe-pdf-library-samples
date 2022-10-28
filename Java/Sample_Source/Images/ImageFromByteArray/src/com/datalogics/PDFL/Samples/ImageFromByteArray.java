@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageFromByteArray;
 
 
 import java.util.EnumSet;
@@ -50,7 +50,7 @@ public static void main(String[] args) throws Throwable {
         Document emptyDoc = null;
         Page docpage = null;
 
-        String sInput = "../../Resources/Sample_Input/cottage.pdf";
+        String sInput = Library.getResourceDirectory() + "Sample_Input/cottage.pdf";
         String sOutput = "ImageFromByteArray-out.pdf";
         if (args.length > 0)
             sInput = args[0];

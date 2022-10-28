@@ -9,7 +9,7 @@ using Datalogics.PDFL;
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/manipulating-graphics-and-separating-colors-for-images#getseparatedimages
  * 
  * 
- * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -22,20 +22,6 @@ namespace GetSeparatedImages
     {
         static void Main(string[] args)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                .OSX) && !System.IO.File.Exists("/usr/local/lib/libgdiplus.dylib"))
-            {
-                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on macOS.");
-                return;
-            }
-
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
-                .Linux) && !System.IO.File.Exists("/usr/lib64/libgdiplus.so") &&
-                !System.IO.File.Exists("/usr/lib/libgdiplus.so"))
-            {
-                Console.WriteLine("Please install libgdiplus first to access the System.Drawing namespace on Linux.");
-                return;
-            }
 
             Console.WriteLine("GetSeparatedImages Sample:");
 

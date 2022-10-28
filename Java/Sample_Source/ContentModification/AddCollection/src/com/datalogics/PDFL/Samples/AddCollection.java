@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.AddCollection;
 
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class AddCollection {
 	public static void main(String[] args) throws Throwable {
         System.out.println("AddCollection sample:");
 
-        String sInput = "../../Resources/Sample_Input/Attachments.pdf";
+        String sInput = Library.getResourceDirectory() + "Sample_Input/Attachments.pdf";
         String sOutput = "AddCollections-out.pdf";
 
         Library lib = new Library();

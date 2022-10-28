@@ -16,7 +16,7 @@
  *
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.CreateLayer;
 
 import com.datalogics.PDFL.*;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class CreateLayer {
 
         try {
             System.out.println("Initialized the library.");
-            String sInput = "../../Resources/Sample_Input/ducky.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
             String sOutput = "CreateLayer-out.pdf";
             if (args.length > 0)
                 sInput = args[0];

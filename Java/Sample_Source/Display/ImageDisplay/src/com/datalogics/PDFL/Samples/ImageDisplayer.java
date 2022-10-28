@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.ImageDisplay;
 
 /*
 Copyright (c) 2017, Datalogics, Inc. All rights reserved. 

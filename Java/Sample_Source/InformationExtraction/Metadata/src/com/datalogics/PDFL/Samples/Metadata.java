@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.InformationExtraction.Metadata;
 
 import com.datalogics.PDFL.Container;
 import com.datalogics.PDFL.Content;
@@ -37,8 +37,8 @@ public class Metadata {
     public static void main(String[] args) throws Throwable {
         Library lib = new Library();
         try {
-            String sInput1 = "../../Resources/Sample_Input/sample.pdf";
-            String sInput2 = "../../Resources/Sample_Input/Ducky_with_metadata.pdf";
+            String sInput1 = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
+            String sInput2 = Library.getResourceDirectory() + "Sample_Input/Ducky_with_metadata.pdf";
             String sOutput1 = "Metadata-out.pdf";
             if ( args.length > 0 )
                 sInput1 = args[0];

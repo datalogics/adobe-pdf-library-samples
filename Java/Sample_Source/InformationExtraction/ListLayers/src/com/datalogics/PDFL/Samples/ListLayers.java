@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.InformationExtraction.ListLayers;
 /*
  * 
  * A sample which demonstrates the use of the DLE API to list the
@@ -6,7 +6,7 @@ package com.datalogics.PDFL.Samples;
  *
  * This sample searches for and lists the names of the color layers found in a PDF document. 
  *  
- * For more detail see the description of the List sample programs, and ListLayers, on our Developer’s site, 
+ * For more detail see the description of the List sample programs, and ListLayers, on our Developerâ€™s site,
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/java-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
  *
@@ -37,7 +37,7 @@ public class ListLayers {
     	Library lib = new Library();
 
 		try {
-	        String filename = "../../Resources/Sample_Input/Layers.pdf";
+	        String filename = Library.getResourceDirectory() + "Sample_Input/Layers.pdf";
 	        if (args.length > 0) {
 	            filename = args[0];
                 }

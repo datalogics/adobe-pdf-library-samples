@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Text.TextExtract;
 
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -33,10 +33,10 @@ public class TextExtract {
         try {
 
             // This is an untagged PDF.
-            // "../../Resources/Sample_Input/constitution.pdf"
+            // Library.getResourceDirectory() + "Sample_Input/constitution.pdf"
 
             // This is a tagged PDF.
-            String sInput = "../../Resources/Sample_Input/pdf_intro.pdf";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/pdf_intro.pdf";
             if ( args.length > 0 )
                 sInput = args[0];
             System.out.println("Reading " + sInput);
@@ -128,7 +128,8 @@ public class TextExtract {
                     //
                     // For the purposes of this sample, we'll remove all hyphens.  In practice, you may need to check 
                     // words against a dictionary to determine if the hyphenated word is actually one word or two.
-                    String[] splitstrs = s.split("-|\u00ad");
+                    // Note we remove ascii hyphen, Unicode soft hyphen(\u00ad) and Unicode hyphen(0x2010)
+                    String[] splitstrs = s.split("-|\u00ad|0x2010");
                     for(int j = 0; j < splitstrs.length; j++)
                         textToExtract = textToExtract + splitstrs[j];
                 }
@@ -191,8 +192,8 @@ public class TextExtract {
                 if (wInfo.getAttributes().contains(WordAttributeFlags.HAS_SOFT_HYPHEN))
                 {
                     // Remove the hyphen and combine the two parts of the word before adding to the extracted text.
-                    // Note that we pass in the Unicode character for soft hyphen.
-                    String[] splitstrs = s.split("\u00ad");
+                    // Note that we pass in the Unicode character for soft hyphen(\u00ad) and Unicode hyphen(0x2010).
+                    String[] splitstrs = s.split("\u00ad|0x2010");
                     for(int j = 0; j < splitstrs.length; j++)
                         textToExtract = textToExtract + splitstrs[j];
                 }

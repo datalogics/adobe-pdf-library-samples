@@ -285,9 +285,12 @@ namespace DisplayPDF
 					   (int)cropBox.LLy + height);
 
                 // Draw directly to the bitmap
-                pg.DrawContents(bitmap,
-                                matrix, // matrix
-                                updateRect);
+                DrawParams parms = new DrawParams();
+                parms.Matrix = matrix;
+                parms.UpdateRect = updateRect;
+                parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces;
+
+                pg.DrawContents(graphics, parms);
                 PageNumberTextBox.Text = (currentPDPagenum + 1).ToString();
                 PageLabel.Text = "of " + maxpages.ToString();
             }

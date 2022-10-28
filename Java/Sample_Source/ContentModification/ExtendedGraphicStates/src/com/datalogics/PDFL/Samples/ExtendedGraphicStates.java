@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.ExtendedGraphicStates;
 
 /*
  * 
@@ -192,8 +192,8 @@ public class ExtendedGraphicStates {
         Image rainbow = null;
 
         try {
-            String sInput1 = "../../Resources/Sample_Input/ducky_alpha.tif";
-            String sInput2 = "../../Resources/Sample_Input/rainbow.tif";
+            String sInput1 = Library.getResourceDirectory() + "Sample_Input/ducky_alpha.tif";
+            String sInput2 = Library.getResourceDirectory() + "Sample_Input/rainbow.tif";
             String sOutput = "ExtendedGraphicStates-out.pdf";
             System.out.println("Initialized the library.");
 

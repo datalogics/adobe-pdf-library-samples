@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.FlattenTransparency;
 
 import java.util.EnumSet;
 
@@ -36,8 +36,8 @@ public class FlattenTransparency {
 	public static void main(String[] args) throws Throwable {
         System.out.println("FlattenTransparency sample:");
 
-        String sInput1 = "../../Resources/Sample_Input/trans_1page.pdf";
-        String sInput2 = "../../Resources/Sample_Input/trans_multipage.pdf";
+        String sInput1 = Library.getResourceDirectory() + "Sample_Input/trans_1page.pdf";
+        String sInput2 = Library.getResourceDirectory() + "Sample_Input/trans_multipage.pdf";
         String sOutput1 = "FlattenTransparency-out1.pdf";
         String sOutput2 = "FlattenTransparency-out2.pdf";
         if (args.length > 0)

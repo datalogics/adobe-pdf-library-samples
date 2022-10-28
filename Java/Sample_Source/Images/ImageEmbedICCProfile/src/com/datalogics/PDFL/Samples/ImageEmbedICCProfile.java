@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageEmbedICCProfile;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -37,8 +37,8 @@ public class ImageEmbedICCProfile {
 		Library lib = new Library();
 
 		try {
-			String filename = "../../Resources/Sample_Input/ducky.pdf";
-			String profilename = "../../Resources/Sample_Input/Probev1_ICCv2.icc";
+			String filename = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
+			String profilename = Library.getResourceDirectory() + "Sample_Input/Probev1_ICCv2.icc";
 
 			if (args.length > 0) {
 				filename = args[0];

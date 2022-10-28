@@ -12,7 +12,7 @@
  *
  */
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.MakeDocWithCalGrayColorSpace;
 
 import com.datalogics.PDFL.CalGrayColorSpace;
 import com.datalogics.PDFL.Color;

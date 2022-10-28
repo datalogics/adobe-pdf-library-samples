@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.EPSSeparations;
 
 import java.util.*;
 
@@ -28,8 +28,8 @@ public class EPSSeparations {
         System.out.println("EPS Separations sample:");
 
         Library lib = new Library();
-        String sInput1 = "../../Resources/Sample_Input/spotcolors1.pdf";
-        String sInput2 = "../../Resources/Sample_Input/spotcolors.pdf";
+        String sInput1 = Library.getResourceDirectory() + "Sample_Input/spotcolors1.pdf";
+        String sInput2 = Library.getResourceDirectory() + "Sample_Input/spotcolors.pdf";
         if (args.length > 0)
             sInput1 = args[0];
         if (args.length > 1)

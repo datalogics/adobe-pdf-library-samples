@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.DisplayPDF;
 
 /*
  * This sample shows how to open a PDF document, search for text in the pages and highlight

@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageResampling;
 
 /*
  * 
@@ -82,7 +82,7 @@ public class ImageResampling
 
         try
         {
-                String sInput = "../../Resources/Sample_Input/ducky.pdf";
+                String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.pdf";
                 String sOutput = "ImageResampling-out.pdf";
 	        if (args.length > 0) {
 	            sInput = args[0];

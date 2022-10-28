@@ -1,5 +1,5 @@
 
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageSoftMask;
 
 /*
  * 
@@ -31,8 +31,8 @@ public class ImageSoftMask
 
 		try
 		{
-                        String sInput = "../../Resources/Sample_Input/ducky.jpg";
-                        String sMask = "../../Resources/Sample_Input/Mask.tif";
+                        String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.jpg";
+                        String sMask = Library.getResourceDirectory() + "Sample_Input/Mask.tif";
                         String sOutput = "ImageSoftMask-out.pdf";
                         
                         if (args.length > 0)

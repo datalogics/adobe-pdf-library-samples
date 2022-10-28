@@ -35,7 +35,7 @@
  *
  * - the PDFObjects are returned to the main class through getPDFObject()
  */
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Display.PDFObjectExplorer;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import com.datalogics.PDFL.PDFObject;

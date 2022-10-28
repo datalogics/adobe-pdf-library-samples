@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.WriteNChannelTiff;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class WriteNChannelTiff {
 
         try {
             System.out.println("Initialized the library.");
-            String docPath = "../../Resources/Sample_Input/sample.pdf";
+            String docPath = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
             String outPath = "WriteNChannelTiff-out.tif";
             System.out.println("PDF Document to Images Sample:");
 

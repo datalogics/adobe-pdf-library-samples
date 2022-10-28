@@ -9,7 +9,7 @@
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentCreation.AddElements;
 
 import com.datalogics.PDFL.CancelProc;
 

@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.Images.ImageFromBufferedImage;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -49,7 +49,7 @@ public class ImageFromBufferedImage {
             Document doc = null;
             Page docpage = null;
             
-            String sInput = "../../Resources/Sample_Input/ducky.jpg";
+            String sInput = Library.getResourceDirectory() + "Sample_Input/ducky.jpg";
             String sOutput = "ImageFromBufferedImage.pdf";
             
             if (args.length > 0)

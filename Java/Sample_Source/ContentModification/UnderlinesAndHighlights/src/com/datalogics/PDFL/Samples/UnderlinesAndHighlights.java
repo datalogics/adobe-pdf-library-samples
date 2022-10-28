@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.UnderlinesAndHighlights;
 
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class UnderlinesAndHighlights {
 		Library lib = new Library();
 
 		try {
-			String filename = "../../Resources/Sample_Input/sample.pdf";
+			String filename = Library.getResourceDirectory() + "Sample_Input/sample.pdf";
                         String sOutput = "HighlightAndUnderlineAnnotations-out.pdf";
                         if ( args.length > 0 )
                             filename = args[0];

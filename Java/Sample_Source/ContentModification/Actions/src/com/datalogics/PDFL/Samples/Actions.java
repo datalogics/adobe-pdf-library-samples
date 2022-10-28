@@ -1,4 +1,4 @@
-package com.datalogics.PDFL.Samples;
+package com.datalogics.pdfl.samples.ContentModification.Actions;
 
 
 import java.util.EnumSet;
@@ -48,7 +48,7 @@ public class Actions {
 	        System.out.println(newLink.toString());
 	        
 	        doc.setBaseURI("http://www.datalogics.com");
-	        URIAction uri = new URIAction("/products/pdfl/pdflibrary.asp", false);
+	        URIAction uri = new URIAction("/products/pdf/pdflibrary/", false);
 	        System.out.println("Action data: " + uri.toString());
 	        
 	        newLink.setAction(uri);
@@ -72,7 +72,7 @@ public class Actions {
 	        
 	        // Change the URI properties
 	        doc.setBaseURI("http://www.datalogics.com");
-	        uri.setURI("/products/pdfl/pdflibrary.asp");
+	        uri.setURI("/products/pdf/pdflibrary/");
 	        
 	        uri.setIsMap(true);
 	        
