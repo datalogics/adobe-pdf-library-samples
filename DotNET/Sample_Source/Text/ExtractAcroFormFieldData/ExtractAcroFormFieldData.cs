@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Datalogics.PDFL;
 using ExtractTextNameSpace;
 /*
@@ -13,6 +13,7 @@ using ExtractTextNameSpace;
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
+
 namespace ExtractAcroFormFieldData
 {
     class ExtractAcroFormFieldData
@@ -31,7 +32,7 @@ namespace ExtractAcroFormFieldData
         {
             Console.WriteLine("ExtractAcroFormFieldData Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
                 using (Document doc = new Document(sInput))
@@ -47,7 +48,8 @@ namespace ExtractAcroFormFieldData
 
                         // Save the output to a JSON file.
                         Console.WriteLine("Writing JSON to " + sOutput);
-                        string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                        JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+                        string json = JsonSerializer.Serialize(result, options);
                         System.IO.File.WriteAllText(sOutput, json);
                     }
                 }

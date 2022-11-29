@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Drawing;
-
 using Datalogics.PDFL;
 
 /*
  * This sample generates a multi-page TIFF file, selecting graphics drawn from
  * the first page of the PDF document provided.
  * 
- * For more detail see the description of the WriteNChannelTiff sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/manipulating-graphics-and-separating-colors-for-images#writenchanneltiff
+ * For more detail see the description of the WriteNChannelTiff sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/manipulating-graphics-and-separating-colors-for-images#writenchanneltiff
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -28,17 +24,18 @@ namespace WriteNChannelTiff
         {
             Console.WriteLine("WriteNChannelTiff Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput = "../WriteNChannelTiff-out.tif";
+                String sOutput = "WriteNChannelTiff-out.tif";
 
-                if(args.Length > 0)
+                if (args.Length > 0)
                     sInput = args[0];
 
-                if(args.Length > 1)
+                if (args.Length > 1)
                     sOutput = args[1];
 
                 Console.WriteLine("Input file: " + sInput + " writing to " + sOutput);
@@ -47,7 +44,7 @@ namespace WriteNChannelTiff
                 Page pg = doc.GetPage(0);
 
                 // Get all inks that are present on the page
-                List<Ink> inks = (List<Ink>)pg.ListInks();
+                IList<Ink> inks = pg.ListInks();
                 List<SeparationColorSpace> colorants = new List<SeparationColorSpace>();
 
                 // Here we decide, which inks should be drawn
@@ -64,9 +61,8 @@ namespace WriteNChannelTiff
 
                 Datalogics.PDFL.Image images = pg.GetImage(pg.CropBox, pip, colorants);
                 // Save images as multi-channeled tiff.
-                images.Save(sOutput, ImageType.TIFF);
+                images.Save(sOutput, Datalogics.PDFL.ImageType.TIFF);
             }
-
         }
     }
 }

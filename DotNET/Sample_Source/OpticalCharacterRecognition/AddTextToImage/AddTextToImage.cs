@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,9 +7,9 @@ using Datalogics.PDFL;
  * We will then place the image and the processed text in an output pdf
  * 
  * For more detail see the description of AddTextToImage, on our Developers site, 
- * https://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/optical-character-recognition/
+ * https://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/optical-character-recognition/
  * 
- * Copyright (c) 2007-2019, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -25,12 +24,13 @@ namespace AddTextToImage
         {
             Console.WriteLine("AddTextToImage Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/text_as_image.jpg";
-                String sOutput = "../AddTextToImage-out.pdf";
+                String sOutput = "AddTextToImage-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -65,7 +65,7 @@ namespace AddTextToImage
                     //Create a document object
                     using (Document doc = new Document())
                     {
-                        using (Image newimage = new Image(sInput, doc))
+                        using (Datalogics.PDFL.Image newimage = new Datalogics.PDFL.Image(sInput, doc))
                         {
                             // Create a PDF page which is the size of the image.
                             // Matrix.A and Matrix.D fields, respectively.
@@ -77,24 +77,25 @@ namespace AddTextToImage
                                 docpage.UpdateContent();
                             }
                         }
+
                         using (Page page = doc.GetPage(0))
                         {
-                                Content content = page.Content;
-                                Element elem = content.GetElement(0);
-                                Image image = (Image)elem;
-                                //PlaceTextUnder creates a form with the image and the generated text
-                                //under the image. The original image in the page is then replaced by
-                                //by the form.
-                                Form form = ocrEngine.PlaceTextUnder(image, doc);
-                                content.RemoveElement(0);
-                                content.AddElement(form, Content.BeforeFirst);
-                                page.UpdateContent();
+                            Content content = page.Content;
+                            Element elem = content.GetElement(0);
+                            Datalogics.PDFL.Image image = (Datalogics.PDFL.Image) elem;
+                            //PlaceTextUnder creates a form with the image and the generated text
+                            //under the image. The original image in the page is then replaced by
+                            //by the form.
+                            Form form = ocrEngine.PlaceTextUnder(image, doc);
+                            content.RemoveElement(0);
+                            content.AddElement(form, Content.BeforeFirst);
+                            page.UpdateContent();
                         }
+
                         doc.Save(SaveFlags.Full, sOutput);
                     }
                 }
             }
         }
-
     }
 }

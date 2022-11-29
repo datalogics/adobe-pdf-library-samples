@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -9,9 +7,9 @@ using Datalogics.PDFL;
  * information about them.  The sample extracts the dictionary for an object called URIAction and updates it using PDFObjects.
  * 
  * For more detail see the description of the PDFObject sample on our Developer's site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files#pdfobject
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files#pdfobject
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -28,11 +26,11 @@ namespace PDFObject
         {
             Console.WriteLine("PDFObject Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample_links.pdf";
-                String sOutput = "../PDFObject-out.pdf";
+                String sOutput = "PDFObject-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -45,13 +43,13 @@ namespace PDFObject
                 Document doc = new Document(sInput);
                 Page page = doc.GetPage(0);
 
-                LinkAnnotation annot = (LinkAnnotation)page.GetAnnotation(1);
-                URIAction uri = (URIAction)annot.Action;
+                LinkAnnotation annot = (LinkAnnotation) page.GetAnnotation(1);
+                URIAction uri = (URIAction) annot.Action;
 
                 // Print some info about the URI action, before we modify it
                 Console.WriteLine("Initial URL: " + uri.URI);
-                Console.WriteLine("Is Map property: " + uri.IsMap.ToString());
-                
+                Console.WriteLine("Is Map property: " + uri.IsMap);
+
                 // Modify the URIAction
                 //
                 // A URI action is a dictionary containing:
@@ -67,11 +65,11 @@ namespace PDFObject
                 // Create a new string object
                 PDFString uri_string = new PDFString("http://www.google.com", doc, false, false);
 
-                uri_dict.Put("URI", uri_string);    // Change the URI (replaces the old one)
-                uri_dict.Remove("IsMap");           // Remove the IsMap entry
+                uri_dict.Put("URI", uri_string); // Change the URI (replaces the old one)
+                uri_dict.Remove("IsMap"); // Remove the IsMap entry
 
                 // Check that we deleted the IsMap entry
-                Console.WriteLine("Does this dictionary have an IsMap entry? " + uri_dict.Contains("IsMap").ToString());
+                Console.WriteLine("Does this dictionary have an IsMap entry? " + uri_dict.Contains("IsMap"));
 
                 doc.Save(SaveFlags.Full, sOutput);
                 doc.Close();
@@ -79,11 +77,11 @@ namespace PDFObject
                 // Check the modified contents of the link
                 doc = new Document(sOutput);
                 page = doc.GetPage(0);
-                annot = (LinkAnnotation)page.GetAnnotation(1);
-                uri = (URIAction)annot.Action;
+                annot = (LinkAnnotation) page.GetAnnotation(1);
+                uri = (URIAction) annot.Action;
 
                 Console.WriteLine("Modified URL: " + uri.URI);
-                Console.WriteLine("Is Map property (if not present, defaults to false): " + uri.IsMap.ToString());
+                Console.WriteLine("Is Map property (if not present, defaults to false): " + uri.IsMap);
             }
         }
     }

@@ -20,7 +20,7 @@ namespace ExtractCJKTextByPatternMatch
         {
             Console.WriteLine("ExtractCJKTextByPatternMatch Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 

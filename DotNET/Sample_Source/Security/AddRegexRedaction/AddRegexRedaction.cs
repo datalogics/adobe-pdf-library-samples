@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -23,13 +21,13 @@ namespace AddRegexRedaction
         {
             Console.WriteLine("AddRegexRedaction Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/AddRegexRedaction.pdf";
-                String sOutput1 = "../AddRegexRedaction-out.pdf";
-                String sOutput2 = "../AddRegexRedaction-out-applied.pdf";
+                String sOutput1 = "AddRegexRedaction-out.pdf";
+                String sOutput2 = "AddRegexRedaction-out-applied.pdf";
 
                 // Highlight and redact occurrences of the phrases that match this regular expression.
                 // Uncomment only the one you are interested in seeing displayed redacted.

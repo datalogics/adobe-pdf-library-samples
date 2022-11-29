@@ -1,18 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
  * 
  * This sample lists the text for the words in a PDF document.
  * 
- * For more detail see the description of the List sample programs, and ListWords, on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files
+ * For more detail see the description of the List sample programs, and ListWords, on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -26,6 +24,7 @@ namespace ListWords
         {
             Console.WriteLine("ListWords Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -45,19 +44,19 @@ namespace ListWords
                 wordConfig.IgnoreCharGaps = true;
                 wordConfig.IgnoreLineGaps = false;
                 wordConfig.NoAnnots = true;
-                wordConfig.NoEncodingGuess = true;		// leave non-Roman single-byte font alone
+                wordConfig.NoEncodingGuess = true; // leave non-Roman single-byte font alone
 
                 // Std Roman treatment for custom encoding; overrides the noEncodingGuess option
                 wordConfig.UnknownToStdEnc = false;
 
-                wordConfig.DisableTaggedPDF = true;	// legacy mode WordFinder creation
+                wordConfig.DisableTaggedPDF = true; // legacy mode WordFinder creation
                 wordConfig.NoXYSort = false;
                 wordConfig.PreserveSpaces = false;
                 wordConfig.NoLigatureExp = false;
                 wordConfig.NoHyphenDetection = false;
                 wordConfig.TrustNBSpace = false;
-                wordConfig.NoExtCharOffset = false;		// text extraction efficiency
-                wordConfig.NoStyleInfo = false;			// text extraction efficiency
+                wordConfig.NoExtCharOffset = false; // text extraction efficiency
+                wordConfig.NoStyleInfo = false; // text extraction efficiency
 
                 WordFinder wordFinder = new WordFinder(doc, WordFinderVersion.Latest, wordConfig);
                 IList<Word> pageWords = null;
@@ -89,6 +88,7 @@ namespace ListWords
                         Console.WriteLine(s);
                     }
                 }
+
                 Console.WriteLine("Pages=" + nPages);
             }
         }

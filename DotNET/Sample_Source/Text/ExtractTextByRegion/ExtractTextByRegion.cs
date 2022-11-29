@@ -32,7 +32,7 @@ namespace ExtractTextByRegion
         {
             Console.WriteLine("ExtractTextByRegion Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -11,10 +9,10 @@ using Datalogics.PDFL;
  * RemoteGoToActions differs from LaunchActions in that it includes a RemoteDestination object.
  * This object describes the rectangle used in the PDF file in a series of statements at the command prompt. 
  *
- * For more detail see the description of the AnnotationCopyPaste sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/working-with-actions-in-pdf-files#remotegotoactions
+ * For more detail see the description of the AnnotationCopyPaste sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/working-with-actions-in-pdf-files#remotegotoactions
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -27,11 +25,11 @@ namespace RemoteGoToActions
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sFileSpec = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../RemoteGoToActions-out.pdf";
+                String sOutput = "RemoteGoToActions-out.pdf";
 
                 if (args.Length > 0)
                     sFileSpec = args[0];
@@ -72,12 +70,13 @@ namespace RemoteGoToActions
                 FileSpecification fileSpec = new FileSpecification(doc, sFileSpec);
                 Console.WriteLine("Path to remote document : " + fileSpec.Path);
 
-                RemoteDestination remoteDest = new RemoteDestination(doc, 0, "XYZ", new Rect(0, 0, 4 * 72, 4 * 72), 1.5);
+                RemoteDestination remoteDest =
+                    new RemoteDestination(doc, 0, "XYZ", new Rect(0, 0, 4 * 72, 4 * 72), 1.5);
                 Console.WriteLine("When the Link is clicked the remote document will open to : ");
                 Console.WriteLine("Page Number : " + remoteDest.PageNumber);
                 Console.WriteLine("zoom level : " + remoteDest.Zoom);
                 Console.WriteLine("fit type : " + remoteDest.FitType);
-                Console.WriteLine("rectangle : " + remoteDest.DestRect.ToString());
+                Console.WriteLine("rectangle : " + remoteDest.DestRect);
 
                 // Now create the RemoteGoToAction from the fileSpec and the RemoteDestination
                 RemoteGoToAction remoteAction = new RemoteGoToAction(fileSpec, remoteDest);
@@ -86,7 +85,6 @@ namespace RemoteGoToActions
                 newLink.Action = remoteAction;
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

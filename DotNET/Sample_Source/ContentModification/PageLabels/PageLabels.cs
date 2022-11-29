@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,11 +7,11 @@ using Datalogics.PDFL;
  * This sample demonstrates working with page labels in a PDF document. Each PDF file has a 
  * data structure that governs how page numbers appear, such as the font and type of numeral.
  *
- * For more detail see the description of the PageLabels sample on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files#pagelabels
+ * For more detail see the description of the PageLabels sample on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files#pagelabels
  * 
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -27,6 +26,7 @@ namespace PageLabels
         {
             Console.WriteLine("Page Labels Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -59,7 +59,7 @@ namespace PageLabels
                 Console.WriteLine("Added page range starting on page 5.");
 
                 // Change the properties of the third page range
-                labels = doc.PageLabels;       // Get a freshly sorted list
+                labels = doc.PageLabels; // Get a freshly sorted list
                 labels[2].Prefix = "Section 3-";
                 labels[2].FirstNumberInRange = 2;
                 doc.PageLabels = labels;
@@ -67,12 +67,12 @@ namespace PageLabels
                 Console.WriteLine("Changed the prefix for the third range.");
 
                 // Now walk the list of page labels
-                foreach( PageLabel label in doc.PageLabels )
+                foreach (PageLabel label in doc.PageLabels)
                 {
                     Console.WriteLine("Label range starts on page " + label.StartPageIndex
-                        + ", ends on page " + label.EndPageIndex);
+                                                                    + ", ends on page " + label.EndPageIndex);
                     Console.WriteLine("The prefix is '" + label.Prefix
-                        + "' and begins with number " + label.FirstNumberInRange);
+                                                        + "' and begins with number " + label.FirstNumberInRange);
                     Console.WriteLine();
                 }
             }

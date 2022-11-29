@@ -1,17 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
  * 
  * This sample finds and describes the bookmarks included in a PDF document.
  * 
- * For more detail see the description of the List sample programs, and ListBookmarks, on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files
+ * For more detail see the description of the List sample programs, and ListBookmarks, on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -41,6 +39,7 @@ namespace ListBookmarks
                     Console.Write(", zoom ");
                     Console.Write(v.Zoom);
                 }
+
                 Console.WriteLine();
                 EnumerateBookmarks(b.FirstChild);
                 EnumerateBookmarks(b.Next);
@@ -51,6 +50,7 @@ namespace ListBookmarks
         {
             Console.WriteLine("ListBookmarks Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -70,5 +70,3 @@ namespace ListBookmarks
         }
     }
 }
-	
-

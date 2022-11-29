@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -14,10 +12,10 @@ using Datalogics.PDFL;
  * sets of graphics files for those three images. The sample program ignores text, parsing the
  * PDF syntax to identify any raster or vector images found on every page.
  *
- * For more detail see the description of the ImageExport sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/exporting-images-from-pdf-files
+ * For more detail see the description of the ImageExport sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/exporting-images-from-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -26,13 +24,13 @@ using Datalogics.PDFL;
 
 namespace ImageExport
 {
-    public class ExportDocumentImages 
+    public class ExportDocumentImages
     {
-       ImageType exporttype;
-        int next = 0;
+        ImageType exporttype;
+        int next;
         ImageCollection ic = new ImageCollection();
-        
-        public void export_doc_images_type( Document doc, ImageType imtype)
+
+        public void export_doc_images_type(Document doc, ImageType imtype)
         {
             exporttype = imtype;
             int pgno;
@@ -42,21 +40,21 @@ namespace ImageExport
                 Content content = pg.Content;
                 Export_Element_Images(content);
             }
-			
-            if ( ic.Count != 0 )
+
+            if (ic.Count != 0)
             {
                 try
                 {
                     ic.Save("ImageExport-page" + pgno + "-out.tif", ImageType.TIFF);
                 }
-                catch( Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Cannot write file: " + ex.Message);
                 }
             }
         }
 
-        public void export_doc_images( Document doc)
+        public void export_doc_images(Document doc)
         {
             export_doc_images_type(doc, ImageType.TIFF);
             export_doc_images_type(doc, ImageType.JPEG);
@@ -65,17 +63,17 @@ namespace ImageExport
             export_doc_images_type(doc, ImageType.BMP);
         }
 
-        public void Export_Element_Images(Content content )
-            {
+        public void Export_Element_Images(Content content)
+        {
             int i = 0;
             ImageSaveParams isp;
 
-            while (i < content.NumElements )
+            while (i < content.NumElements)
             {
                 Element e = content.GetElement(i);
-                if (e is Image)
+                if (e is Datalogics.PDFL.Image)
                 {
-                    Image img = (Image)e;
+                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image) e;
                     // Weed out impossible on nonsensical combinations.
                     if (img.ColorSpace == ColorSpace.DeviceCMYK && exporttype != ImageType.JPEG)
                     {
@@ -83,7 +81,7 @@ namespace ImageExport
                         continue;
                     }
 
-                    if ( exporttype == ImageType.TIFF)
+                    if (exporttype == ImageType.TIFF)
                     {
                         ic.Append(img);
                         isp = new ImageSaveParams();
@@ -93,7 +91,6 @@ namespace ImageExport
 
                     try
                     {
-
                         if (exporttype == ImageType.JPEG)
                         {
                             isp = new ImageSaveParams();
@@ -120,8 +117,8 @@ namespace ImageExport
                     {
                         Console.WriteLine("Cannot write file: " + ex.Message);
                     }
-                    next++;
 
+                    next++;
                 }
                 else if (e is Container)
                 {
@@ -138,6 +135,7 @@ namespace ImageExport
                     Console.WriteLine("Recursing through a Form");
                     Export_Element_Images((e as Form).Content);
                 }
+
                 i++;
             }
         }
@@ -145,10 +143,11 @@ namespace ImageExport
 
     class ImageExport
     {
-         static void Main(String[] args)
+        static void Main(String[] args)
         {
             Console.WriteLine("Image Export sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -161,7 +160,7 @@ namespace ImageExport
                 Console.WriteLine("Input file: " + sInput);
 
                 Document doc = new Document(sInput);
-                ExportDocumentImages expdoc= new ExportDocumentImages();
+                ExportDocumentImages expdoc = new ExportDocumentImages();
                 expdoc.export_doc_images(doc);
             }
         }

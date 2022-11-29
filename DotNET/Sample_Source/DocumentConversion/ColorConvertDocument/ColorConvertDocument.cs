@@ -13,10 +13,10 @@ using Datalogics.PDFL;
  * Note that the color profile is not embedded by default; rather, the default is not to embed the color profile.
  * The user must set the option to embed to True.
  * 
- * For more detail see the description of the ColorConvertDocument sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/color-conversion
+ * For more detail see the description of the ColorConvertDocument sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/color-conversion
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -33,12 +33,15 @@ namespace ColorConvertDocument
             List<string> paths = new List<string>();
             paths.Add(Library.ResourceDirectory + "Fonts/");
 
-            using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap/", Library.ResourceDirectory + "Unicode/", Library.ResourceDirectory + "Color", LibraryFlags.DisableMemorySuballocator))
+            // ReSharper disable once UnusedVariable
+            using (Library lib = new Library(paths, Library.ResourceDirectory + "CMap/",
+                Library.ResourceDirectory + "Unicode/", Library.ResourceDirectory + "Color",
+                LibraryFlags.DisableMemorySuballocator))
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../ColorConvertDocument-out.pdf";
+                String sOutput = "ColorConvertDocument-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -50,17 +53,17 @@ namespace ColorConvertDocument
 
                 Document doc = new Document(sInput);
 
-               /* Create the list of color conversion actions to be applied to the document. Each object in the document is compared
-                * against the selection criteria for each of the actions until a matching action is found. Actions do not chain, 
-                * except in the case of aliased ink definitions
-                */
+                /* Create the list of color conversion actions to be applied to the document. Each object in the document is compared
+                 * against the selection criteria for each of the actions until a matching action is found. Actions do not chain,
+                 * except in the case of aliased ink definitions
+                 */
                 List<ColorConvertActions> colorConvActions = new List<ColorConvertActions>();
                 ColorConvertActions action = new ColorConvertActions();
 
-              /* In this example, make any object in the document a candidate for color conversion. Also allow for any kind of Color Space. 
-               * The ColorConvertObjAttrs values can be combined together for more specific matching patterns using the | operator. 
-               * This is also true for Color Spaces.
-               */
+                /* In this example, make any object in the document a candidate for color conversion. Also allow for any kind of Color Space.
+                 * The ColorConvertObjAttrs values can be combined together for more specific matching patterns using the | operator.
+                 * This is also true for Color Spaces.
+                 */
                 action.MustMatchAnyAttrs = ColorConvertObjAttrs.ColorConvAnyObject;
                 action.MustMatchAnyCSAttrs = ColorConvertCSpaceType.ColorConvAnySpace;
                 action.IntentToMatch = RenderIntent.UseProfileIntent;
@@ -76,6 +79,7 @@ namespace ColorConvertDocument
                  */
                 ColorConvertParams parms = new ColorConvertParams(colorConvActions);
 
+                // ReSharper disable once UnusedVariable
                 bool success = doc.ColorConvertPages(parms);
 
                 doc.Save(SaveFlags.Full | SaveFlags.Compressed, sOutput);

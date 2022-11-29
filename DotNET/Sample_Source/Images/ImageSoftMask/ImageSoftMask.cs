@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -10,9 +8,9 @@ using Datalogics.PDFL;
  * transparency for that image.
  *
  * For more detail see the description of the ImageSoftMask sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/entering-or-generating-graphics-from-pdf-files
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/entering-or-generating-graphics-from-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -27,13 +25,14 @@ namespace ImageSoftMask
         {
             Console.WriteLine("Image Soft Mask sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
                 String sMask = Library.ResourceDirectory + "Sample_Input/Mask.tif";
-                String sOutput = "../ImageSoftMask-out.pdf";
+                String sOutput = "ImageSoftMask-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -50,12 +49,12 @@ namespace ImageSoftMask
                 Rect pageRect = new Rect(0, 0, 612, 792);
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
 
-                Image baseImage;
-                baseImage = new Image(sInput);
+                Datalogics.PDFL.Image baseImage;
+                baseImage = new Datalogics.PDFL.Image(sInput);
                 Console.WriteLine("Created the image to mask.");
 
-                Image maskImage;
-                maskImage = new Image(sMask);
+                Datalogics.PDFL.Image maskImage;
+                maskImage = new Datalogics.PDFL.Image(sMask);
                 Console.WriteLine("Created the image to use as mask.");
 
                 baseImage.SoftMask = maskImage;
@@ -67,12 +66,10 @@ namespace ImageSoftMask
 
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }
 }
-
-

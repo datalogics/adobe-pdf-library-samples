@@ -12,7 +12,7 @@ using Datalogics.PDFL;
  * Sample to demonstrate how to open a PDF document, search for text in
  * the pages and highlight the text using the C# drawing library.
  * 
- * Copyright (c) 2007-2010, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * The information and code in this sample is for the exclusive use of Datalogics
  * customers and evaluation users only.  Datalogics permits you to use, modify and
@@ -62,7 +62,7 @@ namespace DisplayPDF
                         PDFDoc.Dispose();
                     }
                     PDFDoc = new Document(FileName);
-                    DisplayPDFForm.ActiveForm.Text = "DLE Viewer - " + FileName;
+                    DisplayPDFForm.ActiveForm.Text = "PDFL Viewer - " + FileName;
                     maxpages = PDFDoc.NumPages;
                     currentPDPagenum = 0;
                     scalefactor = 1.0;
@@ -254,7 +254,7 @@ namespace DisplayPDF
                 {
                     bitmap = new Bitmap(width, height);
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
                     String message = "File " + PDFDoc.FileName + " is " 
                         + width.ToString() + " x " + height.ToString()
@@ -283,20 +283,14 @@ namespace DisplayPDF
 					   (int)cropBox.LLy,
 					   (int)cropBox.LLx + width,
 					   (int)cropBox.LLy + height);
-#if MONO
-                // Draw directly to the bitmap
-                pg.DrawContents(bitmap,
-                                matrix, // matrix
-                                updateRect);
-#else
-            DrawParams parms = new DrawParams();
-            parms.Matrix = matrix;
-            parms.UpdateRect = updateRect;
-            parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces;
 
-			pg.DrawContents(graphics, parms);
-                
-#endif
+                // Draw directly to the bitmap
+                DrawParams parms = new DrawParams();
+                parms.Matrix = matrix;
+                parms.UpdateRect = updateRect;
+                parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces;
+
+                pg.DrawContents(graphics, parms);
                 PageNumberTextBox.Text = (currentPDPagenum + 1).ToString();
                 PageLabel.Text = "of " + maxpages.ToString();
             }

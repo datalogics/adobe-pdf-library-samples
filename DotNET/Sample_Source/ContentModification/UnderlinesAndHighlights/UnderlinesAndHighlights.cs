@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
  *
  * This program shows how to add annotations to an existing PDF file that will highlight and underline words.
  * When you run it, the program generates a PDF output file. The output sample annotates a PDF file showing
- * a National Weather Service web page, highlighting the word “Cloudy” wherever it appears and underlining
- * the word “Rain.”
+ * a National Weather Service web page, highlighting the word â€œCloudyâ€ wherever it appears and underlining
+ * the word â€œRain.â€
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -24,12 +23,13 @@ namespace UnderlinesAndHighlights
         {
             Console.WriteLine("UnderlinesAndHighlights Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput = "../UnderlinesAndHighlights-out.pdf";
+                String sOutput = "UnderlinesAndHighlights-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -47,7 +47,7 @@ namespace UnderlinesAndHighlights
                 // Highlight occurrences of the word "cloudy" on the page.
                 // Underline occurrences of the word "rain" on the page.
                 //
-                // For a more in-depth example of using the WordFinder, see the TextExtraction sample.
+                // For a more in-depth example of using the WordFinder, see the TextExtract sample.
                 //
                 List<Quad> cloudyQuads = new List<Quad>();
                 List<Quad> rainQuads = new List<Quad>();
@@ -59,14 +59,16 @@ namespace UnderlinesAndHighlights
                     // Store the Quads of all "Cloudy" words in a list for later use in
                     // creating the annotation.
                     if (w.Text.ToLower().Equals("cloudy") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("cloudy")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("cloudy")))
                         cloudyQuads.AddRange(w.Quads);
 
                     // Store the Quads of all "Rain" words
                     if (w.Text.ToLower().Equals("rain") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("rain")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("rain")))
                         rainQuads.AddRange(w.Quads);
                 }
 
