@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -12,9 +10,9 @@ using Datalogics.PDFL;
  * The sample takes a default input and output a document (both optional). 
  * 
  * For more detail see the description of the PDFXConverter sample program on our Developer’s site,
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/converting-and-merging-pdf-content#pdfxconverter
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/converting-and-merging-pdf-content#pdfxconverter
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -28,12 +26,13 @@ namespace PDFXConverter
         {
             Console.WriteLine("PDFXConverter Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf"; ;
-                String sOutput = "../PDFXConverter-out-X1a-csh.pdf";
+                String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
+                String sOutput = "PDFXConverter-out-X1a-csh.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -71,9 +70,9 @@ namespace PDFXConverter
                     // Note that the returned document will have its major and minor
                     // version set--this is required for PDF/X compliance.  This is only
                     // visible AFTER you save the document.
-                    Console.WriteLine(sOutput + " has version number: " + pdfxDoc.MajorVersion + "." + pdfxDoc.MinorVersion);
+                    Console.WriteLine(sOutput + " has version number: " + pdfxDoc.MajorVersion + "." +
+                                      pdfxDoc.MinorVersion);
                 }
-
             }
         }
     }

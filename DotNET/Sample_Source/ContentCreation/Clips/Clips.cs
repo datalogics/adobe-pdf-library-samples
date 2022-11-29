@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,10 +6,10 @@ using Datalogics.PDFL;
  * This sample demonstrates working with Clip objects. A clipping path is used to edit the borders of a graphics object.
  *
  * 
- * For more detail see the description of the Clips sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/manipulating-graphics-and-separating-colors-for-images
+ * For more detail see the description of the Clips sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/manipulating-graphics-and-separating-colors-for-images
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -26,11 +24,12 @@ namespace Clips
         {
             Console.WriteLine("Clips Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../Clips-out.pdf";
+                String sOutput = "Clips-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -44,7 +43,7 @@ namespace Clips
                 Console.WriteLine("Created new document and first page.");
 
                 // Create a new path, set up its graphic state and PaintOp
-                Path path = new Path();
+                Datalogics.PDFL.Path path = new Datalogics.PDFL.Path();
                 GraphicState gs = new GraphicState();
                 Color color = new Color(0.0, 0.0, 0.0);
                 gs.FillColor = color;
@@ -69,7 +68,7 @@ namespace Clips
                 Console.WriteLine("Added path to page in document.");
 
                 // Create a new path and add a rectangle to it
-                Path clipPath = new Path();
+                Datalogics.PDFL.Path clipPath = new Datalogics.PDFL.Path();
                 point = new Point(50, 300);
                 clipPath.AddRect(point, 300, 250);
                 Console.WriteLine("Created clipping path and added rectangle to it.");
@@ -79,18 +78,17 @@ namespace Clips
                 Clip clip = new Clip();
                 clip.AddElement(clipPath);
                 path.Clip = clip;
-                Console.WriteLine("Created new clip, assigned clipping path to it, and added new clip to original path.");
+                Console.WriteLine(
+                    "Created new clip, assigned clipping path to it, and added new clip to original path.");
 
                 // Update the page's content and save the file with clipping
                 page.UpdateContent();
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }
 }
-
-

@@ -22,11 +22,12 @@ namespace MergePDF
         {
             Console.WriteLine("MergePDF Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/merge_pdf1.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/merge_pdf2.pdf";
-                String sOutput = "../MergePDF-out.pdf";
+                String sOutput = "MergePDF-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];
@@ -49,12 +50,14 @@ namespace MergePDF
                                              // For best performance processing large documents, set the following flags.
                                              PageInsertFlags.DoNotMergeFonts | PageInsertFlags.DoNotResolveInvalidStructureParentReferences | PageInsertFlags.DoNotRemovePageInheritance);
                         }
-                        catch(LibraryException ex)
+                        catch (LibraryException ex)
                         {
-                            if (!ex.Message.Contains("An incorrect structure tree was found in the PDF file but operation continued"))
+                            if (!ex.Message.Contains(
+                                "An incorrect structure tree was found in the PDF file but operation continued"))
                             {
-                                throw ex;
+                                throw;
                             }
+
                             Console.Out.WriteLine(ex.Message);
                         }
 

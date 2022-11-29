@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,10 +6,10 @@ using Datalogics.PDFL;
  * This sample demonstrates changing the shading of an image on a PDF document page. The image gradually
  * changes from black on the left side of the image, to red on the right side.
  * 
- * For more detail see the description of the GradientShade sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/entering-or-generating-graphics-from-pdf-files
+ * For more detail see the description of the GradientShade sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/entering-or-generating-graphics-from-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -20,16 +18,17 @@ using Datalogics.PDFL;
 namespace GradientShade
 {
     class GradientShade
-    {      
+    {
         static void Main(string[] args)
         {
             Console.WriteLine("GradientShade Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../GradientShade-out.pdf";
+                String sOutput = "GradientShade-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -45,18 +44,21 @@ namespace GradientShade
                 Double[] C1 = {1.0, 0.0, 0.0};
                 ExponentialFunction f = new ExponentialFunction(domain, 3, C0, C1, 1);
 
-                Point[] coords = {new Point(72, 72),
-                                  new Point(4*72, 72) };
- 
+                Point[] coords =
+                {
+                    new Point(72, 72),
+                    new Point(4 * 72, 72)
+                };
+
                 Function[] functionList = {f};
                 AxialShadingPattern asp = new AxialShadingPattern(ColorSpace.DeviceRGB, coords, functionList);
 
-                Path path = new Path();
+                Datalogics.PDFL.Path path = new Datalogics.PDFL.Path();
                 GraphicState gs = path.GraphicState;
 
                 // Please note path does not create a default graphic state,
                 // so this is necessary, but for the first element only.
-                if (gs == null) 
+                if (gs == null)
                     gs = new GraphicState();
 
                 gs.FillColor = new Color(asp);
@@ -68,8 +70,8 @@ namespace GradientShade
                 path.AddLine(new Point(11 * 72 - 36, 36));
                 path.ClosePath();
                 path.PaintOp = PathPaintOpFlags.Stroke | PathPaintOpFlags.Fill;
-                   
-                docpage.Content.AddElement(path);  // Add the new element to the Content of the page.
+
+                docpage.Content.AddElement(path); // Add the new element to the Content of the page.
                 docpage.UpdateContent(); // Update the PDF page with the changed content
 
                 doc.Save(SaveFlags.Full, sOutput);

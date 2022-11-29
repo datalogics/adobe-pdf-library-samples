@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Datalogics.PDFL;
 
 /*
@@ -17,89 +16,75 @@ using Datalogics.PDFL;
  *
  */
 
-// This Datalogics sample uses the Newtonsoft.Json library to generate JSON output. Below is the MIT license for the Newtonsoft.Json software:
-/*
-Copyright (c) 2007 James Newton-King
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
 namespace RegexExtractText
 {
     // This class represents a match quad's bottom left coordinate.
-    public class BottomLeft {
+    public class BottomLeft
+    {
         public double x { get; set; }
         public double y { get; set; }
     }
 
     // This class represents a match quad's bottom right coordinate.
-    public class BottomRight {
+    public class BottomRight
+    {
         public double x { get; set; }
         public double y { get; set; }
     }
 
     // This class represents a match quad's top left coordinate.
-    public class TopLeft {
+    public class TopLeft
+    {
         public double x { get; set; }
         public double y { get; set; }
     }
 
     // This class represents a match quad's top right coordinate.
-    public class TopRight {
+    public class TopRight
+    {
         public double x { get; set; }
         public double y { get; set; }
     }
 
     // This class represents the 4 coordinates that make up a match quad.
-    public class QuadLocation {
-        [JsonProperty("bottom-left")]
+    public class QuadLocation
+    {
+        [JsonPropertyName("bottom-left")]
         public BottomLeft bottomLeft { get; set; }
 
-        [JsonProperty("bottom-right")]
+        [JsonPropertyName("bottom-right")]
         public BottomRight bottomRight { get; set; }
 
-        [JsonProperty("top-left")]
+        [JsonPropertyName("top-left")]
         public TopLeft topLeft { get; set; }
 
-        [JsonProperty("top-right")]
+        [JsonPropertyName("top-right")]
         public TopRight topRight { get; set; }
     }
 
     // This class represents a match quad's location (the quad coordinates and page number that quad is located on).
-    public class MatchQuadInformation {
-        [JsonProperty("page-number")]
+    public class MatchQuadInformation
+    {
+        [JsonPropertyName("page-number")]
         public int pageNumber { get; set; }
 
-        [JsonProperty("quad-location")]
+        [JsonPropertyName("quad-location")]
         public QuadLocation quadLocation { get; set; }
     }
 
     // This class represents the information that is associated with a match (match phrase and match quads).
-    public class MatchObject {
-        [JsonProperty("match-phrase")]
+    public class MatchObject
+    {
+        [JsonPropertyName("match-phrase")]
         public string matchPhrase { get; set; }
 
-        [JsonProperty("match-quads")]
+        [JsonPropertyName("match-quads")]
         public List<MatchQuadInformation> matchQuads { get; set; }
     }
 
     // This class represents the final JSON that will be written to the output JSON file.
-    public class DocTextFinderJson {
+    public class DocTextFinderJson
+    {
         public List<MatchObject> documentJson;
     }
 
@@ -109,12 +94,12 @@ namespace RegexExtractText
         {
             Console.WriteLine("RegexExtractText Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/RegexExtractText.pdf";
-                String sOutput = "../RegexExtractText-out.json";
+                String sOutput = "RegexExtractText-out.json";
 
                 // Uncomment only one regular expression you are interested in seeing the match information of (as a JSON file).
                 // Phone numbers
@@ -155,7 +140,7 @@ namespace RegexExtractText
                         {
                             // This object will store the match phrase and an array of quads for the match.
                             MatchObject matchObject = new MatchObject();
-                            
+
                             // This list will store the page number and quad location for each match quad.
                             List<MatchQuadInformation> matchQuadInformationList = new List<MatchQuadInformation>();
 
@@ -200,7 +185,8 @@ namespace RegexExtractText
                         }
                         // Save the output JSON file.
                         Console.WriteLine("Writing JSON to " + sOutput);
-                        string json = JsonConvert.SerializeObject(result.documentJson, Formatting.Indented);
+                        JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+                        string json = JsonSerializer.Serialize(result.documentJson, options);
                         System.IO.File.WriteAllText(sOutput, json);
                     }
                 }

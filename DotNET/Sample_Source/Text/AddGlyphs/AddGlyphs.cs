@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,10 +7,10 @@ using Datalogics.PDFL;
  * Use this program to create a new PDF file and add glyphs to the page,
  * managing them by individual Glyph ID codes.
  * 
- * For more detail see the description of the AddGlyphs sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/adding-text-and-graphic-elements#addglyphs
+ * For more detail see the description of the AddGlyphs sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/adding-text-and-graphic-elements#addglyphs
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -25,11 +24,12 @@ namespace AddGlyphs
         {
             Console.WriteLine("AddGlyphs Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../AddGlyphs-out.pdf";
+                String sOutput = "AddGlyphs-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -42,7 +42,24 @@ namespace AddGlyphs
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
                 Console.WriteLine("Created page.");
 
-                Font font = new Font("Times-Roman");
+                Font font;
+                try
+                {
+                    font = new Font("Times-Roman");
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
+
+                    throw;
+                }
 
                 List<Char> glyphIDs = new List<Char>();
                 glyphIDs.Add('\u002b');
@@ -73,7 +90,6 @@ namespace AddGlyphs
                 doc.EmbedFonts(EmbedFlags.None);
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

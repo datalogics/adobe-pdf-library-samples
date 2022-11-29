@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -9,10 +7,10 @@ using Datalogics.PDFL;
  * if you want to change these values, such as the title or author. The results are exported
  * to a PDF output document.
  * 
- * For more detail see the description of the List sample programs, and ListInfo, on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files
+ * For more detail see the description of the List sample programs, and ListInfo, on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -27,12 +25,13 @@ namespace ListInfo
         {
             Console.WriteLine("ListInfo Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput = "../ListInfo-out.pdf";
+                String sOutput = "ListInfo-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];

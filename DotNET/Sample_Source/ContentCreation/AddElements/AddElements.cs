@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -10,7 +9,7 @@ using Datalogics.PDFL;
  * The third page features a rectangle and a curved design. Use this sample for ideas on how
  * to draw an image on a PDF page.
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -20,16 +19,17 @@ using Datalogics.PDFL;
 namespace AddElements
 {
     class AddElements
-    {      
+    {
         static void Main(string[] args)
         {
             Console.WriteLine("AddElements Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../AddElements-out.pdf";
+                String sOutput = "AddElements-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -41,7 +41,7 @@ namespace AddElements
                 Page docpage = doc.CreatePage(Document.BeforeFirstPage, pageRect);
 
                 // Draw a five pointed star.
-                Path starpath = new Path();
+                Datalogics.PDFL.Path starpath = new Datalogics.PDFL.Path();
                 GraphicState gs = starpath.GraphicState;
 
                 starpath.PaintOp = PathPaintOpFlags.Stroke;
@@ -51,20 +51,24 @@ namespace AddElements
                 DashPattern.Add(5);
                 DashPattern.Add(6); // Set the Dash Pattern list to [5 6]
                 gs.DashPattern = DashPattern;
-                gs.StrokeColor = new Color(0, 1.0, 0);// Green Star
+                gs.StrokeColor = new Color(0, 1.0, 0); // Green Star
                 starpath.GraphicState = gs;
                 starpath.PaintOp = PathPaintOpFlags.Stroke;
                 double CenterX = 306.0; // Center of Page
                 double CenterY = 396.0;
                 double Radius = 72 * 4.0; // 4 inches with 72 dpi
-                double radians72 = 72/(45/Math.Atan(1.0)); // angles must be in radians.
-                double radians36 = 36/(45/Math.Atan(1.0));
+                double radians72 = 72 / (45 / Math.Atan(1.0)); // angles must be in radians.
+                double radians36 = 36 / (45 / Math.Atan(1.0));
                 Point CenterPoint = new Point(CenterX, CenterY);
-                Point Point0 = new Point(CenterX, CenterY+Radius);
-                Point Point1 = new Point(CenterX+Radius*Math.Sin(radians72), CenterY+Radius*Math.Cos(radians72));
-                Point Point2 = new Point(CenterX + Radius*Math.Sin(radians36), CenterY - Radius*Math.Cos(radians36));
-                Point Point3 = new Point(CenterX - Radius*Math.Sin(radians36),CenterY - Radius*Math.Cos(radians36));
-                Point Point4 = new Point (CenterX - Radius * Math.Sin(radians72), CenterY + Radius * Math.Cos(radians72));
+                Point Point0 = new Point(CenterX, CenterY + Radius);
+                Point Point1 = new Point(CenterX + Radius * Math.Sin(radians72),
+                    CenterY + Radius * Math.Cos(radians72));
+                Point Point2 = new Point(CenterX + Radius * Math.Sin(radians36),
+                    CenterY - Radius * Math.Cos(radians36));
+                Point Point3 = new Point(CenterX - Radius * Math.Sin(radians36),
+                    CenterY - Radius * Math.Cos(radians36));
+                Point Point4 = new Point(CenterX - Radius * Math.Sin(radians72),
+                    CenterY + Radius * Math.Cos(radians72));
                 starpath.MoveTo(Point0);
                 starpath.AddLine(Point2);
                 starpath.AddLine(Point4);
@@ -72,10 +76,10 @@ namespace AddElements
                 starpath.AddLine(Point3);
                 starpath.AddLine(Point0);
                 starpath.ClosePath();
-                docpage.Content.AddElement(starpath);  // Add the new element to the Content of the page.
+                docpage.Content.AddElement(starpath); // Add the new element to the Content of the page.
 
                 // Draw a pentagon around the star
-                Path pentpath = new Path();
+                Datalogics.PDFL.Path pentpath = new Datalogics.PDFL.Path();
                 pentpath.PaintOp = PathPaintOpFlags.Stroke;
                 gs.Width = 2.0;
                 List<double> PentDashPattern = new List<double>();
@@ -95,7 +99,7 @@ namespace AddElements
                 docpage.Content.AddElement(pentpath); // Add the new element to the Content of the page.
 
                 // Add a single line star in the middle of the big star
-                Path newstar = new Path();
+                Datalogics.PDFL.Path newstar = new Datalogics.PDFL.Path();
                 newstar.PaintOp = PathPaintOpFlags.EoFill;
                 gs.Width = 1.0;
                 List<double> starDashPattern = new List<double>();
@@ -120,11 +124,11 @@ namespace AddElements
 /* Second page: a diamond with text inside */
                 docpage = doc.CreatePage(0, pageRect);
 
-                Path diamond = new Path();
+                Datalogics.PDFL.Path diamond = new Datalogics.PDFL.Path();
                 List<double> diamondDashPattern = new List<double>();
                 gs.DashPattern = diamondDashPattern;
                 gs.FillColor = new Color(1.0, 1.0, 0); // Yellow
-                gs.StrokeColor = new Color(153.0/255.0, 0, 0); // kind of a deep red
+                gs.StrokeColor = new Color(153.0 / 255.0, 0, 0); // kind of a deep red
                 diamond.PaintOp = PathPaintOpFlags.EoFill | PathPaintOpFlags.Stroke;
 
                 gs.Width = 1.0;
@@ -132,9 +136,9 @@ namespace AddElements
                 diamond.GraphicState = gs;
 
                 diamond.MoveTo(new Point(306, 198));
-                diamond.AddLine( new Point(459, 396));
+                diamond.AddLine(new Point(459, 396));
                 diamond.AddLine(new Point(306, 594));
-                diamond.AddLine( new Point(153, 396));
+                diamond.AddLine(new Point(153, 396));
                 diamond.AddLine(new Point(306, 198));
                 diamond.ClosePath();
                 docpage.Content.AddElement(diamond); // Add the new element to the Content of the page.
@@ -142,7 +146,25 @@ namespace AddElements
 // Now add text to the PDF page. By default, text is filled with
 // the fill color from the graphic state
                 Text t = new Text();
-                Font f = new Font("Arial", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                Font f;
+                try
+                {
+                    f = new Font("Arial", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+                }
+                catch (ApplicationException ex)
+                {
+                    if (ex.Message.Equals("The specified font could not be found.") &&
+                        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                            .OSPlatform.Linux) &&
+                        !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                    {
+                        Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                        return;
+                    }
+
+                    throw;
+                }
+
                 gs = new GraphicState();
                 gs.FillColor = new Color(0, 0, 1.0);
                 TextState ts = new TextState();
@@ -171,7 +193,7 @@ namespace AddElements
 
                 /* Third page: a stroked path that uses all the segment types */
                 docpage = doc.CreatePage(1, pageRect);
-                Path path = new Path();
+                Datalogics.PDFL.Path path = new Datalogics.PDFL.Path();
 
                 path.PaintOp = PathPaintOpFlags.Stroke;
                 gs = path.GraphicState;

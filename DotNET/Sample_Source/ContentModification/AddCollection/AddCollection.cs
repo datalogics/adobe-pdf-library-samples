@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -9,11 +7,11 @@ using Datalogics.PDFL;
  * 
  * A PDF Portfolio can hold and display multiple additional files as attachments.
  * 
- * For more detail see the description of the AddCollection sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/working-with-a-pdf-collection-or-portfolio
+ * For more detail see the description of the AddCollection sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/working-with-a-pdf-collection-or-portfolio
  * 
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -27,19 +25,20 @@ namespace AddCollection
         {
             Console.WriteLine("AddCollection Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/Attachments.pdf";
-                String sOutput = "../Portfolio.pdf";
+                String sOutput = "Portfolio.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
 
                 Document doc = new Document(sInput);
 
-                Console.WriteLine("Input file: " + sInput + ". Writing to "  + sOutput);
+                Console.WriteLine("Input file: " + sInput + ". Writing to " + sOutput);
 
                 // Check if document already has collection
                 Collection collection = doc.Collection;
@@ -50,6 +49,7 @@ namespace AddCollection
                     doc.CreateCollection();
                     collection = doc.Collection;
                 }
+
                 // Create a couple of schema fields
                 CollectionSchemaField field = new CollectionSchemaField("Description", SchemaFieldSubtype.Description);
                 field.Name = "DescriptionField";
@@ -75,7 +75,8 @@ namespace AddCollection
                 // described in the parent collection dictionary.
                 // The array form is used to allow additional fields to contribute
                 // to the sort, where each additional field is used to break ties.
-                System.Collections.Generic.IList<CollectionSortItem> colSort = new System.Collections.Generic.List<CollectionSortItem>();
+                System.Collections.Generic.IList<CollectionSortItem> colSort =
+                    new System.Collections.Generic.List<CollectionSortItem>();
                 colSort.Add(new CollectionSortItem("Description", false));
                 colSort.Add(new CollectionSortItem("Number", true));
 

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -14,7 +12,7 @@ using Datalogics.PDFL;
  * You can provide your own file names for these values in the code, or you can enter your own file names as
  * command line parameters.
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -29,13 +27,14 @@ namespace AnnotationCopyPaste
         {
             Console.WriteLine("AnnotationCopyPaste Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/sample_annotations.pdf";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/Layers.pdf";
-                String sOutput = "../AnnotationCopyPaste-out.pdf";
+                String sOutput = "AnnotationCopyPaste-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];
@@ -50,7 +49,8 @@ namespace AnnotationCopyPaste
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Copying annotations from " + sInput1 + " into " + sInput2 + " and writing to " + sOutput);
+                Console.WriteLine("Copying annotations from " + sInput1 + " into " + sInput2 + " and writing to " +
+                                  sOutput);
 
                 Page sourcePage = sourceDoc.GetPage(0);
                 Page destinationPage = destinationDoc.GetPage(0);
@@ -81,7 +81,8 @@ namespace AnnotationCopyPaste
                             // copy/paste the annotation, in either case the message in
                             // the exception will specify which operation (copy or paste)
                             // that it could not complete.
-                            LinkAnnotation copiedLink = ((LinkAnnotation)ann).CopyTo(destinationPage, linkCenter);
+                            // ReSharper disable once UnusedVariable
+                            LinkAnnotation copiedLink = ((LinkAnnotation) ann).CopyTo(destinationPage, linkCenter);
                         }
                         catch (ApplicationException ae)
                         {
@@ -91,7 +92,6 @@ namespace AnnotationCopyPaste
                 }
 
                 destinationDoc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

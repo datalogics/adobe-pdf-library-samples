@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Datalogics.PDFL;
 
 /*
@@ -15,10 +10,10 @@ using Datalogics.PDFL;
  * used to reduce the resolution of an image or series of images, to make them smaller. As a result
  * the process makes the PDF document smaller.
  *
- * For more detail see the description of the ImageResampling sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/entering-or-generating-graphics-from-pdf-files
+ * For more detail see the description of the ImageResampling sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/entering-or-generating-graphics-from-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -30,21 +25,22 @@ namespace ImageResampling
     class ImageResampling
     {
         static int numreplaced;
-        static void ResampleImages(Content content )
+
+        static void ResampleImages(Content content)
         {
             int i = 0;
             while (i < content.NumElements)
             {
                 Element e = content.GetElement(i);
-                Console.WriteLine(i + " / "+content.NumElements+" = " + e.GetType().ToString());
+                Console.WriteLine(i + " / " + content.NumElements + " = " + e.GetType());
                 if (e is Datalogics.PDFL.Image)
                 {
-                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image)e;
+                    Datalogics.PDFL.Image img = (Datalogics.PDFL.Image) e;
                     try
                     {
                         Datalogics.PDFL.Image newimg = img.ChangeResolution(400);
                         Console.WriteLine("Replacing an image...");
-                        content.AddElement((Element)newimg, i);
+                        content.AddElement(newimg, i);
                         content.RemoveElement(i);
                         Console.WriteLine("Replaced.");
                         numreplaced++;
@@ -71,6 +67,7 @@ namespace ImageResampling
                     ResampleImages(formcontent);
                     (e as Form).Content = formcontent;
                 }
+
                 i++;
             }
         }
@@ -79,12 +76,13 @@ namespace ImageResampling
         {
             Console.WriteLine("ImageResampling Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../ImageResampling-out.pdf";
+                String sOutput = "ImageResampling-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -110,6 +108,7 @@ namespace ImageResampling
                             pg.UpdateContent();
                         }
                     }
+
                     doc.Save(SaveFlags.Full | SaveFlags.CollectGarbage, sOutput);
                 }
                 catch (Exception ex)
@@ -120,4 +119,3 @@ namespace ImageResampling
         }
     }
 }
-

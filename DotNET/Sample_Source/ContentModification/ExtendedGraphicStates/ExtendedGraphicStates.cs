@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -12,10 +10,10 @@ using Datalogics.PDFL;
  * 
  * This sample program shows how to use the Extended Graphic State object to add graphics parameters to an image.
  * 
- * For more detail see the description of the ExtendedGraphicState sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/adding-text-and-graphic-elements#extendedgraphicstates
+ * For more detail see the description of the ExtendedGraphicState sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/adding-text-and-graphic-elements#extendedgraphicstates
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -37,8 +35,27 @@ namespace ExtendedGraphicStates
             // by setting the BlendMode property to each of the 16 enumerations
             // on a foreground "ducky" over a background rainbow pattern, and 
             // plopping all these images on a single page.
+
             Text t = new Text();
-            Font f = new Font("Arial", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+            Font f;
+            try
+            {
+                f = new Font("Arial", FontCreateFlags.Embedded | FontCreateFlags.Subset);
+            }
+            catch (ApplicationException ex)
+            {
+                if (ex.Message.Equals("The specified font could not be found.") &&
+                    System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices
+                        .OSPlatform.Linux) &&
+                    !System.IO.Directory.Exists("/usr/share/fonts/msttcore/"))
+                {
+                    Console.WriteLine("Please install Microsoft Core Fonts on Linux first.");
+                    return;
+                }
+
+                throw;
+            }
+
             GraphicState gsText = new GraphicState();
             gsText.FillColor = new Color(0, 0, 1.0);
             TextState ts = new TextState();
@@ -155,6 +172,7 @@ namespace ExtendedGraphicStates
                     xgs.BlendMode = BlendMode.Luminosity;
                     tr = new TextRun("Luminosity", f, gsText, ts, m);
                 }
+
                 t.AddRun(tr);
                 docpage.Content.AddElement(t);
                 docpage.UpdateContent();
@@ -169,13 +187,14 @@ namespace ExtendedGraphicStates
         static void Main(string[] args)
         {
             Console.WriteLine("ExtendedGraphicStates Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput1 = Library.ResourceDirectory + "Sample_Input/ducky_alpha.tif";
                 String sInput2 = Library.ResourceDirectory + "Sample_Input/rainbow.tif";
-                String sOutput = "../ExtendedGraphicStates-out.pdf";
+                String sOutput = "ExtendedGraphicStates-out.pdf";
 
                 if (args.Length > 0)
                     sInput1 = args[0];
@@ -186,7 +205,8 @@ namespace ExtendedGraphicStates
                 if (args.Length > 2)
                     sOutput = args[2];
 
-                Console.WriteLine("Input files: " + sInput1 + " and " + sInput2 + ". Saving to output file: " + sOutput);
+                Console.WriteLine("Input files: " + sInput1 + " and " + sInput2 + ". Saving to output file: " +
+                                  sOutput);
 
                 Document doc = new Document();
 
@@ -199,7 +219,6 @@ namespace ExtendedGraphicStates
 
                 doc.EmbedFonts();
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

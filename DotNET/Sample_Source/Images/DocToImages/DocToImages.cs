@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -10,10 +9,10 @@ using Datalogics.PDFL;
  * formatting values manually at the command line. 
  *
  * For more detail, and information about the command line parameters, see the description of the DocToImages
- * sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/converting-pdf-pages-to-images/#doctoimages
+ * sample program on our Developer's site,
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/converting-pdf-pages-to-images/#doctoimages
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -24,42 +23,44 @@ namespace DocToImages
 {
     public class DocToImagesOptions
     {
-        ImageType       outputformat = ImageType.Invalid;
-        ColorSpace      color = ColorSpace.DeviceRGB;
-        bool            grayhalftone = false;
-        bool            firstpageonly = false;
-        int             quality=0;
-        double          hres = 300.0;
-        double          vres = 300.0;
-        List<string>    fontdirs = new List<string>(0);
-        int             hpixelsize = 0;
-        int             vpixelsize = 0;
+        ImageType outputformat = ImageType.Invalid;
+        ColorSpace color = ColorSpace.DeviceRGB;
+        bool grayhalftone;
+        bool firstpageonly;
+        int quality;
+        double hres = 300.0;
+        double vres = 300.0;
+        List<string> fontdirs = new List<string>(0);
+        int hpixelsize;
+        int vpixelsize;
         CompressionCode compress = CompressionCode.Default;
-        string          pageregion = "crop";
-        List<int>       PageList = new List<int>(0);
-        int             evenoddpages = 0; // 1 = all odd pages, 2 = all even pages.
-        string          outputfilename = "";
-        string          outputdirname = "";
-        SmoothFlags     smoothingflags = SmoothFlags.None;
-        bool            reversegray = false;
-        bool            blackisone = false;
-        bool            multipage = false;
-        int             ZeroSuffix = 0;
-        bool            asprinted = false;
+        string pageregion = "crop";
+        List<int> PageList = new List<int>(0);
+        int evenoddpages; // 1 = all odd pages, 2 = all even pages.
+        string outputfilename = "";
+        string outputdirname = "";
+        SmoothFlags smoothingflags = SmoothFlags.None;
+        bool reversegray;
+        bool blackisone;
+        bool multipage;
+        int ZeroSuffix;
+        bool asprinted;
 
         public void setoutputformat(ImageType format)
         {
             outputformat = format;
         }
+
         public ImageType getoutputformat()
         {
-            return(outputformat);
+            return (outputformat);
         }
 
         public void setcolor(ColorSpace outputcolor)
         {
             color = outputcolor;
         }
+
         public ColorSpace getcolor()
         {
             return (color);
@@ -69,6 +70,7 @@ namespace DocToImages
         {
             grayhalftone = halftone;
         }
+
         public bool getgrayhalftone()
         {
             return (grayhalftone);
@@ -78,6 +80,7 @@ namespace DocToImages
         {
             firstpageonly = firstonly;
         }
+
         public bool getfirst()
         {
             return (firstpageonly);
@@ -87,6 +90,7 @@ namespace DocToImages
         {
             quality = q;
         }
+
         public int getquality()
         {
             return (quality);
@@ -96,6 +100,7 @@ namespace DocToImages
         {
             hres = h;
         }
+
         public double gethres()
         {
             return (hres);
@@ -105,6 +110,7 @@ namespace DocToImages
         {
             vres = v;
         }
+
         public double getvres()
         {
             return (vres);
@@ -128,6 +134,7 @@ namespace DocToImages
         {
             hpixelsize = h;
         }
+
         public int gethpixels()
         {
             return (hpixelsize);
@@ -137,6 +144,7 @@ namespace DocToImages
         {
             vpixelsize = v;
         }
+
         public int getvpixels()
         {
             return (vpixelsize);
@@ -146,6 +154,7 @@ namespace DocToImages
         {
             compress = cc;
         }
+
         public CompressionCode getcompress()
         {
             return (compress);
@@ -155,6 +164,7 @@ namespace DocToImages
         {
             pageregion = region;
         }
+
         public string getpageregion()
         {
             return (pageregion);
@@ -172,7 +182,7 @@ namespace DocToImages
 
         public List<int> getpagelist()
         {
-            return(PageList);
+            return (PageList);
         }
 
         /*
@@ -205,6 +215,7 @@ namespace DocToImages
         {
             outputfilename = outputfile;
         }
+
         public string getoutputfile()
         {
             return (outputfilename);
@@ -214,6 +225,7 @@ namespace DocToImages
         {
             outputdirname = outputdir;
         }
+
         public string getoutputdir()
         {
             return (outputdirname);
@@ -223,6 +235,7 @@ namespace DocToImages
         {
             smoothingflags = flags;
         }
+
         public SmoothFlags getsmooth()
         {
             return (smoothingflags);
@@ -232,6 +245,7 @@ namespace DocToImages
         {
             reversegray = reverse;
         }
+
         public bool getreversegray()
         {
             return (reversegray);
@@ -241,6 +255,7 @@ namespace DocToImages
         {
             blackisone = isblackone;
         }
+
         public bool getblackisone()
         {
             return (blackisone);
@@ -250,6 +265,7 @@ namespace DocToImages
         {
             multipage = multi;
         }
+
         public bool getmultipage()
         {
             return (multipage);
@@ -259,6 +275,7 @@ namespace DocToImages
         {
             ZeroSuffix = numdigs;
         }
+
         public int getZeroSuffix()
         {
             return (ZeroSuffix);
@@ -268,6 +285,7 @@ namespace DocToImages
         {
             asprinted = asp;
         }
+
         public bool getasprinted()
         {
             return (asprinted);
@@ -275,12 +293,12 @@ namespace DocToImages
 
         public bool checkformattype()
         {
-            return ( outputformat != ImageType.Invalid );
+            return (outputformat != ImageType.Invalid);
         }
 
         public bool checkcolorspacegrayhalftone()
         {
-            if (grayhalftone == true)
+            if (grayhalftone)
                 return (color == ColorSpace.DeviceGray);
             else
                 return true;
@@ -313,14 +331,15 @@ namespace DocToImages
         public bool checkcompressionnone()
         {
             if (compress == CompressionCode.NONE)
-                return (outputformat == ImageType.BMP || outputformat == ImageType.PNG || outputformat == ImageType.TIFF);
+                return (outputformat == ImageType.BMP || outputformat == ImageType.PNG ||
+                        outputformat == ImageType.TIFF);
             else
                 return true;
         }
 
         public bool checkreversegray()
         {
-            if (reversegray == true)
+            if (reversegray)
                 return (color == ColorSpace.DeviceGray);
             else
                 return true;
@@ -328,7 +347,7 @@ namespace DocToImages
 
         public bool checkblackisoneformat()
         {
-            if (blackisone == true)
+            if (blackisone)
                 return (outputformat == ImageType.TIFF);
             else
                 return true;
@@ -337,8 +356,8 @@ namespace DocToImages
         public bool checktiffcompressgrayhalftone()
         {
             if (compress == CompressionCode.G3 || compress == CompressionCode.G4)
-                return (color == ColorSpace.DeviceGray && grayhalftone == true);
-            else if (color == ColorSpace.DeviceGray && grayhalftone == true && outputformat == ImageType.TIFF)
+                return (color == ColorSpace.DeviceGray && grayhalftone);
+            else if (color == ColorSpace.DeviceGray && grayhalftone && outputformat == ImageType.TIFF)
                 return (compress == CompressionCode.G3 || compress == CompressionCode.G4);
             else
                 return true;
@@ -354,7 +373,7 @@ namespace DocToImages
 
         public bool checkgrayhalftoneformat()
         {
-            if (grayhalftone == true)
+            if (grayhalftone)
                 return (outputformat == ImageType.TIFF);
             else
                 return true;
@@ -362,7 +381,7 @@ namespace DocToImages
 
         public bool checkfirstonlypagerange()
         {
-            if (firstpageonly == true)
+            if (firstpageonly)
                 return (PageList.Count == 0);
             else
                 return true;
@@ -370,7 +389,7 @@ namespace DocToImages
 
         public bool checkfirstonlyevenodd()
         {
-            if (firstpageonly == true)
+            if (firstpageonly)
                 return (evenoddpages == 0);
             else
                 return true;
@@ -378,13 +397,13 @@ namespace DocToImages
 
         public bool checkmultiformat()
         {
-            if (multipage == true)
+            if (multipage)
                 return (outputformat == ImageType.TIFF);
             else
                 return true;
         }
 
-        public bool checkpagelist( int pagemax )
+        public bool checkpagelist(int pagemax)
         {
             bool rc = true;
             if (PageList.Count != 0)
@@ -398,20 +417,23 @@ namespace DocToImages
                     }
                 }
             }
-            return(rc);
+
+            return (rc);
         }
 
         public bool checkfontdirs()
         {
             bool rc = true;
-            for (int i = 0; i < fontdirs.Count; i++ )
+            for (int i = 0; i < fontdirs.Count; i++)
             {
-                if (System.IO.Directory.Exists(fontdirs[i]) == false )
+                if (System.IO.Directory.Exists(fontdirs[i]) == false)
                 {
-                    Console.WriteLine("The directory path " + fontdirs[i] + " listed in the fontlist options is not a valid directory.");
+                    Console.WriteLine("The directory path " + fontdirs[i] +
+                                      " listed in the fontlist options is not a valid directory.");
                     rc = false;
                 }
             }
+
             return (rc);
         }
     }
@@ -426,10 +448,11 @@ namespace DocToImages
             Console.WriteLine("Options are one or more of:");
             Console.WriteLine("-format=[tif, jpg, bmp, png, gif], No default");
             Console.WriteLine("-color=[gray|cmyk|rgb], default=rgb");
-            Console.WriteLine("-grayhalftone = [n|y] - is a grayscale image halftone? Only valid for format=tif and color=gray.");
+            Console.WriteLine(
+                "-grayhalftone = [n|y] - is a grayscale image halftone? Only valid for format=tif and color=gray.");
             Console.WriteLine("-first=[y|n] Only convert the first PDFL page, default=n");
             Console.WriteLine("-quality=1-100. Only valid for an output type of jpg, default for jpg is 75");
-            Console.WriteLine("resolution=[horiz x vert] ( target DPI, [12-1200], default=300");
+            Console.WriteLine("-resolution=[horiz x vert] ( target DPI, [12-1200], default=300");
             Console.WriteLine("\tA single value sets both horizontal and vertical the same.");
             Console.WriteLine("\tex: resolution=300 -or - resolution=480x640");
             Console.WriteLine("-fontlist=\"dir1;dir2;dirN\"");
@@ -445,7 +468,8 @@ namespace DocToImages
             Console.WriteLine("\tlzw is only valid for an output format of tif");
             Console.WriteLine("-region=[crop|media|art|trim|bleed|bounding]");
             Console.WriteLine("\t(region of PDF page to rasterize, default=crop");
-            Console.WriteLine("-pages=[comma separated list or range, or even or odd], i.e., pages=2,4,7-9,14. Default is all.");
+            Console.WriteLine(
+                "-pages=[comma separated list or range, or even or odd], i.e., pages=2,4,7-9,14. Default is all.");
             Console.WriteLine("-output=[filename], (default=input filename)");
             Console.WriteLine("-smoothing=[none|text|all], (default=none");
             Console.WriteLine("-reverse=[y|n], Reverse black/white, for gray images only.");
@@ -455,44 +479,42 @@ namespace DocToImages
             Console.WriteLine("-asprinted=[y|n], default=n, Renders only printable annotations.");
         }
 
-        static string CreateFileSuffix( string filename, ImageType imagetype)
+        static string CreateFileSuffix(string filename, ImageType imagetype)
         {
-            string  outputfile= "";
-            switch(imagetype)
+            string outputfile = "";
+            switch (imagetype)
             {
-                case    ImageType.BMP:
+                case ImageType.BMP:
                     outputfile = filename + ".bmp";
                     break;
 
-                case    ImageType.GIF:
+                case ImageType.GIF:
                     outputfile = filename + ".gif";
                     break;
 
-                case    ImageType.JPEG:
+                case ImageType.JPEG:
                     outputfile = filename + ".jpg";
                     break;
 
-                case    ImageType.PNG:
+                case ImageType.PNG:
                     outputfile = filename + ".png";
                     break;
 
-                case    ImageType.TIFF:
+                case ImageType.TIFF:
                     outputfile = filename + ".tif";
                     break;
-
-                default:
-                    break;
             }
+
             return (outputfile);
         }
 
-        static string formatdigits( int numdigits, int counter)
+        static string formatdigits(int numdigits, int counter)
         {
             string counterstring = counter.ToString();
             string ZeroSuffix = "";
-            if ( counterstring.Length >= numdigits)
+            if (counterstring.Length >= numdigits)
             {
-                return( counterstring);
+                return (counterstring);
             }
 
             for (int x = 0; x < numdigits - counterstring.Length; x++)
@@ -508,7 +530,8 @@ namespace DocToImages
         {
             string outputfilepath;
             if (options.getoutputdir() != "")
-                outputfilepath = options.getoutputdir() + "/" + options.getoutputfile() + formatdigits(options.getZeroSuffix(), imageIndex);
+                outputfilepath = options.getoutputdir() + "/" + options.getoutputfile() +
+                                 formatdigits(options.getZeroSuffix(), imageIndex);
             else
                 outputfilepath = options.getoutputfile() + formatdigits(options.getZeroSuffix(), imageIndex);
 
@@ -542,12 +565,12 @@ namespace DocToImages
                 Environment.Exit(1);
             }
 
-            for (int i = 0; i < args.Length-1; i++)
+            for (int i = 0; i < args.Length - 1; i++)
             {
                 String arg = args[i];
                 if (arg.StartsWith("-") && arg.Contains("="))
                 {
-                    String opt = arg.Substring(arg.IndexOf("=") + 1);
+                    String opt = arg.Substring(arg.IndexOf("=", StringComparison.Ordinal) + 1);
                     if (arg.StartsWith("-format="))
                     {
                         // Process output format option
@@ -573,9 +596,11 @@ namespace DocToImages
                         }
                         else
                         {
-                            Console.WriteLine("Invalid value for the format option. Valid values are jpg, tif, bmp, png, gif");
+                            Console.WriteLine(
+                                "Invalid value for the format option. Valid values are jpg, tif, bmp, png, gif");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -599,6 +624,7 @@ namespace DocToImages
                             Console.WriteLine("Invalid value for the color option. Valid values are gray, rgb, cmyk");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -607,13 +633,14 @@ namespace DocToImages
                         // Process grayscale half tone            
                         if (opt.Equals("y"))
                             options.setgrayhalftone(true);
-                        else if ( opt.Equals("n"))
+                        else if (opt.Equals("n"))
                             options.setgrayhalftone(false);
                         else
                         {
                             Console.WriteLine("Invalid value for the grayhalftone option.  Valid values are n or y");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -633,6 +660,7 @@ namespace DocToImages
                             Console.WriteLine("Invalid value for the first option.  Valid values are 'y' and 'n'.");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -640,11 +668,12 @@ namespace DocToImages
                     {
                         // Process jpeg quality option
                         int quality = int.Parse(opt);
-                        if (quality < 1 || 1 > 100)
+                        if (quality < 1)
                         {
                             Console.WriteLine("Invalid value for the quality option.  Valid values are 1 through 100.");
                             Environment.Exit(1);
                         }
+
                         options.setquality(quality);
                         continue;
                     }
@@ -654,8 +683,8 @@ namespace DocToImages
                         // Process horizontal and/or vertical resolution option
                         if (opt.Contains("x"))
                         {
-                            string hopt = opt.Substring(0, opt.IndexOf("x"));
-                            String vopt = opt.Substring(opt.IndexOf("x") + 1);
+                            string hopt = opt.Substring(0, opt.IndexOf("x", StringComparison.Ordinal));
+                            String vopt = opt.Substring(opt.IndexOf("x", StringComparison.Ordinal) + 1);
                             options.sethres(double.Parse(hopt));
                             options.setvres(double.Parse(vopt));
                         }
@@ -665,6 +694,7 @@ namespace DocToImages
                             options.sethres(res);
                             options.setvres(res);
                         }
+
                         continue;
                     }
 
@@ -680,8 +710,8 @@ namespace DocToImages
                         // process size in pixels option
                         if (opt.Contains("x"))
                         {
-                            string hopt = opt.Substring(0, opt.IndexOf("x"));
-                            String vopt = opt.Substring(opt.IndexOf("x") + 1);
+                            string hopt = opt.Substring(0, opt.IndexOf("x", StringComparison.Ordinal));
+                            String vopt = opt.Substring(opt.IndexOf("x", StringComparison.Ordinal) + 1);
                             options.sethpixels(int.Parse(hopt));
                             options.setvpixels(int.Parse(vopt));
                         }
@@ -691,6 +721,7 @@ namespace DocToImages
                             options.sethpixels(pixels);
                             options.setvpixels(pixels);
                         }
+
                         continue;
                     }
 
@@ -731,9 +762,11 @@ namespace DocToImages
                         }
                         else
                         {
-                            Console.WriteLine("Invalid value for the compression option.  Valid values are: no|lzw|g3|g4|jpg");
+                            Console.WriteLine(
+                                "Invalid value for the compression option.  Valid values are: no|lzw|g3|g4|jpg");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -741,11 +774,13 @@ namespace DocToImages
                     {
                         // process page output region option
                         if (!(opt.Equals("crop") || opt.Equals("media") || opt.Equals("art") ||
-                            opt.Equals("trim") || opt.Equals("bleed") || opt.Equals("bounding")))
+                              opt.Equals("trim") || opt.Equals("bleed") || opt.Equals("bounding")))
                         {
-                            Console.WriteLine("Invalid value for the region option.  Value values are: crop|media|art|trim|bleed|bounding");
+                            Console.WriteLine(
+                                "Invalid value for the region option.  Value values are: crop|media|art|trim|bleed|bounding");
                             Environment.Exit(1);
                         }
+
                         options.setpageregion(opt);
                         continue;
                     }
@@ -796,6 +831,7 @@ namespace DocToImages
                                 }
                             }
                         }
+
                         continue;
                     }
 
@@ -823,9 +859,11 @@ namespace DocToImages
                         }
                         else
                         {
-                            Console.WriteLine("Invalid value for the smoothing option.  Valid values are none|text|all");
+                            Console.WriteLine(
+                                "Invalid value for the smoothing option.  Valid values are none|text|all");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -845,6 +883,7 @@ namespace DocToImages
                             Console.WriteLine("Invalid value for the reverse option.  Valid values are 'y' and 'n'.");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -861,9 +900,11 @@ namespace DocToImages
                         }
                         else
                         {
-                            Console.WriteLine("Invalid value for the blackisone option.  Valid values are 'y' and 'n'.");
+                            Console.WriteLine(
+                                "Invalid value for the blackisone option.  Valid values are 'y' and 'n'.");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -883,6 +924,7 @@ namespace DocToImages
                             Console.WriteLine("Invalid value for the multi option.  Valid values are 'y' and 'n'.");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
 
@@ -894,6 +936,7 @@ namespace DocToImages
                         {
                             Console.WriteLine("Invalid value for the digits option. Valid values are 0-9.");
                         }
+
                         options.setZeroSuffix(numdigits);
                         continue;
                     }
@@ -914,8 +957,10 @@ namespace DocToImages
                             Console.WriteLine("Invalid value for the asprinted option.  Valid values are 'y' and 'n'.");
                             Environment.Exit(1);
                         }
+
                         continue;
                     }
+
                     Console.WriteLine("Invalid option: " + arg);
                     Usage();
                     Environment.Exit(1);
@@ -982,7 +1027,8 @@ namespace DocToImages
 
             if (options.checktiffcompressgrayhalftone() == false)
             {
-                Console.WriteLine("compression can only be set to 'g3' or 'g4' if grayhalftone is set to 'y' and color is set to 'gray'");
+                Console.WriteLine(
+                    "compression can only be set to 'g3' or 'g4' if grayhalftone is set to 'y' and color is set to 'gray'");
                 errorcount++;
             }
 
@@ -1028,12 +1074,11 @@ namespace DocToImages
                 Environment.Exit(1);
             }
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library(options.getfontdirs()))
             {
-
                 Document pdfdocument = null;
                 int numpages = 0;
-                List<int> pagelist = new List<int>(0);
                 try
                 {
                     pdfdocument = new Document(docpath);
@@ -1054,18 +1099,23 @@ namespace DocToImages
                 if (options.getoutputfile() == "")
                 {
                     outputfilename = docpath;
-                } else
-                {
-                    outputfilename =options.getoutputfile();
                 }
+                else
+                {
+                    outputfilename = options.getoutputfile();
+                }
+
                 options.setoutputdir(System.IO.Path.GetDirectoryName(outputfilename));
-                string[] basefilename = System.IO.Path.GetFileName(outputfilename).Split('.'); // split off the .pdf suffix.
+                string[] basefilename =
+                    System.IO.Path.GetFileName(outputfilename).Split('.'); // split off the .pdf suffix.
                 options.setoutputfile(basefilename[0]);
 
 
                 if (options.checkpagelist(numpages) == false)
                 {
-                    Console.WriteLine("The list of pages given in the 'pages' option is outside the number of pages in this PDF document: " + pdfdocument.NumPages);
+                    Console.WriteLine(
+                        "The list of pages given in the 'pages' option is outside the number of pages in this PDF document: " +
+                        pdfdocument.NumPages);
                     Environment.Exit(1);
                 }
 
@@ -1074,30 +1124,32 @@ namespace DocToImages
                  * all odd or all even, then populate the list here and then reget the list.
                  */
 
-                pagelist = options.getpagelist();
+                List<int> pagelist = options.getpagelist();
                 if (pagelist.Count == 0)
                 {
-                    if (options.getfirst() == true) // First page only.
+                    if (options.getfirst()) // First page only.
                     {
                         numpages = 1; // Will modify the operation of the loop below.
                     }
+
                     for (int i = 0; i < numpages; i++)
                     {
                         // Remember in the Doc object page #'s start with 0, but physically they start with 1.
-                        if ((options.onlyodd() == false && options.onlyeven() == false) ||  // all pages
-                            (options.onlyodd() == true && (((i + 1) % 2) == 1)) ||          // this is an odd page
-                            (options.onlyeven() == true && (((i + 1) % 2) == 0)))           // this is an even page
+                        if ((options.onlyodd() == false && options.onlyeven() == false) || // all pages
+                            (options.onlyodd() && (((i + 1) % 2) == 1)) || // this is an odd page
+                            (options.onlyeven() && (((i + 1) % 2) == 0))) // this is an even page
                         {
                             options.appendpagelist(i);
                         }
                     }
+
                     pagelist = options.getpagelist();
                 }
 
                 PageImageParams pip = new PageImageParams(options.getcolor(), options.getsmooth(), options.gethpixels(),
                     options.getvpixels(), options.gethres(), options.getvres(),
                     (DrawFlags.UseAnnotFaces | DrawFlags.DoLazyErase));
-                if (options.getasprinted() == true)
+                if (options.getasprinted())
                     pip.PageDrawFlags |= DrawFlags.IsPrinting;
 
                 ImageCollection Pageimagecollection = new ImageCollection();
@@ -1114,10 +1166,13 @@ namespace DocToImages
                 {
                     isp.JPEGQuality = options.getquality();
                 }
+
                 isp.ReverseGray = options.getreversegray();
                 isp.TIFFBlackIsOne = options.getblackisone();
 
-                for (int i = 0; i < pagelist.Count; i++) // Get the images of the PDF pages to create an image collection.
+                for (int i = 0;
+                    i < pagelist.Count;
+                    i++) // Get the images of the PDF pages to create an image collection.
                 {
                     Page docpage = pdfdocument.GetPage(pagelist[i]);
                     Rect PageRect = null;
@@ -1150,11 +1205,11 @@ namespace DocToImages
                         Console.WriteLine("Unknown page region option.");
                         Environment.Exit(1);
                     }
+
                     try
                     {
-
                         Image pageimage = docpage.GetImage(PageRect, pip);
-                        if (options.getmultipage() == true)
+                        if (options.getmultipage())
                         {
                             Pageimagecollection.Append(pageimage);
                         }
@@ -1170,17 +1225,18 @@ namespace DocToImages
                         Environment.Exit(1);
                     }
                 }
+
                 /* 
                  * Pageimagecollection now Contains, as the name states,
                  * a collection of images created from the PDF pages according
                  * to the user's options.  Now to post process them to the image.
                  * type according to the user's options.
                  */
-                if (options.getmultipage() == true)
+                if (options.getmultipage())
                 {
                     string outputfilepath;
                     if (options.getoutputdir() != "")
-                        outputfilepath = options.getoutputdir()+"/"+options.getoutputfile();
+                        outputfilepath = options.getoutputdir() + "/" + options.getoutputfile();
                     else
                         outputfilepath = options.getoutputfile();
 
@@ -1196,6 +1252,5 @@ namespace DocToImages
                 }
             }
         }
-
     }
 }

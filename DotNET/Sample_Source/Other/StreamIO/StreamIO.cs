@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Datalogics.PDFL;
 
@@ -15,10 +13,10 @@ using Datalogics.PDFL;
  * 
  * This program is similar to ImagefromStream, but in this example the PDF file streams hold text.
  *
- * For more detail see the description of the StreamIO sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/exporting-images-from-pdf-files/#streamio
+ * For more detail see the description of the StreamIO sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/exporting-images-from-pdf-files/#streamio
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -31,38 +29,39 @@ namespace StreamIO
         /// <summary>
         /// Demonstrate reading a PDF Document from a .NET Stream object.
         /// </summary>
-        /// <param name="filename">The filename of the PDF document to read.</param>
+        /// <param name="path">The filename of the PDF document to read.</param>
+        /// <param name="output">A string to receive the contents of the PDF document.</param>
         void ReadFromStream(String path, String output)
-		{
-			// Create a .NET FileStream object, opened using the path argument.
-			// A FileStream is used here for demonstration only, but the technique
-			// works just as well for MemoryStream, or other streams which support
-			// seeking.  In practice, when dealing with files it is usually more
-			// appropriate to pass the path directly to the Document constructor.
-			FileStream fs = new FileStream(path, FileMode.Open);
-			
-			// A document is then opened, using the FileStream as its data source.
-			using (Document d = new Document(fs))
-			{
-				// Add a watermark to have some visible change to the PDF
-				WatermarkParams wp = new WatermarkParams();
-				wp.TargetRange.PageSpec = PageSpec.AllPages;
-				WatermarkTextParams wtp = new WatermarkTextParams();
-				wtp.Text = "This PDF was opened\nfrom a Stream";
-				d.Watermark(wtp, wp);
+        {
+            // Create a .NET FileStream object, opened using the path argument.
+            // A FileStream is used here for demonstration only, but the technique
+            // works just as well for MemoryStream, or other streams which support
+            // seeking.  In practice, when dealing with files it is usually more
+            // appropriate to pass the path directly to the Document constructor.
+            FileStream fs = new FileStream(path, FileMode.Open);
 
-				// The document can not simply be saved at this point.
-				// d.Save(SaveFlags.Incremental);  // This will throw an exception.
+            // A document is then opened, using the FileStream as its data source.
+            using (Document d = new Document(fs))
+            {
+                // Add a watermark to have some visible change to the PDF
+                WatermarkParams wp = new WatermarkParams();
+                wp.TargetRange.PageSpec = PageSpec.AllPages;
+                WatermarkTextParams wtp = new WatermarkTextParams();
+                wtp.Text = "This PDF was opened\nfrom a Stream";
+                d.Watermark(wtp, wp);
 
-				// Instead, the document can be saved to a file. Saving the document 
-				// to a file causes the document to use the file as its data source.
-				d.Save(SaveFlags.Full, output);
+                // The document can not simply be saved at this point.
+                // d.Save(SaveFlags.Incremental);  // This will throw an exception.
 
-				// Make another minor change.
-				d.Creator = "DLE StreamIO Sample";
+                // Instead, the document can be saved to a file. Saving the document
+                // to a file causes the document to use the file as its data source.
+                d.Save(SaveFlags.Full, output);
 
-				// Since the document is now backed by a file, an incremental save is okay.
-				d.Save(SaveFlags.Incremental);
+                // Make another minor change.
+                d.Creator = "PDFL StreamIO Sample";
+
+                // Since the document is now backed by a file, an incremental save is okay.
+                d.Save(SaveFlags.Incremental);
             }
         }
 
@@ -77,7 +76,7 @@ namespace StreamIO
             using (Document d = new Document())
             {
                 // Add some content to the Document so there will be something to see.
-                d.Creator = "DLE StreamIO Sample";
+                d.Creator = "PDFL StreamIO Sample";
                 Page p = d.CreatePage(Document.BeforeFirstPage, new Rect(0, 0, 612, 792));
                 AddContentToPage(p);
 
@@ -102,7 +101,6 @@ namespace StreamIO
             {
                 Console.WriteLine("creator: " + d.Creator);
             }
-
         }
 
         void AddContentToPage(Page p)
@@ -122,12 +120,12 @@ namespace StreamIO
         {
             StreamIOSample sample = new StreamIOSample();
             Console.WriteLine("StreamIO Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput1 =  "../StreamIO-out1.pdf";
-                String sOutput2 = "../StreamIO-out2.pdf";
+                String sOutput1 = "StreamIO-out1.pdf";
+                String sOutput2 = "StreamIO-out2.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -143,9 +141,7 @@ namespace StreamIO
                 sample.ReadFromStream(sInput, sOutput1);
 
                 sample.WriteToStream(sOutput2);
-
             }
         }
     }
 }
-

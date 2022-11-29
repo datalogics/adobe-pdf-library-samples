@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,10 +6,10 @@ using Datalogics.PDFL;
  * This sample demonstrates converting a standard PDF document into a
  * PDF Archive, or PDF/A, compliant version of a PDF file.
  *
- * For more detail see the description of the PDFAConverter sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/converting-and-merging-pdf-content
+ * For more detail see the description of the PDFAConverter sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/converting-and-merging-pdf-content
  * 
- * Copyright (c) 2007-2019, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -25,12 +23,13 @@ namespace PDFAConverter
         {
             Console.WriteLine("PDFAConverter Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../PDFAConverter-out.pdf";
+                String sOutput = "PDFAConverter-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -38,7 +37,7 @@ namespace PDFAConverter
                 if (args.Length > 1)
                     sOutput = args[1];
 
-                Console.WriteLine("Converting " + sInput + ", output file is " +  sOutput);
+                Console.WriteLine("Converting " + sInput + ", output file is " + sOutput);
 
                 using (Document doc = new Document(sInput))
                 {

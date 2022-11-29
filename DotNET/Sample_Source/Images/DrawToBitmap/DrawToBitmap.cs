@@ -1,22 +1,18 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-
+using SkiaSharp;
 using Datalogics.PDFL;
+using System.IO;
 
 /*
  *
- * This program sample converts a PDF file to a series of bitmap image files.
+ * This program sample converts a PDF file to a series of image files.
  * 
- * For more detail see the description of the DrawtoBitmap sample program on our Developer's site,
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/converting-pdf-pages-to-images/#drawtobitmap
+ * For more detail see the description of the DrawtoBitmap sample program on our Developer’s site,
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/converting-pdf-pages-to-images/#drawtobitmap
  * 
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -32,9 +28,9 @@ namespace DrawToBitmap
     {
         /// <summary>
         /// The method implements a callback (it MUST be named "Call", return a bool and take no arguments)
-        /// It will be driven by DLE and if the method returns true rendering will attempt to cancel.
+        /// It will be driven by PDFL and if the method returns true rendering will attempt to cancel.
         /// </summary>
-        /// <returns>A boolean that tells DLE to continue (false) or cancel (true)</returns>
+        /// <returns>A boolean that tells PDFL to continue (false) or cancel (true)</returns>
         public override bool Call()
         {
             mSomeBoolean = ((mSomeBoolean) ? false : true);
@@ -53,7 +49,7 @@ namespace DrawToBitmap
     {
         /// <summary>
         /// The method implements a callback (it MUST be named "Call" and exhibit the method signature described)
-        /// It will be driven by DLE and provide data that can be used to update a progress bar, etc.
+        /// It will be driven by PDFL and provide data that can be used to update a progress bar, etc.
         /// </summary>
         /// <param name="stagePercent">A percentage complete (of the stage!). Values will always be in the range of 0.0 (0%) to 1.0 (100%)</param>
         /// <param name="info">A string that will present optional information that may be written to user interface</param>
@@ -61,7 +57,8 @@ namespace DrawToBitmap
         public override void Call(float stagePercent, string info, RenderProgressStage stage)
         {
             mSomeBoolean = ((mSomeBoolean) ? false : true);
-            Console.WriteLine(String.Format("SampleRenderProgressProc Call (stage/stagePercent/info): {0} {1} {2}", stage, stagePercent, info));
+            Console.WriteLine("SampleRenderProgressProc Call (stage/stagePercent/info): {0} {1} {2}", stage,
+                stagePercent, info);
         }
 
         static private bool mSomeBoolean;
@@ -75,8 +72,7 @@ namespace DrawToBitmap
         /// The method constructs a DrawParams instance.
         /// </summary>
         /// <param name="matrix">the matrix for DrawParams</param>
-        /// <param name="width">the width for Update/Dest rectangle</param>
-        /// <param name="height">the height for Update/Dest rectangle</param>
+        /// <param name="updateRect">The portation of the page to draw</param>
         /// <param name="blackPointCompensation">the flag which allows to turn on black point compensation</param>
         /// <returns>DrawParams instance</returns>
         private static DrawParams ConstructDrawParams(Matrix matrix, Rect updateRect, bool blackPointCompensation)
@@ -85,6 +81,7 @@ namespace DrawToBitmap
 
             parms.Matrix = matrix;
             parms.UpdateRect = updateRect;
+            parms.ColorSpace = ColorSpace.DeviceRGBA;
             parms.DestRect = parms.UpdateRect.Transform(matrix);
 
             parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces;
@@ -99,18 +96,18 @@ namespace DrawToBitmap
         /// </summary>
         /// <param name="bitmap">the bitmap to save</param>
         /// <param name="nameSuffix">the suffix for saved file.</param>
-        private static void SaveBitmap(Bitmap bitmap, string nameSuffix)
+        private static void SaveBitmap(SKBitmap sKBitmap, string nameSuffix)
         {
-            bitmap.Save(String.Format("DrawTo{0}.bmp", nameSuffix), ImageFormat.Bmp);
-            bitmap.Save(String.Format("DrawTo{0}.jpg", nameSuffix), ImageFormat.Jpeg);
-            bitmap.Save(String.Format("DrawTo{0}.gif", nameSuffix), ImageFormat.Gif);
-            bitmap.Save(String.Format("DrawTo{0}.png", nameSuffix), ImageFormat.Png);
+            using (FileStream f = File.OpenWrite(String.Format("DrawTo{0}.jpg", nameSuffix)))
+                sKBitmap.Encode(SKEncodedImageFormat.Jpeg, 100).SaveTo(f);
+            using (FileStream f = File.OpenWrite(String.Format("DrawTo{0}.png", nameSuffix)))
+                sKBitmap.Encode(SKEncodedImageFormat.Png, 100).SaveTo(f);
         }
 
         /// <summary>
-        /// The method renders and saves the specified layer to the System.Drawing.Bitmap.
+        /// The method renders and saves the specified layer to the SkiaSharp.SKBitmap.
         /// </summary>
-        /// <param name="pg">the page that should be rendered into the bitmap</param>
+        /// <param name="pg">the page that should be rendered into the SKBitmap</param>
         /// <param name="parms">the DrawParams object</param>
         /// <param name="layerName">the layer name. It uses for saving process.</param>
         private static void DrawLayerToBitmap(Page pg, DrawParams parms, string layerName)
@@ -118,34 +115,16 @@ namespace DrawToBitmap
             int width = (int)Math.Ceiling(parms.DestRect.Width);
             int height = (int)Math.Ceiling(parms.DestRect.Height);
 
-            using (Bitmap bitmap = new Bitmap(width, height))
+            using (SKBitmap sKBitmap = new SKBitmap(width, height))
             {
-                pg.DrawContents(bitmap, parms);
-                bitmap.Save(String.Format("DrawLayer{0}ToBitmap.png", layerName), ImageFormat.Png);
+                pg.DrawContentsToSKBitmap(sKBitmap, parms);
+                using (FileStream f = File.OpenWrite(String.Format("DrawLayer{0}ToBitmap.png", layerName)))
+                    sKBitmap.Encode(SKEncodedImageFormat.Png, 100).SaveTo(f);
             }
         }
 
         /// <summary>
-        /// The method renders and saves the specified layer to a System.Drawing.Graphics.
-        /// </summary>
-        /// <param name="pg">the page wich should be rendered into the bitmap</param>
-        /// <param name="parms">the DrawParams object</param>
-        /// <param name="layerName">the layer name. It uses for saving process.</param>
-        private static void DrawLayerToGraphics(Page pg, DrawParams parms, string layerName)
-        {   // Draw as if to a DeviceContext (DC)
-            int width = (int)Math.Ceiling(parms.DestRect.Width);
-            int height = (int)Math.Ceiling(parms.DestRect.Height);
-
-            using (Bitmap bitmap = new Bitmap(width, height))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                pg.DrawContents(graphics, parms);
-                bitmap.Save(String.Format("DrawLayer{0}ToGraphics.png", layerName), ImageFormat.Png);
-            }
-        }
-
-        /// <summary>
-        /// The method renders the specified page's layers to a System.Drawing.Bitmap.
+        /// The method renders the specified page's layers to a SkiaSharp.SKBitmap.
         /// </summary>
         /// <param name="doc">Document whose layers should be rendered</param>
         /// <param name="pg">page to render</param>
@@ -162,7 +141,8 @@ namespace DrawToBitmap
                     states[i] = true;
 
                     using (OptionalContentContext occ = new OptionalContentContext(doc))
-                    {   // Render and save current layer
+                    {
+                        // Render and save current layer
                         occ.SetOCGStates(ocgs, states);
                         parms.OptionalContentContext = occ;
 
@@ -178,39 +158,7 @@ namespace DrawToBitmap
         }
 
         /// <summary>
-        /// The method renders the specified page's layers to a System.Drawing.Bitmap.
-        /// </summary>
-        /// <param name="doc">Document whose layers should be rendered</param>
-        /// <param name="pg">page to render</param>
-        /// <param name="parms">the DrawParams object</param>
-        static void DrawLayersToGraphics(Document doc, Page pg, DrawParams parms)
-        {
-            IList<OptionalContentGroup> ocgs = doc.OptionalContentGroups;
-            if (ocgs.Count > 0)
-            {
-                List<bool> states = new List<bool>(new bool[ocgs.Count]);
-                for (int i = 0; i < ocgs.Count; ++i)
-                {
-                    states[i] = true;
-
-                    using (OptionalContentContext occ = new OptionalContentContext(doc))
-                    {   // Render and save current layer
-                        occ.SetOCGStates(ocgs, states);
-                        parms.OptionalContentContext = occ;
-
-                        DrawLayerToGraphics(pg, parms, ocgs[i].Name);
-
-                        // return DrawParams to its initial value
-                        parms.OptionalContentContext = null;
-                    }
-
-                    states[i] = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// The method renders the specified page to a System.Drawing.Bitmap using DrawParams.
+        /// The method renders the specified page to a SkiaSharp.SKBitmap using DrawParams.
         /// </summary>
         /// <param name="pg">page to render</param>
         /// <param name="parms">the DrawParams object</param>
@@ -221,155 +169,24 @@ namespace DrawToBitmap
             int width = (int)Math.Ceiling(boundBox.Width);
             int height = (int)Math.Ceiling(boundBox.Height);
 
-            using (Bitmap bitmap = new Bitmap(width, height))
+            using (SKBitmap sKBitmap = new SKBitmap(width, height))
             {
                 parms.CancelProc = new SampleCancelProc();
                 parms.ProgressProc = new SampleRenderProgressProc();
-                pg.DrawContents(bitmap, parms);
-                SaveBitmap(bitmap, "Bitmap");
-            }
-        }
+                pg.DrawContentsToSKBitmap(sKBitmap, parms);
+                SaveBitmap(sKBitmap, "Bitmap");
 
-        /// <summary>
-        /// The method renders the specified page to a System.Drawing.Bitmap.
-        /// </summary>
-        /// <param name="pg">page to render</param>
-        /// <param name="matrix">matrix</param>
-        /// <param name="width">width of the destination Bitmap</param>
-        /// <param name="height">height of the destination Bitmap</param>
-        static void DrawToBitmapWithMatrix(Page pg, Matrix matrix, double width, double height)
-        {
-            int w = (int)Math.Ceiling(width);
-            int h = (int)Math.Ceiling(height);
-
-            using (Bitmap bitmap = new Bitmap(w, h))
-            {
-                Rect updateRect = new Rect(0, 0, width, height);
-                pg.DrawContents(bitmap, matrix, updateRect);
-                SaveBitmap(bitmap, "Bitmap");
-            }
-        }
-
-        /// <summary>
-        /// The method renders the specified page to a System.Drawing.Graphics using DrawParams.
-        /// </summary>
-        /// <param name="pg">page to render</param>
-        /// <param name="parms">the DrawParams object</param>
-        static void DrawToGraphicsWithDrawParams(Page pg, DrawParams parms)
-        {
-            Rect boundBox = parms.DestRect;
-
-            int width = (int)Math.Ceiling(boundBox.Width);
-            int height = (int)Math.Ceiling(boundBox.Height);
-
-            //
-            // Draw as if to a DeviceContext (DC)...
-            //
-
-            using (Bitmap bitmap = new Bitmap(width, height))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                parms.CancelProc = new SampleCancelProc();
-                parms.ProgressProc = new SampleRenderProgressProc();
-                pg.DrawContents(graphics, parms);
-                SaveBitmap(bitmap, "Graphics");
-            }
-        }
-
-        /// <summary>
-        /// The method renders the specified page to a System.Drawing.Graphics.
-        /// </summary>
-        /// <param name="pg">page to render</param>
-        /// <param name="matrix">matrix</param>
-        /// <param name="width">width of the destination Bitmap</param>
-        /// <param name="height">height of the destination Bitmap</param>
-        static void DrawToGraphicsWithMatrix(Page pg, Matrix matrix, double width, double height)
-        {
-            int w = (int)Math.Ceiling(width);
-            int h = (int)Math.Ceiling(height);
-
-            //
-            // Draw as if to a DeviceContext (DC)...
-            //
-
-            using (Bitmap bitmap = new Bitmap(w, h))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                Rect updateRect = new Rect(0, 0, width, height);
-                pg.DrawContents(graphics, matrix, updateRect);
-                SaveBitmap(bitmap, "Graphics");
-            }
-        }
-
-        /// <summary>
-        /// The method renders the specified page to a raw byte buffer.
-        /// </summary>
-        /// <param name="pg">page to render</param>
-        /// <param name="width">width of the destination rect </param>
-        /// <param name="height">height of the destination rect </param>
-        /// <param name="matrix">the matrix</param>
-        static void DrawToByteArray(Page pg, double width, double height, Matrix matrix)
-        {
-            Byte[] rawBytes = null;
-
-            Rect roundedDestRect;
-            using (DrawParams parms = new DrawParams())
-            {
-                parms.ColorSpace = ColorSpace.DeviceRGB;
-                parms.UpdateRect = pg.MediaBox;
-                parms.Matrix = matrix;
-                parms.Flags = DrawFlags.DoLazyErase | DrawFlags.UseAnnotFaces | DrawFlags.SwapComponents;
-                parms.SmoothFlags = SmoothFlags.Image | SmoothFlags.Text;
-                var destRect = parms.UpdateRect.Transform(matrix);
-
-                // Round the corners of the destRect so that it's a whole number of pixels.
-                // This removes any ambiguity about how DrawContents treats a rectangle that has
-                // a width or height that contains a fraction. It ensures that our assumptions about
-                // the data in the returned Byte array are the same as those made by DrawContents.
-                roundedDestRect = new Rect(
-                    Math.Round(destRect.LLx),
-                    Math.Round(destRect.LLy),
-                    Math.Round(destRect.URx),
-                    Math.Round(destRect.URy));
-
-                parms.DestRect = roundedDestRect;
-
-                parms.CancelProc = new SampleCancelProc();
-                parms.ProgressProc = new SampleRenderProgressProc();
-
-                rawBytes = (Byte[])pg.DrawContents(parms);
-            }
-
-            if (rawBytes == null)
-            {   // didn't draw
-                return;
-            }
-
-            // Make a Bitmap. Get the dimensions from the same rectangle specified
-            // as the DestRect in the DrawParams.
-            int w = (int) roundedDestRect.Width;
-            int h = (int) roundedDestRect.Height;
-            int stride = (w * 3 /* components */ + 3 /* padding */) & ~3;
-
-            using (Bitmap bitmap = new Bitmap(w, h, PixelFormat.Format24bppRgb))
-            {
-                Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-                var bitmapData =
-                    bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly,
-                                    bitmap.PixelFormat);
-                Debug.Assert(stride == bitmapData.Stride);
-                Marshal.Copy(rawBytes, 0, bitmapData.Scan0, rawBytes.Length);
-                bitmap.UnlockBits(bitmapData);
-                bitmap.Save("DrawToByteArray.png", ImageFormat.Png);
             }
         }
 
         static void Main(string[] args)
         {
+
             Console.WriteLine("DrawToBitmap Sample");
 
             try
             {
+                // ReSharper disable once UnusedVariable
                 using (Library lib = new Library())
                 {
                     Console.WriteLine("Initialized the library.");
@@ -406,38 +223,20 @@ namespace DrawToBitmap
 
                             bool enableBlackPointCompensation = true;
 
-                            using (DrawParams parms = ConstructDrawParams(matrix, pg.MediaBox, enableBlackPointCompensation))
+                            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                            using (DrawParams parms =
+                                ConstructDrawParams(matrix, pg.MediaBox, enableBlackPointCompensation))
                             {
-#if !MONO
-                                // Draw to Graphics
-                                Console.WriteLine(String.Format("DrawToGraphicsWithMatrix: {0} {1} {2}", matrix.ToString(), width, height));
-                                DrawToGraphicsWithMatrix(pg, matrix, width, height);    // Will NOT drive SampleRenderProgress(Cancel)Proc
-
-                                // Draw to Graphics using DrawParams with turned on black point compensation
-                                Console.WriteLine(String.Format("DrawToGraphicsWithDrawParams: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
-                                DrawToGraphicsWithDrawParams(pg, parms);    // Will drive SampleRenderProgress(Cancel)Proc
-
-                                // Demonstrate drawing to Graphics with params and OCGs
-                                // Demonstrate drawing layers
-                                Console.WriteLine(String.Format("DrawLayersToGraphics: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
-                                DrawLayersToGraphics(doc, pg, parms);   // Will NOT drive SampleRenderProgress(Cancel)Proc
-#endif
                                 // Demonstrate drawing to Bitmaps with params and OCGs
                                 // Demonstrate drawing layers
-                                Console.WriteLine(String.Format("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
+                                Console.WriteLine("DrawLayersToBitmap: {0} {1} {2}", parms.Matrix,
+                                    parms.UpdateRect.Width, parms.UpdateRect.Height);
                                 DrawLayersToBitmap(doc, pg, parms); // Will NOT drive SampleRenderProgressProc
 
-                                // Make a Bitmap
-                                Console.WriteLine(String.Format("DrawToBitmapWithMatrix: {0} {1} {2}", matrix.ToString(), width, height));
-                                DrawToBitmapWithMatrix(pg, matrix, width, height);  // Will NOT drive SampleRenderProgress(Cancel)Proc
-
                                 // Make a Bitmap using DrawParams with black point compensation turned on
-                                Console.WriteLine(String.Format("DrawToBitmapWithDrawParams: {0} {1} {2}", parms.Matrix.ToString(), parms.UpdateRect.Width, parms.UpdateRect.Height));
-                                DrawToBitmapWithDrawParams(pg, parms);  // Will drive SampleRenderProgress(Cancel)Proc
-
-                                // Demonstrate drawing to a byte array
-                                Console.WriteLine(String.Format("DrawToByteArray: {0} {1} {2}", matrix.ToString(), width, height));
-                                DrawToByteArray(pg, width, height, matrix); // Will drive SampleRenderProgress(Cancel)Proc
+                                Console.WriteLine("DrawToBitmapWithDrawParams: {0} {1} {2}", parms.Matrix,
+                                    parms.UpdateRect.Width, parms.UpdateRect.Height);
+                                DrawToBitmapWithDrawParams(pg, parms); // Will drive SampleRenderProgress(Cancel)Proc
                             }
                         }
                     }
