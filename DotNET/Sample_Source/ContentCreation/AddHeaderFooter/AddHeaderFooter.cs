@@ -1,5 +1,7 @@
-using Datalogics.PDFL;
 using System;
+using System.Collections.Generic;
+using System.Text;
+using Datalogics.PDFL;
 
 /*
  * 
@@ -25,10 +27,10 @@ namespace AddHeaderFooter
             String headerText = "Title of Document";
             String footerText = "Page 1";
 
+            Console.WriteLine("AddHeaderFooter Sample:");
+
             using (Library lib = new Library())
             {
-                Console.WriteLine("Initialized the library.");
-
                 String sOutput = "../AddHeaderFooter-out.pdf";
 
                 Console.WriteLine("Output file: " + sOutput);

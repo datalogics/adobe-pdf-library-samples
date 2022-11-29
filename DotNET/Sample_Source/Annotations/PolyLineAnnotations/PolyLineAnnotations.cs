@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 
@@ -9,7 +8,7 @@ using Datalogics.PDFL;
  * This program generates a PDF output file with a line shape (an angle) as an annotation to the file.
  * The program defines the vertices for the outlines of the annotation, and the line and fill colors.
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -23,11 +22,12 @@ namespace PolyLineAnnotations
         static void Main(string[] args)
         {
             Console.WriteLine("PolyLineAnnotation Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../PolyLineAnnotations-out.pdf";
+                String sOutput = "PolyLineAnnotations-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -82,9 +82,9 @@ namespace PolyLineAnnotations
                 page.UpdateContent();
                 doc.Save(SaveFlags.Full, sOutput);
 
-                // Kill the doc object
+                // Dispose the doc object
                 doc.Dispose();
-                Console.WriteLine("Killed document object.");
+                Console.WriteLine("Disposed document object.");
             }
         }
     }

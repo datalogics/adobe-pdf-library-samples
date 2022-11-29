@@ -6,10 +6,10 @@ using Datalogics.PDFL;
  * This sample printing a PDF file. It is similar to PrintPDF, but this
  * program provides a user interface.
  *
- * For more detail see the description of the PrintPDFGUI sample program on our Developer’s site,
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/printing-pdf-files-and-generating-postscript-ps-files-from-pdf
+ * For more detail see the description of the PrintPDFGUI sample program on our Developerâ€™s site,
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/printing-pdf-files-and-generating-postscript-ps-files-from-pdf
  *
- * Copyright (c) 2007-2018, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -44,7 +44,7 @@ namespace PrintPDFGUI
                                 userParams.PaperHeight = PrintUserParams.UseMediaBox;
                                 userParams.PaperWidth = PrintUserParams.UseMediaBox;
 
-                                // If you un-comment the file path (binding) below, DLE will print via the platform print driver to disk.
+                                // If you un-comment the file path (binding) below, PDFL will print via the platform print driver to disk.
                                 // The type of file produced when doing so (e.g., PS, PCL, PCLXL) depends upon the type of printer/driver. 
                                 //userParams.OutFileName = String.Format("{0}\\{1}.prn", finfo.Directory.FullName, System.IO.Path.GetFileNameWithoutExtension(finfo.FullName));
 

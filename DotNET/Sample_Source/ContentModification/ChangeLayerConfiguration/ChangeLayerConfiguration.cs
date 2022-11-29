@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -13,10 +12,10 @@ using Datalogics.PDFL;
  * saves the result to a new PDF document.
  * 
  * For more detail see the description of the ChangeLayerConfiguration sample program on our Developer's site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/layers-and-transparencies/ 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/layers-and-transparencies/ 
  * 
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -30,6 +29,7 @@ namespace ChangeLayerConfiguration
         {
             Console.WriteLine("ChangeLayerConfiguration Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -82,7 +82,7 @@ namespace ChangeLayerConfiguration
                  */
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/Layers.pdf";
-                String sOutput = "../ChangeLayerConfiguration-out.pdf";
+                String sOutput = "ChangeLayerConfiguration-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -90,7 +90,7 @@ namespace ChangeLayerConfiguration
                 if (args.Length > 1)
                     sOutput = args[1];
 
-                Console.WriteLine("Input file: " + sInput + ", writing to " + sOutput); ;
+                Console.WriteLine("Input file: " + sInput + ", writing to " + sOutput);
 
                 Document doc = new Document(sInput);
 
@@ -124,4 +124,3 @@ namespace ChangeLayerConfiguration
         }
     }
 }
-

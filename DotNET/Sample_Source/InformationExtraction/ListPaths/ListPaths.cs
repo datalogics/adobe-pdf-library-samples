@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
  * This sample searches for and lists the contents of paths found in an existing PDF document.
  * Paths in PDF documents, or clipping paths, define the boundaries for art or graphics.
  * 
- * For more detail see the description of the List sample programs, and ListPaths, on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files
+ * For more detail see the description of the List sample programs, and ListPaths, on our Developer's site,
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -25,6 +24,7 @@ namespace ListPaths
         {
             Console.WriteLine("ListLayers Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -57,9 +57,9 @@ namespace ListPaths
             {
                 Element e = content.GetElement(i);
 
-                if (e is Path)
+                if (e is Datalogics.PDFL.Path)
                 {
-                    ListPath(e as Path, pgno);
+                    ListPath(e as Datalogics.PDFL.Path, pgno);
                 }
                 else if (e is Container)
                 {
@@ -79,7 +79,7 @@ namespace ListPaths
             }
         }
 
-        private static void ListPath(Path path, int pgno)
+        private static void ListPath(Datalogics.PDFL.Path path, int pgno)
         {
             IList<Segment> segments = path.Segments;
             Console.WriteLine("Path on page {0}:", pgno);

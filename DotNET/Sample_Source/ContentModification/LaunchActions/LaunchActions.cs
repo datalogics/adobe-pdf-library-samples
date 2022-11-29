@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,7 +6,7 @@ using Datalogics.PDFL;
  * An action is added to the rectangle in the form of a hyperlink; if the reader clicks
  * on the rectangle, a different PDF file opens, showing an image.
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -21,11 +19,11 @@ namespace LaunchActions
     {
         static void Main(string[] args)
         {
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
-
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../LaunchActions-out.pdf";
+                String sOutput = "LaunchActions-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -70,7 +68,6 @@ namespace LaunchActions
                 newLink.Action = launch;
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

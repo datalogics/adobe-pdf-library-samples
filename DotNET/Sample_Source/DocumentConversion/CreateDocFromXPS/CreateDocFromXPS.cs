@@ -9,7 +9,7 @@ using Datalogics.PDFL;
  * XML Paper Specification (XPS) is a standard document format that Microsoft created in 2006
  * as an alternative to the PDF format.  
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -28,7 +28,7 @@ namespace CreateDocFromXPS
             {
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/brownfox.xps";
-                String sOutput = "../CreateDocFromXPS-out.pdf";
+                String sOutput = "CreateDocFromXPS-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -42,9 +42,9 @@ namespace CreateDocFromXPS
                 // for creating the document.
                 XPSConvertParams xpsparams = new XPSConvertParams();
                 
-                // DLE requires a .joboptions file to specify settings for XPS conversion. 
+                // PDFL requires a .joboptions file to specify settings for XPS conversion.
                 // A default .joboptions file is provided in the Resources directory of 
-                // the DLE distribution.  This file is used by default, but a custom file
+                // the PDFL distribution.  This file is used by default, but a custom file
                 // can be used instead by setting the pathToSettingsFile property.
                 Console.WriteLine("Using settings file located at: " + xpsparams.PathToSettingsFile);
                 

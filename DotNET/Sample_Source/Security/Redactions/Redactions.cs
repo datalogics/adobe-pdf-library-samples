@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -9,9 +8,9 @@ using Datalogics.PDFL;
  * specific words using the Adobe PDF Library WordFinder, and then removes these words from the text.
  * 
  * For more detail see the description of the Redactions sample program on our Developer's site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/redacting-text-from-a-pdf-document
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/redacting-text-from-a-pdf-document
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -25,12 +24,13 @@ namespace Redactions
         {
             Console.WriteLine("Redactions Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
                 String sInput = Library.ResourceDirectory + "Sample_Input/sample.pdf";
-                String sOutput1 = "../Redactions-out.pdf";
-                String sOutput2 = "../Redactions-out-applied.pdf";
+                String sOutput1 = "Redactions-out.pdf";
+                String sOutput2 = "Redactions-out-applied.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -65,14 +65,16 @@ namespace Redactions
                     // Store the Quads of all "Cloudy" words in a list for later use in
                     // creating the redaction object.
                     if (w.Text.ToLower().Equals("cloudy") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("cloudy")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("cloudy")))
                         cloudyQuads.AddRange(w.Quads);
 
                     // Store the Quads of all "Rain" words
                     if (w.Text.ToLower().Equals("rain") ||
-                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) == WordAttributeFlags.HasTrailingPunctuation &&
-                        w.Text.ToLower().StartsWith("rain")))
+                        ((w.Attributes & WordAttributeFlags.HasTrailingPunctuation) ==
+                         WordAttributeFlags.HasTrailingPunctuation &&
+                         w.Text.ToLower().StartsWith("rain")))
                         rainQuads.AddRange(w.Quads);
                 }
 
@@ -84,7 +86,7 @@ namespace Redactions
 
                 /* fill the "normal" appearance with 20% red */
                 not_cloudy.FillNormal = true;
-                not_cloudy.SetFillColor (red, 0.25);
+                not_cloudy.SetFillColor(red, 0.25);
 
                 Console.WriteLine("Found rain instances: " + rainQuads.Count);
                 Redaction no_rain = new Redaction(docpage, rainQuads);

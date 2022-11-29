@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2007, Datalogics, Inc. All rights reserved. 
+Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved. 
 
 The information and code in this sample is for the exclusive use of Datalogics
 customers and evaluation users only.  Datalogics permits you to use, modify and
@@ -163,7 +163,7 @@ namespace DisplayPDF
             this.mainToolStrip.Size = new System.Drawing.Size(726, 25);
             this.mainToolStrip.Stretch = true;
             this.mainToolStrip.TabIndex = 19;
-            this.mainToolStrip.Text = "DLE Viewer Tool Strip";
+            this.mainToolStrip.Text = "PDFL Viewer Tool Strip";
             // 
             // openToolStripButton
             // 

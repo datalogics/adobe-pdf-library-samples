@@ -9,7 +9,7 @@ using System.Drawing.Drawing2D;
 using Datalogics.PDFL;
 
 /*
-Copyright (c) 2007, Datalogics, Inc. All rights reserved. 
+Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved. 
 
 The information and code in this sample is for the exclusive use of Datalogics
 customers and evaluation users only.  Datalogics permits you to use, modify and

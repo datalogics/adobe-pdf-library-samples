@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -8,9 +7,9 @@ using Datalogics.PDFL;
  * Then place the image and the processed text in an output pdf
  * 
  * For more detail see the description of AddTextToDocument on our Developers site, 
- * https://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/optical-character-recognition/
+ * https://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/optical-character-recognition/
  * 
- * Copyright (c) 2007-2019, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -33,9 +32,9 @@ namespace AddTextToDocument
                     //PlaceTextUnder creates a form with the image and the generated text
                     //under the image. The original image in the page is then replaced by
                     //by the form.
-                    Form form = engine.PlaceTextUnder((Image)e, doc);
+                    Form form = engine.PlaceTextUnder((Datalogics.PDFL.Image) e, doc);
                     content.RemoveElement(index);
-                    content.AddElement(form, index -1);
+                    content.AddElement(form, index - 1);
                 }
                 else if (e is Container)
                 {
@@ -56,12 +55,13 @@ namespace AddTextToDocument
         {
             Console.WriteLine("AddTextToDocument Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/scanned_images.pdf";
-                String sOutput = "../AddTextToDocument-out.pdf";
+                String sOutput = "AddTextToDocument-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -81,9 +81,9 @@ namespace AddTextToDocument
                 //You could add additional languages for the OCR engine to detect by adding 
                 //more entries to the LanguageSetting list. 
 
-                 //LanguageSetting languageTwo = new LanguageSetting(Language.Japanese, false);
-                 //langList.Add(languageTwo);
-                 ocrParams.Languages = langList;
+                //LanguageSetting languageTwo = new LanguageSetting(Language.Japanese, false);
+                //langList.Add(languageTwo);
+                ocrParams.Languages = langList;
 
                 // If the resolution for the images in your document are not
                 // 300 dpi, specify a default resolution here. Specifying a
@@ -106,11 +106,11 @@ namespace AddTextToDocument
                                 page.UpdateContent();
                             }
                         }
+
                         doc.Save(SaveFlags.Full, sOutput);
                     }
                 }
             }
         }
-
     }
 }

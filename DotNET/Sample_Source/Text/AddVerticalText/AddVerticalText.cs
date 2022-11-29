@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
  * 
  * This program describes how to render text from top to bottom on a page.  The program provides
- * a WritingMode “Vertical” with a string of Unicode characters to present sample text. 
+ * a WritingMode â€œVerticalâ€ with a string of Unicode characters to present sample text. 
  * 
  * The sample offers several rows of Unicode characters. The sample PDF file thus presents multiple columns
  * of vertical text.  The characters appear in English as well as Mandarin, Japanese, and Korean.
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -26,11 +25,12 @@ namespace AddVerticalText
         {
             Console.WriteLine("AddVerticalText Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../AddVerticalText-out.pdf";
+                String sOutput = "AddVerticalText-out.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -47,7 +47,9 @@ namespace AddVerticalText
 
                 List<String> strings = new List<String>();
 
-                strings.Add("\u0055\u006e\u0069\u0076\u0065\u0072\u0073\u0061\u006c\u0020\u0044\u0065\u0063\u006c\u0061\u0072\u0061\u0074\u0069\u006f\u006e\u0020\u006f\u0066\u0020\u0048\u0075\u006d\u0061\u006e\u0020\u0052\u0069\u0067\u0068\u0074\u0073");
+                strings.Add("\u0055\u006e\u0069\u0076\u0065\u0072\u0073\u0061\u006c\u0020\u0044\u0065\u0063" +
+                            "\u006c\u0061\u0072\u0061\u0074\u0069\u006f\u006e\u0020\u006f\u0066\u0020\u0048\u0075" +
+                            "\u006d\u0061\u006e\u0020\u0052\u0069\u0067\u0068\u0074\u0073");
                 strings.Add("\u4e16\u754c\u4eba\u6743\u5ba3\u8a00");
                 strings.Add("\u300e\u4e16\u754c\u4eba\u6a29\u5ba3\u8a00\u300f");
                 strings.Add("\uc138\u0020\uacc4\u0020\uc778\u0020\uad8c\u0020\uc120\u0020\uc5b8");
@@ -68,7 +70,8 @@ namespace AddVerticalText
                     Font font = GetRepresentableFont(fonts, str);
                     if (font == null)
                     {
-                        Console.WriteLine("Couldn't find a font that can represent all characters in the string: " + str);
+                        Console.WriteLine(
+                            "Couldn't find a font that can represent all characters in the string: " + str);
                     }
                     else
                     {
@@ -76,7 +79,6 @@ namespace AddVerticalText
                         Matrix m = new Matrix(14, 0, 0, 14, x, y);
                         TextRun tr = new TextRun(str, font, gs, ts, m);
                         unicodeText.AddRun(tr);
-
                     }
 
                     // Start the next string moving across the page to the right
@@ -91,7 +93,6 @@ namespace AddVerticalText
                 Console.WriteLine("Embedding fonts.");
                 doc.EmbedFonts(EmbedFlags.None);
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
 
@@ -102,6 +103,7 @@ namespace AddVerticalText
                 if (font.IsTextRepresentable(str))
                     return font;
             }
+
             return null;
         }
     }

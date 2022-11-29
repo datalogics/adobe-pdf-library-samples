@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -14,7 +12,7 @@ using Datalogics.PDFL;
  * Show/Hide. Select Navigation Panes and Layers to display the layers in the PDF file. 
  * Click on the box next to the name of the layer.
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -28,12 +26,13 @@ namespace CreateLayer
         {
             Console.WriteLine("CreateLayer Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../CreateLayer-out.pdf";
+                String sOutput = "CreateLayer-out.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -104,7 +103,8 @@ namespace CreateLayer
             // 'typical' usage; other options can be used to create an 'inverting' layer
             // (i.e. 'Display this content when the layer is turned OFF'), or to make the
             // Container's visibility depend on several OptionalContentGroups
-            OptionalContentMembershipDict ocmd = new OptionalContentMembershipDict(doc, new OptionalContentGroup[] {ocg}, VisibilityPolicy.AnyOn);
+            OptionalContentMembershipDict ocmd =
+                new OptionalContentMembershipDict(doc, new[] {ocg}, VisibilityPolicy.AnyOn);
 
             // Associate the Container with the OptionalContentMembershipDict
             cont.OptionalContentMembershipDict = ocmd;

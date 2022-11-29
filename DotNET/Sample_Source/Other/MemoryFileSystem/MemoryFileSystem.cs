@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -12,7 +10,7 @@ using Datalogics.PDFL;
  * TempStoreType.Memory. The program can also set a maximum amount of RAM to use by
  * applying a value to the DefaultTempStoreMemLimit property.
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -30,7 +28,7 @@ namespace MemoryFileSystem
             {
                 Console.WriteLine("Initialized the library.");
 
-                String sOutput = "../TempFileSystem.pdf";
+                String sOutput = "TempFileSystem.pdf";
 
                 if (args.Length > 0)
                     sOutput = args[0];
@@ -47,10 +45,7 @@ namespace MemoryFileSystem
                 lib.DefaultTempStoreMemLimit = 100;
                 using (Document doc = new Document())
                 {
-                    using (Page page = doc.CreatePage(Document.BeforeFirstPage, bounds))
-                    {
-
-                    }
+                    doc.CreatePage(Document.BeforeFirstPage, bounds);
                     doc.Save(SaveFlags.Full, sOutput);
                 }
             }

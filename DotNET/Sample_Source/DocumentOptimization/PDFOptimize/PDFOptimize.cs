@@ -11,7 +11,7 @@ using System;
  * to suit your applications needs and drop such content to achieve better compression if you already
  * know it's unnecessary.
  * 
- * For more detail see the description of the PDFOptimizer sample program on our Developer’s site, 
+ * For more detail see the description of the PDFOptimizer sample program on our Developerâ€™s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/using-the-pdf-optimizer-to-manage-the-size-of-pdf-documents
  * 
  * 
@@ -29,7 +29,7 @@ namespace PDFOptimize
         {
             Console.WriteLine("PDF Optimizer:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 

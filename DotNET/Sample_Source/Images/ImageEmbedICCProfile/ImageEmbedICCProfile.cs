@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Datalogics.PDFL;
 
 /*
@@ -13,10 +8,10 @@ using Datalogics.PDFL;
  * The program sets up how the output will be rendered and generates a TIF image file or
  * series of TIF files as output.
  * 
- * For more detail see the description of the ImageEmbedICCProfile sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/exporting-images-from-pdf-files/#imageembediccprofile
+ * For more detail see the description of the ImageEmbedICCProfile sample program on our Developerâ€™s site, 
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/exporting-images-from-pdf-files/#imageembediccprofile
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -37,14 +32,12 @@ namespace ImageEmbedICCProfile
                 Page pg = doc.GetPage(pgno);
 
                 Export_Image(pg.Content, cs, pg, pgno);
-
             }
         }
 
         public void export_doc_images(Document doc, PDFStream profileStream)
         {
             export_doc_images_type(doc, profileStream, ImageType.TIFF);
-
         }
 
         public void Export_Image(Content content, ColorSpace csp, Page pg, int pNum)
@@ -53,7 +46,6 @@ namespace ImageEmbedICCProfile
 
             try
             {
-
                 isp = new ImageSaveParams();
                 isp.Compression = CompressionCode.LZW;
 
@@ -83,15 +75,11 @@ namespace ImageEmbedICCProfile
                 outImage = pg.GetImage(pg.CropBox, pip);
                 filenamevar = "ImageEmbedICCProfile-out_rel" + pNum + ".tif";
                 outImage.Save(filenamevar, exporttype, isp);
-
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Cannot write file: " + ex.Message);
             }
-
-
         }
     }
 
@@ -99,8 +87,10 @@ namespace ImageEmbedICCProfile
     {
         static void Main(string[] args)
         {
+
             Console.WriteLine("Image Embed ICC Profile sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.Json;
 using System.IO;
-using Newtonsoft.Json;
 using Datalogics.PDFL;
 using ExtractTextNameSpace;
 
@@ -29,7 +28,7 @@ namespace ExtractTextPreservingStyleAndPositionInfo
         {
             Console.WriteLine("ExtractTextPreservingStyleAndPositionInfo Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
@@ -42,7 +41,6 @@ namespace ExtractTextPreservingStyleAndPositionInfo
                         List<TextAndDetailsObject> result = docText.GetTextAndDetails();
 
                         // Save the output to a JSON file.
-                        Console.WriteLine("Writing JSON to " + sOutput);
                         SaveJson(result);
                     }
                 }
@@ -51,51 +49,39 @@ namespace ExtractTextPreservingStyleAndPositionInfo
 
         static void SaveJson(List<TextAndDetailsObject> result)
         {
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
-            using (JsonWriter writer = new JsonTextWriter(sw))
+            using FileStream fs = File.Create(sOutput);
+            var writerOptions = new JsonWriterOptions { Indented = true };
+            using (var writer = new Utf8JsonWriter(fs, options: writerOptions))
             {
-                writer.Formatting = Formatting.Indented;
                 writer.WriteStartArray();
                 foreach (TextAndDetailsObject resultText in result)
                 {
                     writer.WriteStartObject();
-                    writer.WritePropertyName("text");
-                    writer.WriteValue(resultText.Text);
-                    writer.WritePropertyName("quads");
-                    writer.WriteStartArray();
+                    writer.WriteString("text", resultText.Text);
+                    writer.WriteStartArray("quads");
                     foreach (Quad quad in resultText.Quads)
                     {
                         writer.WriteStartObject();
-                        writer.WritePropertyName("top-left");
-                        writer.WriteValue(quad.TopLeft.ToString());
-                        writer.WritePropertyName("top-right");
-                        writer.WriteValue(quad.TopRight.ToString());
-                        writer.WritePropertyName("bottom-left");
-                        writer.WriteValue(quad.BottomLeft.ToString());
-                        writer.WritePropertyName("bottom-right");
-                        writer.WriteValue(quad.BottomRight.ToString());
+                        writer.WriteString("top-left", quad.TopLeft.ToString());
+                        writer.WriteString("top-right", quad.TopRight.ToString());
+                        writer.WriteString("bottom-left", quad.BottomLeft.ToString());
+                        writer.WriteString("bottom-right", quad.BottomRight.ToString());
                         writer.WriteEndObject();
                     }
                     writer.WriteEndArray();
-                    writer.WritePropertyName("styles");
-                    writer.WriteStartArray();
+                    writer.WriteStartArray("styles");
                     foreach (DLStyleTransition st in resultText.StyleList)
                     {
                         writer.WriteStartObject();
-                        writer.WritePropertyName("char-index");
-                        writer.WriteValue(st.CharIndex.ToString());
-                        writer.WritePropertyName("font-name");
-                        writer.WriteValue(st.Style.FontName.ToString());
-                        writer.WritePropertyName("font-size");
-                        writer.WriteValue(Math.Round(st.Style.FontSize, 2).ToString());
-                        writer.WritePropertyName("color-space");
-                        writer.WriteValue(st.Style.Color.Space.Name);
-                        writer.WritePropertyName("color-values");
-                        writer.WriteStartArray();
+                        writer.WriteString("char-index", st.CharIndex.ToString());
+                        writer.WriteString("font-name", st.Style.FontName.ToString());
+
+                        writer.WriteString("font-size", Math.Round(st.Style.FontSize, 2).ToString());
+                        writer.WriteString("color-space", st.Style.Color.Space.Name);
+                        writer.WriteStartArray("color-values");
                         foreach (double cv in st.Style.Color.Value)
                         {
-                            writer.WriteValue(Math.Round(cv, 3).ToString());
+                            writer.WriteStringValue(Math.Round(cv, 3).ToString());
                         }
                         writer.WriteEndArray();
                         writer.WriteEndObject();
@@ -103,8 +89,9 @@ namespace ExtractTextPreservingStyleAndPositionInfo
                     writer.WriteEndArray();
                     writer.WriteEndObject();
                 }
+                writer.WriteEndArray();
+                writer.Flush();
             }
-            System.IO.File.WriteAllText(sOutput, sb.ToString());
         }
     }
 }

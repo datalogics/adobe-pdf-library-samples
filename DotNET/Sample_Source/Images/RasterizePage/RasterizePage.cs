@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
+using System.IO;
 using Datalogics.PDFL;
+using SkiaSharp;
 
 /*
  * 
@@ -25,7 +24,7 @@ using Datalogics.PDFL;
  * 3. An output image file with content drawn from an unrotated PDF page, but that contains only the top half of
  *    the original page.
  *
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -37,14 +36,16 @@ namespace RasterizePage
     {
         static void Main(string[] args)
         {
+
             Console.WriteLine("RasterizePage Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.pdf";
-                String sOutput = "../RasterizePage.pdf";
+                String sOutput = "RasterizePage.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -86,7 +87,7 @@ namespace RasterizePage
                 // so the image will be DeviceRGB.
                 Datalogics.PDFL.Image inputImage = pg.GetImage(pg.CropBox, pip);
                 inputImage.Save(sOutput + "-400pixel-width.jpg", ImageType.JPEG);
-                Console.WriteLine("Created " + sOutput + "-400pixel-width.jpg...");                
+                Console.WriteLine("Created " + sOutput + "-400pixel-width.jpg...");
 
                 /////////////////////////////////////////////////////////
                 //
@@ -95,29 +96,25 @@ namespace RasterizePage
                 //  
                 ////////////////////////////////////////////////////////
 
-                CreatePageImageBasedOnPhysicalSize(pg, sOutput + "-grayscale-halfsize.jpg", ImageType.JPEG, ColorSpace.DeviceGray);
+                CreatePageImageBasedOnPhysicalSize(pg, sOutput + "-grayscale-halfsize.jpg", ImageType.JPEG,
+                    ColorSpace.DeviceGray);
 
 
                 /////////////////////////////////////////////////////////
                 //
                 //  Next, we'll make an image that contains just the
                 //  top half of the page at a resolution of 300 DPI.
-                //  
-                //  We'll also use GetBitmap intead of GetImage.  If the
-                //  final result is to be a System.Drawing.Bitmap, use
-                //  GetBitmap instead of GetImage.  GetBitmap is faster
-                //  because it draws directly into a new System.Drawing.Bitmap
-                //  object and does not incur the time and memory overhead
-                //  of creating a PDF Image object.
                 //
                 ////////////////////////////////////////////////////////
 
-                System.Drawing.Bitmap halfImage = CreateBitmapWithTopHalfOfPage(pg, sOutput + "-tophalf.jpg",
-                                                        System.Drawing.Imaging.ImageFormat.Jpeg, ColorSpace.DeviceRGB);
+                // ReSharper disable once UnusedVariable
+                SKBitmap halfImage = CreateBitmapWithTopHalfOfPage(pg, sOutput + "-tophalf.jpg",
+                    SKEncodedImageFormat.Jpeg, ColorSpace.DeviceRGBA);
             }
         }
 
-        public static void CreatePageImageBasedOnPhysicalSize(Page pg, string filename, ImageType imgtype, ColorSpace cspace)
+        public static void CreatePageImageBasedOnPhysicalSize(Page pg, string filename, ImageType imgtype,
+            ColorSpace cspace)
         {
             // Get the dimensions, in pixels, of an image that is 
             // half the physical size of the page at a resolution of 96 DPI.
@@ -153,7 +150,7 @@ namespace RasterizePage
             // has a Rotate value of 90 or 270, the userWidth should be 
             // calculated from the y-values and the userHeight should be
             // calculated from the x-values.
-            double userWidth; 
+            double userWidth;
             double userHeight;
 
             if ((pg.Rotation == PageRotation.Rotate90) || (pg.Rotation == PageRotation.Rotate270))
@@ -187,15 +184,14 @@ namespace RasterizePage
             pip.VerticalResolution = resolution;
 
             return pip;
-
         }
 
-        public static System.Drawing.Bitmap CreateBitmapWithTopHalfOfPage(Page pg, string filename, 
-                                                        System.Drawing.Imaging.ImageFormat imgtype, ColorSpace cspace)
+        public static SKBitmap CreateBitmapWithTopHalfOfPage(Page pg, string filename,
+            SKEncodedImageFormat imgtype, ColorSpace cspace)
         {
             // Create a PageImageParams with the default settings and set
             // the color space as appropriate.
-            // We'll let DLE decide the final pixel dimensions of
+            // We'll let PDFL decide the final pixel dimensions of
             // the bitmap, so we won't change these settings from the default.
 
             PageImageParams pip = new PageImageParams();
@@ -234,15 +230,15 @@ namespace RasterizePage
                     // of the unrotated page (this corresponds to top half of rotated page)
                     topHalfOfRotatedPage.LLx = pg.CropBox.LLx + ((pg.CropBox.URx - pg.CropBox.LLx) / 2);
                     break;
-                case PageRotation.Rotate0:
                 default:
                     topHalfOfRotatedPage.LLy = pg.CropBox.LLy + ((pg.CropBox.URy - pg.CropBox.LLy) / 2);
                     break;
             }
 
             // Create the bitmap.
-            System.Drawing.Bitmap img = pg.GetBitmap(topHalfOfRotatedPage, pip);
-            img.Save(filename, imgtype);
+            SKBitmap img = pg.GetBitmap(topHalfOfRotatedPage, pip);
+            using (FileStream f = File.OpenWrite(filename))
+                img.Encode(imgtype, 100).SaveTo(f);
             Console.WriteLine("Created " + filename + "...");
 
             return img;

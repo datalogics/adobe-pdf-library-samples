@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -9,29 +7,30 @@ using Datalogics.PDFL;
  * prompting you, and creates two PDF files, demonstrating how to import graphics from image files
  * into a PDF file. One of the PDF output files is the result of graphics imported from a multi-page TIF file.
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
  *
  */
 
-namespace ImageImportSample
+namespace ImageImport
 {
 // In this scenario the Image object is used alone to create a
 // new PDF page with the image as the content.
-    class ImageImportSample
+    class ImageImport
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Import Images Sample:");
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
                 Document doc = new Document();
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/ducky.jpg";
-                String sOutput = "../ImageImport-out1.pdf";
+                String sOutput = "ImageImport-out1.pdf";
 
                 if (args.Length > 0)
                     sInput = args[0];
@@ -56,7 +55,6 @@ namespace ImageImportSample
                 }
 
                 doc.Save(SaveFlags.Full, sOutput);
-
             }
         }
     }

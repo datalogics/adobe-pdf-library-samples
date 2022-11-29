@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
@@ -23,12 +21,12 @@ namespace RegexTextSearch
         {
             Console.WriteLine("RegexTextSearch Sample:");
 
-            using (Library lib = new Library())
+            using (new Library())
             {
                 Console.WriteLine("Initialized the library.");
 
                 String sInput = Library.ResourceDirectory + "Sample_Input/RegexTextSearch.pdf";
-                String sOutput = "../RegexTextSearch-out.pdf";
+                String sOutput = "RegexTextSearch-out.pdf";
 
                 // Highlight occurrences of the phrases that match this regular expression.
                 // Uncomment only the one you are interested in seeing displayed with highlights.

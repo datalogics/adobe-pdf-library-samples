@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Datalogics.PDFL;
 
 /*
  * This sample searches for and lists the names of the color layers found in a PDF document. 
  *  
  * For more detail see the description of the List sample programs, and ListLayers, on our Developer's site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/listing-information-about-values-and-objects-in-pdf-files
+ * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-core-sample-programs/listing-information-about-values-and-objects-in-pdf-files
  * 
- * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2020, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -24,6 +23,7 @@ namespace ListLayers
         {
             Console.WriteLine("ListLayers Sample:");
 
+            // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
@@ -37,8 +37,8 @@ namespace ListLayers
 
                 Document doc = new Document(sInput);
 
-               IList<OptionalContentGroup> ocgs = doc.OptionalContentGroups;
-                foreach(OptionalContentGroup ocg in ocgs)
+                IList<OptionalContentGroup> ocgs = doc.OptionalContentGroups;
+                foreach (OptionalContentGroup ocg in ocgs)
                 {
                     Console.WriteLine(ocg.Name);
                     Console.Write("  Intent: [");
@@ -53,6 +53,7 @@ namespace ListLayers
                             Console.Write(i.Current);
                         }
                     }
+
                     Console.WriteLine("]");
                 }
 
@@ -70,6 +71,7 @@ namespace ListLayers
                         Console.Write(i.Current);
                     }
                 }
+
                 Console.WriteLine("]");
             }
         }
