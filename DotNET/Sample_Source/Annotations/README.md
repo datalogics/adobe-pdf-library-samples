@@ -1,6 +1,3 @@
-## ***AnnotationCopyPaste***
-Copies annotations from one PDF page and pastes it into another PDF page.
-
 ## ***Annotations***
 Collects annotations from a PDF page.
 
