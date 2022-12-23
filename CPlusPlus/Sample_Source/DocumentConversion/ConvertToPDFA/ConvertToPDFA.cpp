@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2017-2022, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -7,15 +7,15 @@
 // ConvertToPDFA converts the input PDF to a PDF/A compliant PDF.
 //
 // Command-line:  <input-pdf> <convert-option> <color-space>      (all parameters are optional moving from left to right)
-//        where convert-option is 'PDF1b' or 'PDF1a' and where color-space is 'rgb' or 'cmyk'
-//        if no parameters are specified, a pre-selected PDF is input and converted using PDFA1bRGB
+//        where convert-option is for example 'PDF2b' and where color-space is 'rgb' or 'cmyk'
+//        if no parameters are specified, a pre-selected PDF is input and converted using PDFA3bRGB
 //
 //        For example, you might enter a command line statement that looks like this:
 //
-//        ConvertToPDFA input-file.pdf PDF1a
+//        ConvertToPDFA input-file.pdf PDF2b
 //
-//        This statement provides the name of an input file and specifies the PDF/A-1a format, rather than
-//        the default PDF/A-1b format.
+//        This statement provides the name of an input file and specifies the PDF/A-2b format.
+//
 // For more detail see the description of the ConvertToPDFA sample program on our Developer’s site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#converttopdfa
 
@@ -38,9 +38,9 @@ int main(int argc, char **argv) {
 
     /* Step 1) Select conversion option */
     if (argc < 2) {
-        std::cout << "PDF Conversion Standard not specified or unknown, defaulting to PDFA1bRGB." << std::endl;
+        std::cout << "PDF Conversion Standard not specified or unknown, defaulting to PDFA3bRGB." << std::endl;
 
-        convertOption = kPDFProcessorConvertToPDFA1bRGB;
+        convertOption = kPDFProcessorConvertToPDFA3bRGB;
     } else if (argc > 2 && (!strcmp(argv[2], "PDFA1b") || !strcmp(argv[2], "PDFA1B"))) {
         if (argc > 3) {
             if (!strcmp(argv[3], "rgb") || !strcmp(argv[3], "RGB")) {
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
                 convertOption = kPDFProcessorConvertToPDFA1bCMYK;
             }
         } else {
-            convertOption = kPDFProcessorConvertToPDFA1bRGB;
+            convertOption = kPDFProcessorConvertToPDFA3bRGB;
         }
     } else if (argc > 2 && (!strcmp(argv[2], "PDFA1a") || !strcmp(argv[2], "PDFA1A"))) {
         if (argc > 3) {
@@ -62,8 +62,8 @@ int main(int argc, char **argv) {
             convertOption = kPDFProcessorConvertToPDFA1aRGB;
         }
     } else {
-        std::cout << "PDF Conversion Standard not specified or unknown, defaulting to PDFA1bRGB." << std::endl;
-        convertOption = kPDFProcessorConvertToPDFA1bRGB;
+        std::cout << "PDF Conversion Standard not specified or unknown, defaulting to PDFA3bRGB." << std::endl;
+        convertOption = kPDFProcessorConvertToPDFA3bRGB;
     }
 
     APDFLib lib;

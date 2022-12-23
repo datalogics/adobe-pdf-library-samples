@@ -11,7 +11,7 @@ using Datalogics.PDFL;
  * For more detail see the description of the PDFAConverter sample program on our Developer’s site, 
  * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/converting-and-merging-pdf-content
  * 
- * Copyright (c) 2007-2019, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2007-2022, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -50,7 +50,7 @@ namespace PDFAConverter
                     pdfaParams.ValidateImplementationLimitsOfDocument = true;
 
                     // Create a PDF/A compliant version of the document
-                    PDFAConvertResult pdfaResult = doc.CloneAsPDFADocument(PDFAConvertType.RGB1b, pdfaParams);
+                    PDFAConvertResult pdfaResult = doc.CloneAsPDFADocument(PDFAConvertType.RGB3b, pdfaParams);
 
                     // The conversion may have failed: we must check if the result has a valid Document
                     if (pdfaResult.PDFADocument == null)
