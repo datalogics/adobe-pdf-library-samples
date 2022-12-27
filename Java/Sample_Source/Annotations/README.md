@@ -4,7 +4,7 @@ Collects annotations from a PDF page.
 ## ***InkAnnotations***
 Creates an ink annotation on a PDF page.
 
-## ***LinkAnnotation***
+## ***LinkAnnotations***
 Creates a link annotation on a PDF page that navigates the user to another PDF page when clicked.
 
 ## ***PolyLineAnnotations***
