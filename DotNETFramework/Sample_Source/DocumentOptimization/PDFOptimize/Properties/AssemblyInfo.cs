@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PDFOptimize")]
-[assembly: AssemblyCopyright("Copyright ©  2008-2022")]
+[assembly: AssemblyCopyright("Copyright ©  2008-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

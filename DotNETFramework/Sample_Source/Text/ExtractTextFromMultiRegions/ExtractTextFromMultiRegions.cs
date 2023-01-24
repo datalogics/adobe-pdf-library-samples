@@ -8,7 +8,7 @@ using ExtractTextNameSpace;
  * This sample processes PDF files in a folder and extracts text from specific regions
  * of its pages and saves the text to a CSV file.
  * 
- * Copyright (c) 2022, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2022-2023, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
