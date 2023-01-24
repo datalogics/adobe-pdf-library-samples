@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017-2022, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2017-2023, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -16,7 +16,7 @@
 //
 //        This statement provides the name of an input file and specifies the PDF/A-2b format.
 //
-// For more detail see the description of the ConvertToPDFA sample program on our Developer’s site,
+// For more detail see the description of the ConvertToPDFA sample program on our Developer's site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#converttopdfa
 
 #include <sstream>

@@ -22,7 +22,7 @@ import com.datalogics.PDFL.PDFName;
  * For more detail see the description of the FacturXConverter sample program on our Developer’s site,
  * https://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/java-sample-programs/converting-and-merging-pdf-content/#facturxconverter
  *
- * Copyright (c) 2022, Datalogics, Inc. All rights reserved.
+ * Copyright (c) 2022-2023, Datalogics, Inc. All rights reserved.
  *
  * For complete copyright information, refer to:
  * http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/

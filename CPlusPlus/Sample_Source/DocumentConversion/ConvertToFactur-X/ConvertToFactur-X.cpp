@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, Datalogics, Inc. All rights reserved.
+// Copyright (c) 2023, Datalogics, Inc. All rights reserved.
 //
 // For complete copyright information, refer to:
 // http://dev.datalogics.com/adobe-pdf-library/license-for-downloaded-pdf-samples/
@@ -17,7 +17,7 @@
 // NOTE: The input Invoice XML file needs to be Factur-X-compliant, APDFL does not create this for you and
 // does not ensure the XML is compliant either.
 //
-// For more detail see the description of the ConvertToFactur-X sample program on our Developer’s site, 
+// For more detail see the description of the ConvertToFactur-X sample program on our Developer's site,
 // http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/c1samples#converttofacturx
 
 #include <sstream>
