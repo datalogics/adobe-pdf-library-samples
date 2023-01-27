@@ -10,5 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Adobe.PDF.Library.LM.NET" Version="18.11.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../_Common/ExtractText.cs" Link="ExtractText.cs" />
+  </ItemGroup>
 
 </Project>
