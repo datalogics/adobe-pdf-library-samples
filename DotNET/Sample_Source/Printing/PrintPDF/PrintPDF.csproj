@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Adobe.PDF.Library.LM.NET" Version="18.11.1" />
   </ItemGroup>
 
