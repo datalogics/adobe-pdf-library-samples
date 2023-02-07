@@ -28,6 +28,9 @@ class FacturXConverter
         {
             Console.WriteLine("Factur-XConverter Sample:");
 
+            // This is the 30 day evaluation license key
+            Library.LicenseKey = "3011-6479-7180-0953";
+
             // Initialize the Library
             using (Library lib = new Library())
             {

@@ -30,6 +30,9 @@ namespace ColorConvertDocument
         {
             Console.WriteLine("ColorConvertDocument Sample:");
 
+            // This is the 30 day evaluation license key
+            Library.LicenseKey = "3011-6479-7180-0953";
+
             List<string> paths = new List<string>();
             paths.Add(Library.ResourceDirectory + "Fonts/");
 

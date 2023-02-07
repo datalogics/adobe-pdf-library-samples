@@ -23,7 +23,10 @@ namespace ZUGFeRDConverter
             Console.WriteLine("ZUGFeRDConverter Sample:");
 
             //Initialize the Library
-            // ReSharper disable once UnusedVariable
+            // This is the 30 day evaluation license key
+            Library.LicenseKey = "3011-6479-7180-0953";
+
+           // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
                 Console.WriteLine("Initialized the library.");
