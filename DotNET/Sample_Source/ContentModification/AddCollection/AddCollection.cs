@@ -25,6 +25,9 @@ namespace AddCollection
         {
             Console.WriteLine("AddCollection Sample:");
 
+            // This is the 30 day evaluation license key
+            Library.LicenseKey = "3011-6479-7180-0953";
+
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())
             {
