@@ -173,12 +173,14 @@ int main(int argc, char **argv) {
         userParams.doOPP = false;
 
         userParams.farEastFontOpt = 0;
-        userParams.transQuality = 5;
         userParams.forceGDIPrint =
             false; /* When true, we will print via the GDI interface, even if the selected printer supports postscript. */
 
         std::cout << "Sending to the printer " << userParams.deviceNameW << std::endl;
 #endif
+
+        userParams.transQuality = 100;
+
 #ifdef UNIX_ENV
         // print to the printer lp0, suppress reporting job number to stdout.
         userParams.command = "lp -s";
