@@ -86,7 +86,7 @@ namespace PrintPDF
 
             try
             {
-                // This is the 30 day evaluation license key
+                // This is the evaluation license key
                 Library.LicenseKey = "3011-6479-7180-0953";
 
                 // Printing may fail for reasons that have nothing to do with APDFL.
