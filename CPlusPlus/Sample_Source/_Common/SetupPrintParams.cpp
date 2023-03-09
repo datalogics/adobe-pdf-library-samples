@@ -39,7 +39,7 @@ void SetupPDPrintParams(PDPrintParams psParams) {
                                // duplex is true, and number of pages is odd.)
     psParams->doOPP = false; // When true, CMYK colors will “mix” in the manner of the OP blending model.
     psParams->transparencyQuality =
-        false; // Echoed in PDFLPrintUserParams as the transQuaility attribute.
+        100; // Echoed in PDFLPrintUserParams as the transQuality attribute.
                // Used to establish how much time/resources should be applied to flattening
                // transparency while printing the page. At the lowest values, this will
                // basically render all transparent areas as bitmaps.
@@ -308,9 +308,6 @@ void SetupPDFLPrintUserParams(PDFLPrintUserParams userParams) {
     userParams->farEastFontOpt =
         false; // Controls if very large fonts are to be downloaded or not. This is effective only for PostScript.
 
-    userParams->transQuality = false; // Echoes the attribute transparencyQuality in the PDPrintParamsRec.
-                                      // Controls how the flattener will remove transparency from a page.
-
     userParams->startResult =
         0; // Should be set to the jobId returned by StartDoc, if the application does the StartDoc.
     userParams->pDC = NULL; // Will be filled in by APDFL to the DeviceContext for the currently selected printer.
@@ -324,6 +321,8 @@ void SetupPDFLPrintUserParams(PDFLPrintUserParams userParams) {
                                        // printer selected is capable of supporting PostScript.
 
 #endif
+
+    userParams->transQuality = 5; // Controls how the flattener will remove transparency from a page.
 
     userParams->paperWidth =
         kPDPrintUseMediaBox; // Used to select paper.  The value kPDPrintUseMediaBox will cause the
