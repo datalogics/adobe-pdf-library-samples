@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{7e090b4f-0db4-4c40-a48a-40c0111019d5}</ProjectGuid>
+    <ProjectGuid>{d313086f-5d5f-4168-9b12-59a5b326a8cf}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Annotations</RootNamespace>
-    <AssemblyName>Annotations</AssemblyName>
+    <RootNamespace>MakeDocWithICCBasedColorSpace</RootNamespace>
+    <AssemblyName>MakeDocWithICCBasedColorSpace</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Annotations.cs" />
+    <Compile Include="MakeDocWithICCBasedColorSpace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

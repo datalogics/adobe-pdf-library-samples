@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{7e090b4f-0db4-4c40-a48a-40c0111019d5}</ProjectGuid>
+    <ProjectGuid>{fa30ab74-525f-42bc-bf43-b07ad7c94bc1}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Annotations</RootNamespace>
-    <AssemblyName>Annotations</AssemblyName>
+    <RootNamespace>RegexTextSearch</RootNamespace>
+    <AssemblyName>RegexTextSearch</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Annotations.cs" />
+    <Compile Include="RegexTextSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
