@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{11c4a647-3dda-41a5-855c-e14edf1bffde}</ProjectGuid>
+    <ProjectGuid>{11C4A647-3DDA-41A5-855C-E14EDF1BFFDE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ExtractTextPreservingStyleAndPositionInfo</RootNamespace>
     <AssemblyName>ExtractTextPreservingStyleAndPositionInfo</AssemblyName>
@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtractText.cs" />
     <Compile Include="ExtractTextPreservingStyleAndPositionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

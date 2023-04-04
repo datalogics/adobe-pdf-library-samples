@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{05b2cc4f-fcf5-46b2-89fc-0b5eccd061df}</ProjectGuid>
+    <ProjectGuid>{05B2CC4F-FCF5-46B2-89FC-0B5ECCD061DF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ExtractTextFromAnnotations</RootNamespace>
     <AssemblyName>ExtractTextFromAnnotations</AssemblyName>
@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtractText.cs" />
     <Compile Include="ExtractTextFromAnnotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
