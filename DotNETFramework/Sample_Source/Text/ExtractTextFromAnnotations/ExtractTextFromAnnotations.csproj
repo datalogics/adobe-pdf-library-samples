@@ -55,6 +55,7 @@
     <PackageReference Include="Adobe.PDF.Library.LM.NETFramework">
       <Version>18.*</Version>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
