@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{02a72b29-33c8-4be7-a577-9688439a710d}</ProjectGuid>
+    <ProjectGuid>{02A72B29-33C8-4BE7-A577-9688439A710D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DisplayPDF</RootNamespace>
     <AssemblyName>DisplayPDF</AssemblyName>
@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +48,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisplayPDF.cs" />
+    <Compile Include="DisplayPDFForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayPDFForm.Designer.cs">
+      <DependentUpon>DisplayPDFForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MyPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PasswordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordForm.Designer.cs">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
