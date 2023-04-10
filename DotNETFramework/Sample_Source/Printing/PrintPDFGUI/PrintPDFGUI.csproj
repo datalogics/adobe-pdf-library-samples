@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{12c14641-90fa-4982-b03f-4e25c3d03256}</ProjectGuid>
+    <ProjectGuid>{12C14641-90FA-4982-B03F-4E25C3D03256}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>PrintPDFGUI</RootNamespace>
     <AssemblyName>PrintPDFGUI</AssemblyName>
@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PrintPDFForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PrintPDFForm.Designer.cs">
+      <DependentUpon>PrintPDFForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PrintPDFGUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
