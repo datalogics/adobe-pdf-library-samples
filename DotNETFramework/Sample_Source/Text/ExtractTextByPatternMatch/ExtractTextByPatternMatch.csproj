@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{11c4a647-3dda-41a5-855c-e14edf1bffde}</ProjectGuid>
+    <ProjectGuid>{7F947745-7A22-4CCB-8B38-E16A1E780819}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ExtractTextByPatternMatch</RootNamespace>
     <AssemblyName>ExtractTextByPatternMatch</AssemblyName>

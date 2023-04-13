@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{11C4A647-3DDA-41A5-855C-E14EDF1BFFDE}</ProjectGuid>
+    <ProjectGuid>{4E8C26AF-67B3-48CF-9A5F-E83E5EFD3498}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ExtractTextByRegion</RootNamespace>
     <AssemblyName>ExtractTextByRegion</AssemblyName>

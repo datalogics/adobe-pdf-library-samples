@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{fa30ab74-525f-42bc-bf43-b07ad7c94bc1}</ProjectGuid>
+    <ProjectGuid>{547F12BC-E6F0-4395-B1CC-EA5AE2900990}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>AddRegexRedaction</RootNamespace>
     <AssemblyName>AddRegexRedaction</AssemblyName>

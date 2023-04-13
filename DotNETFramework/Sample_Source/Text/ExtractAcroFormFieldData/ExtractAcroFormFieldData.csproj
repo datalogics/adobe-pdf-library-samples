@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{5DF67341-DD4B-4689-8CE7-4C694B637E87}</ProjectGuid>
+    <ProjectGuid>{AFDE3185-80DA-4EF9-8DE5-7E6E80F396A7}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ExtractAcroFormFieldData</RootNamespace>
     <AssemblyName>ExtractAcroFormFieldData</AssemblyName>

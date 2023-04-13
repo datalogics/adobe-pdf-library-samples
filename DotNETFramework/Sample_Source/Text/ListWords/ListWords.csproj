@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{4a376dfa-0665-420a-aba4-0d1a75296a18}</ProjectGuid>
+    <ProjectGuid>{7801882E-1CF5-49C4-A4FE-34ED5F4901E5}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ListWords</RootNamespace>
     <AssemblyName>ListWords</AssemblyName>

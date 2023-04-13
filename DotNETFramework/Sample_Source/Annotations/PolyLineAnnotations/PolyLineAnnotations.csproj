@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{1643b5b0-c573-11dd-ad8b-0800200c9a66}</ProjectGuid>
+    <ProjectGuid>{678DD4F3-1D5D-499E-8CF1-97F1EA44F64A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>PolyLineAnnotations</RootNamespace>
     <AssemblyName>PolyLineAnnotations</AssemblyName>
