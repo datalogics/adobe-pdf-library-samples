@@ -70,15 +70,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterMark", "ContentModific
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayPDF", "Display\DisplayPDF\DisplayPDF.csproj", "{02A72B29-33C8-4BE7-A577-9688439A710D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNETViewer", "Display\DotNETViewer\DotNETViewer.csproj", "{66238892-38C6-40CF-B50C-3B9F8D449B80}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4820C609-0261-4D9D-93AA-A231FA70151D} = {4820C609-0261-4D9D-93AA-A231FA70151D}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNETViewerComponent", "Display\DotNETViewerComponent\DotNETViewerComponent.csproj", "{4820C609-0261-4D9D-93AA-A231FA70151D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDFObjectExplorer", "Display\PDFObjectExplorer\PDFObjectExplorer.csproj", "{199F2228-22BB-4D52-8861-B31ED3377E61}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorConvertDocument", "DocumentConversion\ColorConvertDocument\ColorConvertDocument.csproj", "{D0E85D80-0332-40F2-A9DB-43C02F4544BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateDocFromXPS", "DocumentConversion\CreateDocFromXPS\CreateDocFromXPS.csproj", "{6A1D00B1-DA53-4BB5-B7F7-1EB1339C379B}"
@@ -307,18 +298,6 @@ Global
 		{02A72B29-33C8-4BE7-A577-9688439A710D}.Debug|x64.Build.0 = Debug|x64
 		{02A72B29-33C8-4BE7-A577-9688439A710D}.Release|x64.ActiveCfg = Release|x64
 		{02A72B29-33C8-4BE7-A577-9688439A710D}.Release|x64.Build.0 = Release|x64
-		{66238892-38C6-40CF-B50C-3B9F8D449B80}.Debug|x64.ActiveCfg = Debug|x64
-		{66238892-38C6-40CF-B50C-3B9F8D449B80}.Debug|x64.Build.0 = Debug|x64
-		{66238892-38C6-40CF-B50C-3B9F8D449B80}.Release|x64.ActiveCfg = Release|x64
-		{66238892-38C6-40CF-B50C-3B9F8D449B80}.Release|x64.Build.0 = Release|x64
-		{4820C609-0261-4D9D-93AA-A231FA70151D}.Debug|x64.ActiveCfg = Debug|x64
-		{4820C609-0261-4D9D-93AA-A231FA70151D}.Debug|x64.Build.0 = Debug|x64
-		{4820C609-0261-4D9D-93AA-A231FA70151D}.Release|x64.ActiveCfg = Release|x64
-		{4820C609-0261-4D9D-93AA-A231FA70151D}.Release|x64.Build.0 = Release|x64
-		{199F2228-22BB-4D52-8861-B31ED3377E61}.Debug|x64.ActiveCfg = Debug|x64
-		{199F2228-22BB-4D52-8861-B31ED3377E61}.Debug|x64.Build.0 = Debug|x64
-		{199F2228-22BB-4D52-8861-B31ED3377E61}.Release|x64.ActiveCfg = Release|x64
-		{199F2228-22BB-4D52-8861-B31ED3377E61}.Release|x64.Build.0 = Release|x64
 		{D0E85D80-0332-40F2-A9DB-43C02F4544BC}.Debug|x64.ActiveCfg = Debug|x64
 		{D0E85D80-0332-40F2-A9DB-43C02F4544BC}.Debug|x64.Build.0 = Debug|x64
 		{D0E85D80-0332-40F2-A9DB-43C02F4544BC}.Release|x64.ActiveCfg = Release|x64
