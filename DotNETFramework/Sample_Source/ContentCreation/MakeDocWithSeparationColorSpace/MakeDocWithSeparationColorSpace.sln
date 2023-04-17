@@ -1,0 +1,25 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33328.57
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeDocWithSeparationColorSpace", "MakeDocWithSeparationColorSpace.csproj", "{a3f82686-8e7b-48ae-8d74-ed3dc2d6e5f6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{a3f82686-8e7b-48ae-8d74-ed3dc2d6e5f6}.Debug|x64.ActiveCfg = Debug|x64
+		{a3f82686-8e7b-48ae-8d74-ed3dc2d6e5f6}.Debug|x64.Build.0 = Debug|x64
+		{a3f82686-8e7b-48ae-8d74-ed3dc2d6e5f6}.Release|x64.ActiveCfg = Release|x64
+		{a3f82686-8e7b-48ae-8d74-ed3dc2d6e5f6}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CEA60573-4A7F-49A3-8EC5-6DCC54E2E30B}
+	EndGlobalSection
+EndGlobal

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PrintToPlotter")]
+[assembly: AssemblyTitle("PDFObject")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PrintToPlotter")]
-[assembly: AssemblyCopyright("Copyright ©  2008-2010")]
+[assembly: AssemblyProduct("PDFObject")]
+[assembly: AssemblyCopyright("Copyright ©  2007-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4eb78d41-c6d5-4120-be50-e47b096e01d8")]
+[assembly: Guid("5df67341-dd4b-4689-8ce7-4c694b637e87")]
 
 // Version information for an assembly consists of the following four values:
 //

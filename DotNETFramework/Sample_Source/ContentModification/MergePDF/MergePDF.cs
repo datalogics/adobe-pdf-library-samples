@@ -29,7 +29,7 @@ namespace MergePDF
                 // merge_pdf2.pdf -- no attachments
                 // Portfolio1.pdf -- DL made portfolio with 2 PDFs - doc.Attachments returns 2
 
-                String sInput1 = "mergepdf2.pdf"; 
+                String sInput1 = Library.ResourceDirectory + "Sample_Input/mergepdf2.pdf";
                 String sMainPDF = "Attachments.pdf";
                 String sOutput = "MergePDF-outComplete.pdf";
 

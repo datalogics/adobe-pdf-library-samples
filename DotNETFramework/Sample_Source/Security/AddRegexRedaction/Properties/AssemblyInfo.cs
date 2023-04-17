@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Datalogics, Inc.")]
 [assembly: AssemblyProduct("AddRegexRedaction")]
-[assembly: AssemblyCopyright("Copyright © Datalogics, Inc. 2021")]
+[assembly: AssemblyCopyright("Copyright © Datalogics, Inc. 2021-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

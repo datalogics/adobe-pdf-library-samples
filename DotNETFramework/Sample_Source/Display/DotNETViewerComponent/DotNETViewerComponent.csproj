@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4820C609-0261-4D9D-93AA-A231FA70151D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DotNETViewerComponent</RootNamespace>
+    <AssemblyName>DotNETViewerComponent</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Binaries</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Binaries</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Binaries</OutputPath>
+    <DefineConstants>TRACE;DEBUG;X64</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\Binaries</OutputPath>
+    <DefineConstants>TRACE;DEBUG;X64</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Datalogics.PDFL, Version=2.2.3520.21292, Culture=neutral, PublicKeyToken=ec84850197728341, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Binaries\Datalogics.PDFL.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Annotations\AnnotationProperties.cs" />
+    <Compile Include="Annotations\AnnotationStuff.cs" />
+    <Compile Include="Annotations\AnnotataionAppearance.cs" />
+    <Compile Include="Annotations\AnnotationEditors.cs" />
+    <Compile Include="Annotations\EditCommands.cs" />
+    <Compile Include="BookmarkManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classes.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DotNETController.cs" />
+    <Compile Include="DotNETPrintController.cs" />
+    <Compile Include="DotNETPrintDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DotNETView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DotNETViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DotNETViewer.Designer.cs">
+      <DependentUpon>DotNETViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Enums.cs" />
+    <Compile Include="frmAnnotationProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAnnotationProperties.Designer.cs">
+      <DependentUpon>frmAnnotationProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmColorPicker.Designer.cs">
+      <DependentUpon>frmColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmLineWidth.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLineWidth.Designer.cs">
+      <DependentUpon>frmLineWidth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmLinkAnnotationProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLinkAnnotationProperties.Designer.cs">
+      <DependentUpon>frmLinkAnnotationProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMonitorResolution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMonitorResolution.Designer.cs">
+      <DependentUpon>frmMonitorResolution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPassword.Designer.cs">
+      <DependentUpon>frmPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageArray2DManager.cs" />
+    <Compile Include="LayersManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="TextSearchManager.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="ViewModes\CreateViewModes.cs" />
+    <Compile Include="ViewModes\EditViewMode.cs" />
+    <Compile Include="ViewModes\MarqueeZoomMode.cs" />
+    <Compile Include="ViewModes\ScrollViewMode.cs" />
+    <Compile Include="ViewModes\ViewMode.cs" />
+    <Compile Include="ViewModes\ZoomViewMode.cs" />
+    <Compile Include="ZoomManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DotNETView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DotNETView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DotNETViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DotNETViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAnnotationProperties.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmAnnotationProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmColorPicker.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLineWidth.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmLineWidth.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLinkAnnotationProperties.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmLinkAnnotationProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMonitorResolution.resx">
+      <DependentUpon>frmMonitorResolution.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPassword.resx">
+      <DependentUpon>frmPassword.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\ArrowMenu.bmp" />
+    <Content Include="Resources\ArrowMenu.gif" />
+    <Content Include="Resources\ArrowMenu1.bmp" />
+    <Content Include="Resources\ArrowMenu11.bmp" />
+    <Content Include="Resources\ArrowMenuChoice.gif" />
+    <Content Include="Resources\ArrowMenuChoice1.gif" />
+    <Content Include="Resources\ArrowMenuSelected.gif" />
+    <Content Include="Resources\ColorMenu.bmp" />
+    <Content Include="Resources\ColorMenu1.bmp" />
+    <Content Include="Resources\CreateAnnotationMenu.bmp" />
+    <Content Include="Resources\CreateAnnotationMenu1.bmp" />
+    <Content Include="Resources\Dashed1LineMenu.bmp" />
+    <Content Include="Resources\Dashed1LineMenu.gif" />
+    <Content Include="Resources\Dashed1LineMenu1.bmp" />
+    <Content Include="Resources\Dashed1LineMenu2.bmp" />
+    <Content Include="Resources\Dashed1LineMenu2.gif" />
+    <Content Include="Resources\Dashed1LineMenuChoice.gif" />
+    <Content Include="Resources\Dashed1LineMenuChoice1.gif" />
+    <Content Include="Resources\Dashed2LineMenu.bmp" />
+    <Content Include="Resources\Dashed2LineMenu.gif" />
+    <Content Include="Resources\Dashed2LineMenu1.bmp" />
+    <Content Include="Resources\Dashed2LineMenu2.bmp" />
+    <Content Include="Resources\Dashed2LineMenu2.gif" />
+    <Content Include="Resources\Dashed2LineMenuChoice.gif" />
+    <Content Include="Resources\Dashed2LineMenuChoice1.gif" />
+    <Content Include="Resources\Dashed3LineMenu.bmp" />
+    <Content Include="Resources\Dashed3LineMenu.gif" />
+    <Content Include="Resources\Dashed3LineMenu1.bmp" />
+    <Content Include="Resources\Dashed3LineMenu2.bmp" />
+    <Content Include="Resources\Dashed3LineMenu2.gif" />
+    <Content Include="Resources\Dashed3LineMenuChoice.gif" />
+    <Content Include="Resources\Dashed3LineMenuChoice1.gif" />
+    <Content Include="Resources\Dashed4LineMenu.gif" />
+    <Content Include="Resources\Dashed4LineMenu1.bmp" />
+    <Content Include="Resources\Dashed4LineMenu11.bmp" />
+    <Content Include="Resources\Dashed4LineMenu12.bmp" />
+    <Content Include="Resources\Dashed4LineMenu2.gif" />
+    <Content Include="Resources\Dashed4LineMenuChoice.gif" />
+    <Content Include="Resources\Dashed4LineMenuChoice1.gif" />
+    <Content Include="Resources\EllipseMenu.bmp" />
+    <Content Include="Resources\EllipseMenu.gif" />
+    <Content Include="Resources\EllipseMenu1.bmp" />
+    <Content Include="Resources\EllipseMenu11.bmp" />
+    <Content Include="Resources\EllipseMenu2.bmp" />
+    <Content Include="Resources\EllipseMenuChoice.gif" />
+    <Content Include="Resources\EllipseMenuChoice1.gif" />
+    <Content Include="Resources\EllipseMenuSelected.gif" />
+    <Content Include="Resources\EyeCheckbox.bmp" />
+    <Content Include="Resources\EyeCheckbox.gif" />
+    <Content Include="Resources\FileOpenMenu.bmp" />
+    <Content Include="Resources\FileOpenMenu.gif" />
+    <Content Include="Resources\FileSaveMenu.bmp" />
+    <Content Include="Resources\FileSaveMenu.gif" />
+    <Content Include="Resources\FirstPageMenu.bmp" />
+    <Content Include="Resources\FirstPageMenu.gif" />
+    <Content Include="Resources\FreeTextMenu.bmp" />
+    <Content Include="Resources\FreeTextMenu.gif" />
+    <Content Include="Resources\FreeTextMenu1.bmp" />
+    <Content Include="Resources\FreeTextMenu11.bmp" />
+    <Content Include="Resources\FreeTextMenuSelected.gif" />
+    <None Include="Resources\Highlight.gif" />
+    <None Include="Resources\HighlightChoice.gif" />
+    <None Include="Resources\Ink.gif" />
+    <None Include="Resources\InkChoice.gif" />
+    <Content Include="Resources\LastPageMenu.bmp" />
+    <Content Include="Resources\LastPageMenu.gif" />
+    <Content Include="Resources\LineMenu.bmp" />
+    <Content Include="Resources\LineMenu.gif" />
+    <Content Include="Resources\LineMenu1.bmp" />
+    <Content Include="Resources\LineMenu11.bmp" />
+    <Content Include="Resources\LineMenuChoice.gif" />
+    <Content Include="Resources\LineMenuChoice1.gif" />
+    <Content Include="Resources\LineMenuChoice2.gif" />
+    <Content Include="Resources\LineMenuSelected.gif" />
+    <Content Include="Resources\LinePatternMenu.bmp" />
+    <Content Include="Resources\LineWeight1Menu.bmp" />
+    <Content Include="Resources\LineWeight1Menu.gif" />
+    <Content Include="Resources\LineWeight1Menu1.bmp" />
+    <Content Include="Resources\LineWeight1Menu2.bmp" />
+    <Content Include="Resources\LineWeight1MenuChoice.gif" />
+    <Content Include="Resources\LineWeight1MenuChoice1.gif" />
+    <Content Include="Resources\LineWeight1MenuSelected.gif" />
+    <Content Include="Resources\LineWeight2Menu.bmp" />
+    <Content Include="Resources\LineWeight2Menu.gif" />
+    <Content Include="Resources\LineWeight2Menu1.bmp" />
+    <Content Include="Resources\LineWeight2Menu2.bmp" />
+    <Content Include="Resources\LineWeight2MenuChoice.gif" />
+    <Content Include="Resources\LineWeight2MenuChoice1.gif" />
+    <Content Include="Resources\LineWeight2MenuSelected.gif" />
+    <Content Include="Resources\LineWeight3Menu.bmp" />
+    <Content Include="Resources\LineWeight3Menu.gif" />
+    <Content Include="Resources\LineWeight3Menu1.bmp" />
+    <Content Include="Resources\LineWeight3Menu2.bmp" />
+    <Content Include="Resources\LineWeight3MenuChoice.gif" />
+    <Content Include="Resources\LineWeight3MenuChoice1.gif" />
+    <Content Include="Resources\LineWeight3MenuSelected.gif" />
+    <Content Include="Resources\LineWeight4Menu.gif" />
+    <Content Include="Resources\LineWeight4MenuChoice.gif" />
+    <Content Include="Resources\LineWeight4MenuChoice1.gif" />
+    <Content Include="Resources\LineWeight4MenuSelected.gif" />
+    <Content Include="Resources\LineWeight5Menu.bmp" />
+    <Content Include="Resources\LineWeight5Menu.gif" />
+    <Content Include="Resources\LineWeight5Menu1.bmp" />
+    <Content Include="Resources\LineWeight5Menu2.bmp" />
+    <Content Include="Resources\LineWeightMenu.bmp" />
+    <None Include="Resources\Link.gif" />
+    <None Include="Resources\LinkChoice.gif" />
+    <Content Include="Resources\MarqueeZoomModeMenu.bmp" />
+    <Content Include="Resources\MarqueeZoomModeMenu.gif" />
+    <Content Include="Resources\MarqueeZoomModeMenuSelected.bmp" />
+    <Content Include="Resources\MarqueeZoomModeMenuSelected.gif" />
+    <Content Include="Resources\NextPageMenu.bmp" />
+    <Content Include="Resources\NextPageMenu.gif" />
+    <Content Include="Resources\PolygonMenu.gif" />
+    <Content Include="Resources\PolygonMenuChoice.gif" />
+    <Content Include="Resources\PolygonMenuSelected.gif" />
+    <Content Include="Resources\PolyLineMenu.bmp" />
+    <Content Include="Resources\PolyLineMenu.gif" />
+    <Content Include="Resources\PolyLineMenuSelected.gif" />
+    <Content Include="Resources\PreviousPageMenu.bmp" />
+    <Content Include="Resources\PreviousPageMenu.gif" />
+    <Content Include="Resources\PrintCheckbox.bmp" />
+    <Content Include="Resources\PrintMenu.bmp" />
+    <Content Include="Resources\PrintMenu.gif" />
+    <Content Include="Resources\PrintMenu1.gif" />
+    <Content Include="Resources\PrintMenu2.gif" />
+    <Content Include="Resources\RectangelMenu.gif" />
+    <Content Include="Resources\RectangleMenuChoice.gif" />
+    <Content Include="Resources\RectangleMenuChoice1.gif" />
+    <Content Include="Resources\RectangleMenuSelected.gif" />
+    <Content Include="Resources\SelectModeMenu.bmp" />
+    <Content Include="Resources\SelectModeMenu.gif" />
+    <Content Include="Resources\SelectModeMenuSelected.bmp" />
+    <Content Include="Resources\SelectModeSelected.gif" />
+    <Content Include="Resources\SolidLineMenu.bmp" />
+    <Content Include="Resources\SolidLineMenu.gif" />
+    <Content Include="Resources\SolidLineMenu1.bmp" />
+    <Content Include="Resources\SolidLineMenu2.bmp" />
+    <Content Include="Resources\SolidLineMenuChoice.gif" />
+    <Content Include="Resources\SolidLineMenuChoice1.gif" />
+    <Content Include="Resources\SolidLineMenuSelected.gif" />
+    <Content Include="Resources\SolidLineMenuSelected1.gif" />
+    <Content Include="Resources\Transparency.bmp" />
+    <Content Include="Resources\transparencySymbol100x100.bmp" />
+    <Content Include="Resources\transparencySymbol12x12.bmp" />
+    <None Include="Resources\UnderlineChoice.gif" />
+    <None Include="Resources\Underline.gif" />
+    <Content Include="Resources\ZoomDecreaseMenu.bmp" />
+    <Content Include="Resources\ZoomDecreaseMenu.gif" />
+    <Content Include="Resources\ZoomIncreaseMenu.bmp" />
+    <Content Include="Resources\ZoomIncreaseMenu.gif" />
+    <Content Include="Resources\ZoomModeMenu.bmp" />
+    <Content Include="Resources\ZoomModeMenu.gif" />
+    <Content Include="Resources\ZoomModeMenuSelected.bmp" />
+    <Content Include="Resources\ZoomModeMenuSelected.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

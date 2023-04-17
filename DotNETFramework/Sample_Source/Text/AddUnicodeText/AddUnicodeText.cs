@@ -7,8 +7,8 @@ using Datalogics.PDFL;
  * 
  * This sample program adds six lines of Unicode text to a PDF file, in six different languages.
  *
- * For more detail see the description of the AddUnicodeText sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/adding-text-and-graphic-elements#addunicodetext
+ * For more detail see the description of the AddUnicodeText sample program on our github site,
+ * https://github.com/datalogics/adobe-pdf-library-samples/tree/master/DotNETFramework/Sample_Source/Text#addunicodetext
  * 
  * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
  * 

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Datalogics, Inc.")]
 [assembly: AssemblyProduct("AddUnicodeText")]
-[assembly: AssemblyCopyright("Copyright © Datalogics, Inc. 2009-2010")]
+[assembly: AssemblyCopyright("Copyright © Datalogics, Inc. 2009-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

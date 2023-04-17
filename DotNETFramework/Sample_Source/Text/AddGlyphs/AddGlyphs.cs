@@ -8,8 +8,8 @@ using Datalogics.PDFL;
  * Use this program to create a new PDF file and add glyphs to the page,
  * managing them by individual Glyph ID codes.
  * 
- * For more detail see the description of the AddGlyphs sample program on our Developer’s site, 
- * http://dev.datalogics.com/adobe-pdf-library/sample-program-descriptions/net-sample-programs/adding-text-and-graphic-elements#addglyphs
+ * For more detail see the description of the AddGlyphs sample program see
+ * https://github.com/datalogics/adobe-pdf-library-samples/tree/master/DotNETFramework/Sample_Source/Text#addglyphs
  * 
  * Copyright (c) 2007-2017, Datalogics, Inc. All rights reserved.
  *
