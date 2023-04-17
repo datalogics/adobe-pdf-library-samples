@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtractText.cs" />
+    <Compile Include="..\..\_Common\ExtractText.cs" />
     <Compile Include="ExtractTextByRegion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

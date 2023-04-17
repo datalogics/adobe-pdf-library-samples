@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtractAcroFormFieldData.cs" />
-    <Compile Include="ExtractText.cs" />
+    <Compile Include="..\..\_Common\ExtractText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
