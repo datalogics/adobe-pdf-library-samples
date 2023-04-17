@@ -68,8 +68,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnderlinesAndHighlights", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterMark", "ContentModification\Watermark\WaterMark.csproj", "{FA83DE47-3771-47EE-8EA8-EB202F5241A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayPDF", "Display\DisplayPDF\DisplayPDF.csproj", "{02A72B29-33C8-4BE7-A577-9688439A710D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorConvertDocument", "DocumentConversion\ColorConvertDocument\ColorConvertDocument.csproj", "{D0E85D80-0332-40F2-A9DB-43C02F4544BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateDocFromXPS", "DocumentConversion\CreateDocFromXPS\CreateDocFromXPS.csproj", "{6A1D00B1-DA53-4BB5-B7F7-1EB1339C379B}"
@@ -294,10 +292,6 @@ Global
 		{FA83DE47-3771-47EE-8EA8-EB202F5241A0}.Debug|x64.Build.0 = Debug|x64
 		{FA83DE47-3771-47EE-8EA8-EB202F5241A0}.Release|x64.ActiveCfg = Release|x64
 		{FA83DE47-3771-47EE-8EA8-EB202F5241A0}.Release|x64.Build.0 = Release|x64
-		{02A72B29-33C8-4BE7-A577-9688439A710D}.Debug|x64.ActiveCfg = Debug|x64
-		{02A72B29-33C8-4BE7-A577-9688439A710D}.Debug|x64.Build.0 = Debug|x64
-		{02A72B29-33C8-4BE7-A577-9688439A710D}.Release|x64.ActiveCfg = Release|x64
-		{02A72B29-33C8-4BE7-A577-9688439A710D}.Release|x64.Build.0 = Release|x64
 		{D0E85D80-0332-40F2-A9DB-43C02F4544BC}.Debug|x64.ActiveCfg = Debug|x64
 		{D0E85D80-0332-40F2-A9DB-43C02F4544BC}.Debug|x64.Build.0 = Debug|x64
 		{D0E85D80-0332-40F2-A9DB-43C02F4544BC}.Release|x64.ActiveCfg = Release|x64
