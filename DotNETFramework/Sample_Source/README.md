@@ -1,16 +1,21 @@
-![Datalogics Adobe PDF Library](https://www.datalogics.com/wp-content/uploads/2022/09/Datalogics-Logo-1-e1664565864201.png)
+![Datalogics Adobe PDF Library](https://raw.github.com/datalogics/dl-icons/develop/DLBanner_Nuget.png)
 
-[Datalogics](https://www.datalogics.com)&nbsp;|&nbsp; [Free Trial Download](https://www.datalogics.com/adobe-pdf-library/) &nbsp;|&nbsp; [Documentation](https://dev.datalogics.com/) &nbsp;|&nbsp; [Support](https://www.datalogics.com/tech-support-pdfs/) &nbsp;|&nbsp;[NuGet](https://www.nuget.org/profiles/Datalogics)
+[Documentation](https://dev.datalogics.com/) &nbsp;| &nbsp; [Support](https://www.datalogics.com/tech-support-pdfs/) &nbsp; | &nbsp;[Homepage](https://www.datalogics.com)
 
-<br>
+![Download a Free Trial on NuGet](https://img.shields.io/nuget/dt/Adobe.PDF.Library.LM.NETFramework?color=blue&label=APDFL%20.NET%20Framework%20Free%20Trial&logo=NuGet&style=plastic)
 
-# .NET Framework Sample Programs
+# .NET Framework Samples
 ## ***Introduction***
-The Adobe PDF Library (APDFL) is an Application Programming Interface (API) designed to allow programmers to work with the Adobe PDF file format.  The APDFL Software Development Kit (SDK) provides a method for software developers and vendors to build their own third-party systems that allow them to create, change, process, review, and otherwise work with PDF files. The Library is the same one that Adobe Acrobat is based on.
+Built upon Adobe source code used for Acrobat, Datalogics Adobe PDF Library SDK provides stable, reliable code and the flexibility to develop with C# or VB (VB.NET) (interfaces are also available for C++ and Java). APDFL is the most complete SDK for PDF creation, manipulation and management. Best for enterprise/larger organizations of developers and independent software vendors (ISVs) who need to incorporate Adobe's PDF functionality into their own internal or external applications.
 
-Datalogics provides a .NET Framework interface to the Adobe PDF Library. This Interface offers a set of modules for the Library that allow programmers working in C# or other languages supported by .NET Framework to take advantage of Adobe PDF Library tools and resources. This interface encapsulates the original Adobe PDF Library; the interface allows you to work with the original library functions directly, and seamlessly, in .NET Framework.
+## ***Preliminaries***
+Most of the code samples in APDFL are designed to demonstrate how an API works by completing a simple programming task.
 
-## ***The Sample Programs***
-The Adobe PDF Library supports all of the languages that work with .NET Framework, including C# and Visual Basic. The Adobe PDF Library provides a set of sample C# program files, stored under /DotNetFramework/Sample_Source.
+We assume a basic level of technical understanding of the PDF file format, invidual sample category directory markdown files go into more details.
 
-Many of these sample programs automatically generate an output file or set of files.  These output files, generally PDF or graphics files (JPG or BMP), are stored in the directory where the application has been run. If you run a sample program a second or third time, it will overwrite any output files that were created and stored earlier.  However, if you run a sample program, generate a PDF output file, and then open that PDF file and try to run that sample program again, you will see an error message.  The program will not be able to overwrite an existing output file if that file is currently open in Adobe Reader or Adobe Acrobat.
+Many of these sample programs automatically generate an output file or set of files.  These output files, generally PDF or graphics files (JPG or BMP), are stored in the directory where the application has been run. If you run a sample program a second or third time, it will overwrite any output files that were created and stored earlier.  However, if you run a sample program, generate a PDF output file, and then open that PDF file and try to run that sample program again, you will see an error message.  The program will not be able to overwrite an existing output file if that file is currently open in another program.
+
+*(Note: that the Forms Extension product and samples are available by talking to Datalogics Sales.)*
+
+## ***Building and Running Samples***
+Samples can be built and run easily in an IDE such as Visual Studio 2017, 2019, or 2022.
