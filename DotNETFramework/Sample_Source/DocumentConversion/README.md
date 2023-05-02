@@ -1,6 +1,9 @@
 ## ***ColorConvertDocument***
 This sample illustrates how to convert colors in a PDF document.
 
+## ***ConvertToOffice***
+This (currently Windows-only) sample illustrates how to convert a PDF document to Microsoft Office formats for Word, Excel and PowerPoint.
+
 ## ***CreateDocFromXPS***
 Opens a XPS document and converts it to a PDF document.
 

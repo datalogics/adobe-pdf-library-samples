@@ -154,6 +154,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractTextPreservingStyleA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Factur-XConverter", "DocumentConversion\Factur-XConverter\Factur-XConverter.csproj", "{D5F40E4D-BDEF-4472-909A-C6441B594750}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertToOffice", "DocumentConversion\ConvertToOffice\ConvertToOffice.csproj", "{AECC2C27-D343-4E42-9097-121AFAA4B386}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -464,6 +466,10 @@ Global
 		{D5F40E4D-BDEF-4472-909A-C6441B594750}.Debug|x64.Build.0 = Debug|x64
 		{D5F40E4D-BDEF-4472-909A-C6441B594750}.Release|x64.ActiveCfg = Release|x64
 		{D5F40E4D-BDEF-4472-909A-C6441B594750}.Release|x64.Build.0 = Release|x64
+		{AECC2C27-D343-4E42-9097-121AFAA4B386}.Debug|x64.ActiveCfg = Debug|x64
+		{AECC2C27-D343-4E42-9097-121AFAA4B386}.Debug|x64.Build.0 = Debug|x64
+		{AECC2C27-D343-4E42-9097-121AFAA4B386}.Release|x64.ActiveCfg = Release|x64
+		{AECC2C27-D343-4E42-9097-121AFAA4B386}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
