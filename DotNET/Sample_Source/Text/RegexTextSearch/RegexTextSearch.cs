@@ -21,8 +21,6 @@ namespace RegexTextSearch
         {
             Console.WriteLine("RegexTextSearch Sample:");
 
-            // This is the evaluation license key
-            Library.LicenseKey = "3011-6479-7180-0953";
 
             using (new Library())
             {

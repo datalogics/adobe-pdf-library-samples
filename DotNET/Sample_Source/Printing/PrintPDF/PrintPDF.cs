@@ -86,8 +86,6 @@ namespace PrintPDF
 
             try
             {
-                // This is the evaluation license key
-                Library.LicenseKey = "3011-6479-7180-0953";
 
                 // Printing may fail for reasons that have nothing to do with APDFL.
                 // PDF documents may contain material that cannot be printed, etc. Given
