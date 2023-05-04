@@ -1,6 +1,6 @@
 ![Datalogics Adobe PDF Library](https://raw.github.com/datalogics/dl-icons/develop/DLBanner_Nuget.png)
 
-[Documentation](https://dev.datalogics.com/) &nbsp;| &nbsp; [Support](https://www.datalogics.com/tech-support-pdfs/) &nbsp; | &nbsp;[Homepage](https://www.datalogics.com)
+[Documentation](https://dev.datalogics.com/apdfl/Documentation/DotNETFramework/Overview/index.html) &nbsp;| &nbsp; [Support](https://www.datalogics.com/tech-support-pdfs/) &nbsp; | &nbsp;[Homepage](https://www.datalogics.com)
 
 [![Download a Free Trial on NuGet](https://img.shields.io/nuget/dt/Adobe.PDF.Library.LM.NETFramework?color=blue&label=APDFL%20.NET%20Framework%20Free%20Trial&logo=NuGet&style=plastic)](https://www.nuget.org/packages/Adobe.PDF.Library.LM.NETFramework)
 

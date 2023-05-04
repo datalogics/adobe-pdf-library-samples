@@ -24,8 +24,6 @@ namespace MemoryFileSystem
         {
             Console.WriteLine("MemoryFileSystem Sample:");
 
-            // This is the evaluation license key
-            Library.LicenseKey = "3011-6479-7180-0953";
 
             using (Library lib = new Library())
             {

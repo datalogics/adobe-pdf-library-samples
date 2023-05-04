@@ -7,6 +7,9 @@ Converts a PDF document to a PostScript file, using the "print to file" feature 
 ## ***ConvertToFactur-X***
 Converts a PDF document and a Invoice XML document to a Factur-X compliant PDF document.
 
+## ***ConvertToOffice***
+[Windows Only] Converts a PDF document to an Office document (Word, Excel, or PowerPoint).
+
 ## ***ConvertToPDFA***
 Converts a PDF document to a PDF/A compliant document.
 
