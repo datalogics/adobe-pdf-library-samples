@@ -35,8 +35,6 @@ namespace GetSeparatedImages
 
             Console.WriteLine("Input file: " + sInput + ", will write to " + sOutput);
 
-            // This is the evaluation license key
-            Library.LicenseKey = "3011-6479-7180-0953";
 
             // ReSharper disable once UnusedVariable
             using (Library lib = new Library())

@@ -1,46 +1,37 @@
-![Datalogics Adobe PDF Library](https://www.datalogics.com/wp-content/uploads/2022/09/Datalogics-Logo-1-e1664565864201.png) 
- 
-[Datalogics](https://www.datalogics.com)&nbsp;|&nbsp; [Free Trial Download](https://www.datalogics.com/adobe-pdf-library/) &nbsp;|&nbsp; [Documentation](https://dev.datalogics.com/) &nbsp;|&nbsp; [Support](https://www.datalogics.com/tech-support-pdfs/) &nbsp;|&nbsp;[NuGet](https://www.nuget.org/profiles/Datalogics)
- 
-<br> 
- 
-## Adobe PDF Library 
+![Datalogics Adobe PDF Library](https://raw.github.com/datalogics/dl-icons/develop/DLBanner_Nuget.png)
+[![.NET Nuget](https://img.shields.io/nuget/dt/Adobe.PDF.Library.LM.NET?color=blue&label=APDFL%20.NET%20Free%20Trial&logo=NuGet&style=plastic)](https://www.nuget.org/packages/Adobe.PDF.Library.LM.NET)
 
-Adobe PDF Library (APDFL) gives you the power to create, manipulate and manage PDF documents for large-scale applications. Built on source code used for Adobe Acrobat for consistency and reliability, APDFL gives you greater control over PDF output and processes. Options in programming languages and platforms let you get started coding quickly. 
+[![.NETFramework Nuget](https://img.shields.io/nuget/dt/Adobe.PDF.Library.LM.NETFramework?color=blue&label=APDFL%20.NET%20Framework%20Free%20Trial&logo=NuGet&style=plastic)](https://www.nuget.org/packages/Adobe.PDF.Library.LM.NETFramework)
 
-<br> 
+[![Download a Free Trial via Installer (C++, Java)](https://img.shields.io/badge/APDFL%20Free%20Trial%20(C++,%20Java)-via%20Datalogics%20Installer-blue?color=blue&style=plastic)](https://www.datalogics.com/adobe-pdf-library/)
 
-## Get Started with Code Samples 
-To run the code samples supplied in our repository, [generate a trial license key](https://www.datalogics.com/adobe-pdf-library/) for your platform and language interface. We have samples available for all of the following processes:
+- [Documentation](https://dev.datalogics.com/apdfl/Documentation/DotNET/index.html)
+- [Release Notes](https://dev.datalogics.com/adobe-pdf-library/release-notes-adobe-pdf-library-v-18/)
+- [Support](https://www.datalogics.com/resources/support/)
+- [Homepage](https://www.datalogics.com/)
 
-- Annotations
-- Content Creation
-- Content Extraction 
-- Content Modification 
-- Display 
-- Document Conversion 
-- Document Optimization 
-- File Systems 
-- Forms 
-- Images 
-- Information Extraction 
-- Optical Character Recognition (OCR) 
-- Printing 
-- Security 
-- Text 
+## Adobe PDF Library
+Built upon Adobe source code used for Acrobat, Datalogics Adobe PDF Library SDK provides stable, reliable code and the flexibility to develop with C#, VB (VB.NET), C++, or Java. APDFL is the most complete SDK for PDF creation, manipulation and management. Best for enterprise/larger organizations of developers and independent software vendors (ISVs) who need to incorporate Adobe's PDF functionality into their own internal or external applications.
 
-<br> 
+Live support from PDF development experts.
 
-## Documentation 
+Licensing and Pricing options are customized to your usage and requirements. For OEM and SaaS customers we will provide you with a non-license managed software package for easier distribution embedded within your applications.
 
-Check out our [Developer Resources](https://dev.datalogics.com/) for documentation, guides and tools for using APDFL more effectively.  
-
-<br> 
-
-## Support 
-
-Our team has decades of experience with PDFs and are happy to help you find solutions. Reach out to us on our [Support](https://www.datalogics.com/tech-support-pdfs/) page and they will be in touch as soon as possible. 
-
-
- 
- 
+## Extensive PDF Capabilities
+- ![NewFeature](https://img.shields.io/badge/New!-blue?style=plastic) ![Windows](https://img.shields.io/badge/Only-blue?style=plastic&logo=windows&labelColor=blue) Conversion of PDF to Microsoft Office Word, Excel, and PowerPoint (.docx, .xlsx, .pptx) documents.
+- Create and edit annotations
+- Content creation and editing
+- Color management and conversion
+- Extraction of text, images, forms
+- Redaction
+- Content modification - merge, split, flatten, layers
+- Compression / optimization / linearization for Fast Web View
+- Display, Render, Print
+- Conversion to PDF/A, PDF/X, EPS, PostScript, XPS, Factur-X, ZUGFeRD, image formats (JPG, TIFF, PNG, BMP)
+- Forms - Import, export, flatten, AcroForms
+- Image manipulation and conversion
+- OCR
+- Support for Optional Content Groups and PDF Layers
+- Printing
+- Security - Password, encrypt, watermark
+- Search for and replace or edit text
