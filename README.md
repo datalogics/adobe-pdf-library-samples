@@ -3,7 +3,7 @@
 
 [![.NETFramework Nuget](https://img.shields.io/nuget/dt/Adobe.PDF.Library.LM.NETFramework?color=blue&label=APDFL%20.NET%20Framework%20Free%20Trial&logo=NuGet&style=plastic)](https://www.nuget.org/packages/Adobe.PDF.Library.LM.NETFramework)
 
-[![Download a Free Trial via Installer (C++, Java)](https://img.shields.io/badge/APDFL%20Free%20Trial%20(C++,%20Java)-via%20Datalogics%20Installer-blue?color=blue&style=plastic)](https://www.datalogics.com/adobe-pdf-library/)
+[![Download a Free Trial via Installer (C++)](https://img.shields.io/badge/APDFL%20Free%20Trial%20(C++)-via%20Datalogics%20Installer-blue?color=blue&style=plastic)](https://www.datalogics.com/adobe-pdf-library/)
 
 - [Documentation](https://dev.datalogics.com/apdfl/Documentation/DotNET/index.html)
 - [Release Notes](https://dev.datalogics.com/adobe-pdf-library/release-notes-adobe-pdf-library-v-18/)
