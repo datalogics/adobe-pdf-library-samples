@@ -4,7 +4,7 @@
 
 | Samples | Repository |
 |---------|------------|
-| .NET              | https://github.com/datalogics/apdfl-csharp-dotnet-sample            |
+| .NET              | https://github.com/datalogics/apdfl-csharp-dotnet-samples           |
 | .NET Framework    | https://github.com/datalogics/apdfl-csharp-dotnet-framework-samples |
 | Java              | https://github.com/datalogics/apdfl-java-maven-samples              |
 | C++               | https://github.com/datalogics/apdfl-cplusplus-samples               |
